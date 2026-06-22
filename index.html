@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)file:///Users/edmundbroderick/Downloads/index_5.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EMB Fitting</title>
+<link rel="stylesheet" href="./index_files/tabler-icons.min.css">
+<script src="./index_files/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080c0f;--bg2:#0d1117;--bg3:#131920;--bg4:#1a2330;
+  --border:#1e2d3d;--border2:#243447;
+  --text:#e8f4f8;--text2:#8ab4c8;--text3:#4a7a94;
+  --cyan:#ff2244;--cyan2:#ff4466;--cyan3:#cc1133;--cyan4:#440011;
+  --teal:#cc2233;--teal2:#ff3355;--teal3:#440011;
+  --accent:#00d4ff;--accent2:#00b4a0;
+  --red:#ff4466;--red2:#3d0011;
+  --radius:10px;--radius2:14px;
+  --font:'Inter',system-ui,sans-serif;
+}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;min-height:100vh}
+.app{display:flex;flex-direction:column;min-height:100vh}
+
+/* ── HEADER ── */
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;flex-shrink:0;position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--cyan) 0%,var(--teal) 100%);border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:10px;color:#000;letter-spacing:-0.5px;box-shadow:0 0 14px rgba(0,212,255,0.3)}
+.logo-text{font-size:15px;font-weight:700;color:var(--text)}
+.logo-sub{font-size:10px;color:var(--text3);letter-spacing:0.15em;text-transform:uppercase}
+.nav{display:flex;gap:2px}
+.nav-btn{background:transparent;border:none;padding:7px 14px;color:var(--text3);font-size:13px;cursor:pointer;border-radius:var(--radius);font-family:var(--font);transition:all 0.15s;font-weight:500}
+.nav-btn:hover{color:var(--text);background:var(--bg3)}
+.nav-btn.active{color:var(--cyan);background:var(--bg3);box-shadow:inset 0 -2px 0 var(--cyan)}
+.nav-btn i{margin-right:5px;font-size:13px;vertical-align:-2px}
+.header-right{display:flex;align-items:center;gap:10px}
+.session-badge{font-size:11px;color:var(--text3);letter-spacing:0.05em;text-transform:uppercase}
+.db-status{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:500}
+.db-status.connected{background:rgba(0,212,255,0.1);color:var(--cyan);border:1px solid rgba(0,212,255,0.2)}
+.db-status.error{background:rgba(255,68,102,0.1);color:var(--red);border:1px solid rgba(255,68,102,0.2)}
+
+/* ── MAIN LAYOUT ── */
+.main{flex:1;display:flex;overflow:hidden;height:calc(100vh - 56px)}
+
+/* ── FITTING LAYOUT: left input panel + right sticky results ── */
+.fit-left{width:520px;flex-shrink:0;overflow-y:auto;border-right:1px solid var(--border);background:var(--bg2);display:flex;flex-direction:column}
+.fit-right{flex:1;overflow-y:auto;background:var(--bg);padding:24px}
+
+/* ── LEFT PANEL SECTIONS ── */
+.fit-section{border-bottom:1px solid var(--border);padding:20px 24px}
+.fit-section:last-of-type{border-bottom:none}
+
+.step-label{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.step-num{width:22px;height:22px;border-radius:50%;background:var(--bg4);border:1px solid var(--cyan3);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--cyan);flex-shrink:0}
+.step-title{font-size:11px;text-transform:uppercase;letter-spacing:0.15em;color:var(--cyan3);font-weight:700}
+
+/* ── FIELD ROWS ── */
+.field-row{display:grid;gap:10px}
+.field-row.cols2{grid-template-columns:1fr 1fr}
+.field-row.cols3{grid-template-columns:1fr 1fr 1fr}
+.field-row.cols4{grid-template-columns:1fr 1fr 1fr 1fr}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:11px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:0.06em}
+.field input,.field select{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:9px 11px;color:var(--text);font-size:13px;font-family:var(--font);transition:all 0.15s;width:100%}
+.field input:focus,.field select:focus{outline:none;border-color:var(--cyan3);background:var(--bg4);box-shadow:0 0 0 3px rgba(0,212,255,0.06)}
+.field select option{background:var(--bg3)}
+
+/* ── CHIP GROUPS ── */
+.chip-row{display:flex;gap:6px;flex-wrap:wrap}
+.chip-section{margin-bottom:14px}
+.chip-section-label{font-size:11px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:7px}
+.chip{background:var(--bg3);border:1px solid var(--border2);border-radius:16px;padding:6px 14px;font-size:12px;cursor:pointer;color:var(--text2);font-family:var(--font);transition:all 0.15s;font-weight:500;white-space:nowrap}
+.chip:hover{border-color:var(--cyan3);color:var(--text)}
+.chip.selected{background:rgba(0,212,255,0.1);border-color:var(--cyan3);color:var(--cyan)}
+
+/* ── SPORTSBOX COMPACT STRIP ── */
+.sb-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.sb-cell{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:10px 10px 8px;transition:border 0.15s;position:relative}
+.sb-cell:focus-within{border-color:var(--cyan3);box-shadow:0 0 0 2px rgba(0,212,255,0.08)}
+.sb-cell-name{font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);font-weight:600;line-height:1.3;margin-bottom:6px;min-height:24px;display:flex;align-items:flex-start}
+.sb-cell input{width:100%;background:transparent;border:none;border-bottom:2px solid var(--border2);color:var(--cyan2);font-size:18px;font-weight:700;padding:2px 0;font-family:var(--font);transition:border 0.15s;letter-spacing:-0.02em}
+.sb-cell input:focus{outline:none;border-color:var(--cyan)}
+.sb-cell input::placeholder{color:var(--border2);font-size:13px;font-weight:400}
+.sb-cell-unit{font-size:9px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:0.06em}
+
+/* ── LAUNCH MONITOR COMPACT ── */
+.lm-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.lm-cell{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:9px 10px 7px}
+.lm-cell label{display:block;font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);font-weight:600;margin-bottom:5px}
+.lm-cell input{width:100%;background:transparent;border:none;border-bottom:1px solid var(--border2);color:var(--text);font-size:15px;font-weight:600;padding:1px 0;font-family:var(--font);transition:border 0.15s}
+.lm-cell input:focus{outline:none;border-color:var(--cyan3)}
+.lm-cell input::placeholder{color:var(--border2);font-size:12px;font-weight:400}
+.lm-cell .lm-unit{font-size:9px;color:var(--text3);margin-top:3px;text-transform:uppercase}
+
+/* ── RUN BUTTON ── */
+.run-area{padding:16px 24px;background:var(--bg2);border-top:1px solid var(--border);position:sticky;bottom:0}
+.run-btn{width:100%;background:linear-gradient(135deg,var(--cyan) 0%,var(--teal) 100%);color:#000;border:none;border-radius:var(--radius);padding:13px;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:0.08em;text-transform:uppercase;font-family:var(--font);transition:all 0.2s;box-shadow:0 4px 20px rgba(0,212,255,0.25)}
+.run-btn:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(0,212,255,0.4)}
+.run-btn:active{transform:translateY(0)}
+.run-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none}
+.clear-btn{width:100%;background:transparent;border:1px solid var(--border2);color:var(--text3);border-radius:var(--radius);padding:8px;font-size:12px;cursor:pointer;font-family:var(--font);margin-top:7px;transition:all 0.15s}
+.clear-btn:hover{border-color:var(--red);color:var(--red)}
+
+/* ── RIGHT PANEL — RESULTS ── */
+.results-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:12px;color:var(--text3)}
+.results-empty i{font-size:44px;color:var(--border2)}
+.results-empty-title{font-size:15px;font-weight:600;color:var(--text2)}
+.results-empty-sub{font-size:13px;text-align:center;max-width:280px;line-height:1.7}
+
+.player-banner{background:linear-gradient(135deg,var(--bg3) 0%,var(--bg2) 100%);border:1px solid var(--border2);border-top:2px solid var(--cyan3);border-radius:var(--radius2);padding:20px 24px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
+.player-name{font-size:22px;font-weight:800;letter-spacing:-0.03em;margin-bottom:4px;background:linear-gradient(135deg,var(--text) 0%,var(--text2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.player-meta{font-size:12px;color:var(--text2)}
+.player-stats{display:flex;gap:20px}
+.stat-block{text-align:right}
+.stat-val{font-size:20px;font-weight:800;color:var(--cyan);line-height:1;letter-spacing:-0.02em}
+.stat-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-top:3px}
+
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;margin-top:20px}
+.section-title{font-size:10px;text-transform:uppercase;letter-spacing:0.15em;color:var(--text3);font-weight:700;white-space:nowrap}
+.section-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border2),transparent)}
+
+/* ── SIGNAL STRIP ── */
+.signals-strip{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:var(--radius);padding:12px 16px;margin-bottom:16px}
+.signal-item{display:flex;align-items:flex-start;gap:7px;font-size:12px;color:var(--text2);margin-bottom:5px;line-height:1.5}
+.signal-item:last-child{margin-bottom:0}
+.signal-item i{color:var(--cyan);flex-shrink:0;margin-top:1px;font-size:13px}
+
+/* ── SPORTSBOX ANALYSIS CARDS ── */
+.sb-analysis-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.sb-analysis-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px}
+.sb-analysis-var{font-size:10px;font-weight:600;color:var(--cyan3);margin-bottom:2px;display:flex;justify-content:space-between}
+.sb-analysis-val{font-family:monospace;color:var(--cyan2);font-size:11px}
+.sb-analysis-signal{font-size:11px;color:var(--text);font-weight:500;margin-bottom:2px}
+.sb-analysis-impl{font-size:11px;color:var(--text3);line-height:1.4}
+
+/* ── VERDICT BAND ── */
+.verdict-band{border-radius:var(--radius);padding:10px 14px;margin-bottom:16px;font-size:12px;display:flex;align-items:center;gap:8px}
+.verdict-band.draw{background:rgba(0,212,255,0.06);border:1px solid var(--cyan3);color:var(--cyan)}
+.verdict-band.neutral{background:rgba(0,212,188,0.06);border:1px solid var(--teal3);color:var(--teal2)}
+
+/* ── TARGET PROFILE STRIP ── */
+.profile-strip{background:var(--bg2);border:1px solid var(--cyan3);border-radius:var(--radius);padding:12px 16px;margin-bottom:14px}
+.profile-strip-title{font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--cyan);font-weight:700;margin-bottom:10px}
+.profile-vals{display:flex;gap:18px;flex-wrap:wrap}
+.profile-val{text-align:center}
+.profile-val-num{font-size:17px;font-weight:700;color:var(--cyan2);line-height:1}
+.profile-val-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-top:3px}
+.profile-strip-note{font-size:11px;color:var(--text3);margin-top:8px;border-top:1px solid var(--border);padding-top:8px}
+
+/* ── FLEX GATE BADGE ── */
+.flex-gate{display:inline-flex;align-items:center;gap:6px;background:rgba(0,212,255,0.08);border:1px solid var(--cyan3);border-radius:6px;padding:5px 10px;font-size:11px;color:var(--cyan);font-weight:600;margin-bottom:14px}
+
+/* ── REC CARDS ── */
+.rec-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.rec-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);padding:16px;transition:border 0.15s}
+.rec-card.top-pick{border-color:var(--cyan3);background:linear-gradient(135deg,rgba(0,212,255,0.04) 0%,var(--bg2) 100%)}
+.rec-rank{font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--text3);margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.cyan-dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);flex-shrink:0;box-shadow:0 0 5px var(--cyan)}
+.rec-card.top-pick .rec-rank{color:var(--cyan)}
+.rec-name{font-size:14px;font-weight:700;margin-bottom:10px;line-height:1.3}
+.rec-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.tag{background:var(--bg4);border:1px solid var(--border2);border-radius:4px;padding:3px 8px;font-size:10px;color:var(--text2)}
+.tag.highlight{background:rgba(0,212,255,0.08);border-color:var(--cyan3);color:var(--cyan)}
+.rec-why{font-size:11px;color:var(--text2);line-height:1.6;border-top:1px solid var(--border);padding-top:10px}
+.rec-test{font-size:11px;color:var(--teal2);margin-top:8px;display:flex;align-items:flex-start;gap:5px;line-height:1.5}
+.rec-test i{flex-shrink:0;margin-top:1px}
+.confidence-bar{height:2px;background:var(--border2);border-radius:2px;margin-top:12px;overflow:hidden}
+.confidence-fill{height:2px;border-radius:2px;background:linear-gradient(90deg,var(--cyan3),var(--cyan2))}
+
+/* ── AI PANEL ── */
+.ai-panel{background:var(--bg2);border:1px solid var(--border);border-top:2px solid var(--teal3);border-radius:var(--radius2);padding:18px;margin-bottom:20px}
+.ai-header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.ai-dot{width:7px;height:7px;border-radius:50%;background:var(--teal2);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+.ai-title{font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--teal2);font-weight:700}
+.ai-text{font-size:12px;color:var(--text2);line-height:1.9}
+
+.spinner{width:14px;height:14px;border:2px solid var(--border2);border-top-color:var(--cyan);border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block;vertical-align:-3px;margin-right:7px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── SESSIONS / ADMIN (non-fitting pages use full-width) ── */
+.page-full{flex:1;overflow-y:auto;padding:28px;max-width:900px;margin:0 auto;width:100%}
+.page-wrap{flex:1;display:flex;overflow:hidden}
+
+.session-list-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:13px 15px;margin-bottom:7px;cursor:pointer;transition:all 0.15s;display:flex;justify-content:space-between;align-items:center}
+.session-list-item:hover{border-color:var(--cyan3);background:var(--bg3)}
+.session-list-name{font-size:13px;font-weight:600;margin-bottom:3px}
+.session-list-meta{font-size:11px;color:var(--text3)}
+
+/* ── ADMIN ── */
+.admin-lock{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px}
+.admin-lock i{font-size:38px;color:var(--text3)}
+.pw-row{display:flex;gap:10px}
+.pw-row input{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:9px 14px;color:var(--text);font-size:14px;font-family:var(--font);width:200px}
+.pw-row input:focus{outline:none;border-color:var(--cyan3)}
+.pw-btn{background:linear-gradient(135deg,var(--cyan),var(--teal));color:#000;border:none;border-radius:var(--radius);padding:9px 18px;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font)}
+.pw-err{font-size:12px;color:var(--red)}
+
+.admin-tabs{display:flex;gap:2px;margin-bottom:22px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.admin-tab{background:transparent;border:none;border-bottom:2px solid transparent;padding:9px 14px;color:var(--text3);font-size:12px;cursor:pointer;font-family:var(--font);margin-bottom:-1px;transition:all 0.15s;font-weight:500}
+.admin-tab.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+.admin-tab:hover{color:var(--text)}
+
+.admin-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);padding:18px;margin-bottom:12px}
+.admin-card-title{font-size:13px;font-weight:600;margin-bottom:4px}
+.admin-card-meta{font-size:12px;color:var(--text3);margin-bottom:8px;line-height:1.6}
+.admin-card-cond{font-size:11px;color:var(--cyan3);font-family:monospace;background:var(--bg4);padding:3px 9px;border-radius:5px;margin-bottom:8px;display:inline-block;border:1px solid var(--border2)}
+.admin-actions{display:flex;gap:7px;margin-top:10px}
+.btn-sm{background:transparent;border:1px solid var(--border2);border-radius:var(--radius);padding:4px 10px;font-size:11px;cursor:pointer;color:var(--text2);font-family:var(--font);transition:all 0.15s}
+.btn-sm:hover{border-color:var(--text2);color:var(--text)}
+.btn-sm.danger:hover{border-color:var(--red);color:var(--red)}
+.priority-badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-left:7px}
+.priority-badge.high{background:rgba(255,68,102,0.12);color:#ff4466;border:1px solid rgba(255,68,102,0.2)}
+.priority-badge.medium{background:rgba(255,180,0,0.12);color:#ffb400;border:1px solid rgba(255,180,0,0.2)}
+.priority-badge.low{background:rgba(0,212,180,0.12);color:var(--teal2);border:1px solid rgba(0,212,180,0.2)}
+
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-weight:500}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:9px 11px;color:var(--text);font-size:13px;font-family:var(--font);transition:all 0.15s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--cyan3);box-shadow:0 0 0 3px rgba(0,212,255,0.06)}
+.form-group textarea{resize:vertical;line-height:1.6}
+.form-group select option{background:var(--bg3)}
+.form-hint{font-size:11px;color:var(--text3);margin-top:4px;line-height:1.5}
+.add-btn{background:linear-gradient(135deg,var(--cyan),var(--teal));color:#000;border:none;border-radius:var(--radius);padding:10px 20px;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);transition:all 0.15s}
+.add-btn:hover{box-shadow:0 4px 16px rgba(0,212,255,0.3)}
+.add-btn:disabled{opacity:0.4;cursor:not-allowed}
+.success-msg{font-size:12px;color:var(--teal2);margin-top:9px}
+.error-msg{font-size:12px;color:var(--red);margin-top:9px}
+
+.equip-row{display:flex;align-items:flex-start;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+.equip-row:last-child{border-bottom:none}
+.equip-name{font-size:13px;font-weight:600;margin-bottom:4px}
+.equip-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:4px}
+.equip-meta{font-size:11px;color:var(--text3)}
+
+.toast{position:fixed;bottom:22px;right:22px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 16px;font-size:13px;color:var(--text);z-index:999;opacity:0;transition:opacity 0.3s;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+.toast.show{opacity:1}
+.toast.success{border-color:var(--teal2);color:var(--teal2)}
+.toast.error{border-color:var(--red);color:var(--red)}
+
+/* ── SWAY GAP BAND INDICATOR ── */
+.band-indicator{display:flex;gap:4px;margin-top:6px}
+.band-pip{height:3px;flex:1;border-radius:2px;background:var(--border2)}
+.band-pip.active{background:var(--cyan)}
+
+/* Notes textarea */
+.notes-field{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:9px 11px;color:var(--text);font-size:12px;font-family:var(--font);resize:vertical;line-height:1.6}
+.notes-field:focus{outline:none;border-color:var(--cyan3)}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-mark">EMB</div>
+    <div>
+      <div class="logo-text">EMB Fitting</div>
+      <div class="logo-sub">Club Fitting System</div>
+    </div>
+  </div>
+  <div class="nav">
+    <button class="nav-btn active" onclick="showPage(&#39;fitting&#39;)" id="nav-fitting"><i class="ti ti-adjustments-horizontal"></i>Fitting</button>
+    <button class="nav-btn" onclick="showPage(&#39;sessions&#39;)" id="nav-sessions"><i class="ti ti-history"></i>Sessions</button>
+    <button class="nav-btn" onclick="showPage(&#39;admin&#39;)" id="nav-admin"><i class="ti ti-shield-lock"></i>Admin</button>
+  </div>
+  <div class="header-right">
+    <span class="session-badge" id="session-label">No active session</span>
+    <span class="db-status connected" id="db-status"><i class="ti ti-database"></i> Connected</span>
+  </div>
+</div>
+
+<div class="main" id="main-wrap">
+    <div class="fit-left" id="fit-left">
+
+      <!-- SECTION 1: PLAYER INFO -->
+      <div class="fit-section">
+        <div class="step-label"><div class="step-num">1</div><div class="step-title">Player Info</div></div>
+        <div class="field-row cols2" style="margin-bottom:10px">
+          <div class="field"><label>Player name</label><input id="f-name" placeholder="Full name"></div>
+          <div class="field"><label>Handicap</label><input id="f-hdcp" type="number" placeholder="12"></div>
+        </div>
+        <div class="field-row cols2" style="margin-bottom:10px">
+          <div class="field"><label>Current gamer</label><input id="f-gamer" placeholder="e.g. TSR2 / Ventus Blue"></div>
+          <div class="field"><label>Ball played</label>
+            <select id="f-ball">
+              <option value="">— Select ball —</option>
+              <option value="Titleist Pro V1">Titleist Pro V1</option><option value="Titleist Pro V1x">Titleist Pro V1x</option><option value="Titleist Pro V1 Left Dot">Titleist Pro V1 Left Dot</option><option value="Titleist Pro V1x Left Dash">Titleist Pro V1x Left Dash</option><option value="Titleist AVX">Titleist AVX</option><option value="TaylorMade TP5">TaylorMade TP5</option><option value="TaylorMade TP5x">TaylorMade TP5x</option><option value="Callaway Chrome Tour">Callaway Chrome Tour</option><option value="Callaway Chrome Tour X">Callaway Chrome Tour X</option><option value="Callaway Chrome Tour Triple Diamond">Callaway Chrome Tour Triple Diamond</option><option value="Srixon Z-Star">Srixon Z-Star</option><option value="Srixon Z-Star Diamond">Srixon Z-Star Diamond</option><option value="Srixon Z-Star XV">Srixon Z-Star XV</option><option value="Bridgestone Tour B X">Bridgestone Tour B X</option><option value="Bridgestone Tour B XS">Bridgestone Tour B XS</option><option value="Wilson Staff Model X">Wilson Staff Model X</option><option value="Maxfli Tour X">Maxfli Tour X</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2: SWING PROFILE -->
+      <div class="fit-section">
+        <div class="step-label"><div class="step-num">2</div><div class="step-title">Swing Profile</div></div>
+
+        <div class="chip-section">
+          <div class="chip-section-label">Grip type</div>
+          <div class="chip-row">
+            <button class="chip " onclick="setChip(&#39;grip&#39;,&#39;On Top&#39;)">On Top</button>
+            <button class="chip " onclick="setChip(&#39;grip&#39;,&#39;Under&#39;)">Under</button>
+            <button class="chip " onclick="setChip(&#39;grip&#39;,&#39;Side On&#39;)">Side On</button>
+          </div>
+        </div>
+        <div class="chip-section">
+          <div class="chip-section-label">Post position</div>
+          <div class="chip-row">
+            <button class="chip " onclick="setChip(&#39;post&#39;,&#39;Front&#39;)">Front</button>
+            <button class="chip " onclick="setChip(&#39;post&#39;,&#39;Center&#39;)">Center</button>
+            <button class="chip " onclick="setChip(&#39;post&#39;,&#39;Rear&#39;)">Rear</button>
+          </div>
+        </div>
+        <div class="chip-section">
+          <div class="chip-section-label">Shot shape</div>
+          <div class="chip-row">
+            <button class="chip" onclick="setChip(&#39;shotShape&#39;,&#39;Fade&#39;)">Fade</button>
+            <button class="chip " onclick="setChip(&#39;shotShape&#39;,&#39;Draw&#39;)">Draw</button>
+            <button class="chip " onclick="setChip(&#39;shotShape&#39;,&#39;Straight&#39;)">Straight</button>
+            <button class="chip " onclick="setChip(&#39;shotShape&#39;,&#39;Both&#39;)">Both</button>
+          </div>
+        </div>
+        <div class="chip-section" style="margin-bottom:0">
+          <div class="chip-section-label">Tempo</div>
+          <div class="chip-row">
+            <button class="chip " onclick="setChip(&#39;tempo&#39;,&#39;Slow&#39;)">Slow</button>
+            <button class="chip " onclick="setChip(&#39;tempo&#39;,&#39;Medium&#39;)">Medium</button>
+            <button class="chip " onclick="setChip(&#39;tempo&#39;,&#39;Fast&#39;)">Fast</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: SPORTSBOX -->
+      <div class="fit-section">
+        <div class="step-label"><div class="step-num">3</div><div class="step-title">SportsBox AI Metrics</div></div>
+        <div class="sb-strip">
+          
+          <div class="sb-cell">
+            <div class="sb-cell-name">Sway Gap</div>
+            <input id="bio-swayGap" type="number" step="0.1" placeholder="—" oninput="liveUpdate()">
+            <div class="sb-cell-unit">in</div>
+          </div>
+          <div class="sb-cell">
+            <div class="sb-cell-name">Chest Lift</div>
+            <input id="bio-chestLift" type="number" step="0.1" placeholder="—" oninput="liveUpdate()">
+            <div class="sb-cell-unit">in</div>
+          </div>
+          <div class="sb-cell">
+            <div class="sb-cell-name">Lead Elbow</div>
+            <input id="bio-leadElbow" type="number" step="0.1" placeholder="—" oninput="liveUpdate()">
+            <div class="sb-cell-unit">deg</div>
+          </div>
+          <div class="sb-cell">
+            <div class="sb-cell-name">Club/Hand</div>
+            <input id="bio-clubHandGap" type="number" step="0.1" placeholder="—" oninput="liveUpdate()">
+            <div class="sb-cell-unit">in</div>
+          </div>
+          <div class="sb-cell">
+            <div class="sb-cell-name">Pelvis Sway</div>
+            <input id="bio-pelvisSway" type="number" step="0.1" placeholder="—" oninput="liveUpdate()">
+            <div class="sb-cell-unit">in</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: LAUNCH MONITOR -->
+      <div class="fit-section">
+        <div class="step-label"><div class="step-num">4</div><div class="step-title">Launch Monitor</div></div>
+        <div class="lm-strip" style="margin-bottom:10px">
+          <div class="lm-cell"><label>Swing Speed</label><input id="f-ss" type="number" placeholder="95" oninput="liveUpdate()"><div class="lm-unit">mph</div></div>
+          <div class="lm-cell"><label>Ball Speed</label><input id="f-bs" type="number" placeholder="140"><div class="lm-unit">mph</div></div>
+          <div class="lm-cell"><label>Spin Rate</label><input id="f-sr" type="number" placeholder="2400" oninput="liveUpdate()"><div class="lm-unit">rpm</div></div>
+          <div class="lm-cell"><label>Attack Angle</label><input id="f-aa" type="number" step="0.1" placeholder="-2.5"><div class="lm-unit">deg</div></div>
+        </div>
+        <div class="lm-strip">
+          <div class="lm-cell"><label>Launch Angle</label><input id="f-la" type="number" step="0.1" placeholder="12.5"><div class="lm-unit">deg</div></div>
+          <div class="lm-cell"><label>Club Path</label><input id="f-cp" type="number" step="0.1" placeholder="-1.5"><div class="lm-unit">deg</div></div>
+          <div class="lm-cell"><label>Dynamic Loft</label><input id="f-dl" type="number" step="0.1" placeholder="15.2"><div class="lm-unit">deg</div></div>
+          <div class="lm-cell"><label>Smash Factor</label><input id="f-smash" type="number" step="0.01" placeholder="1.47"><div class="lm-unit">ratio</div></div>
+        </div>
+      </div>
+
+      <!-- SECTION 5: NOTES -->
+      <div class="fit-section">
+        <div class="step-label"><div class="step-num">5</div><div class="step-title">Notes</div></div>
+        <textarea id="f-notes" class="notes-field" rows="3" placeholder="Observations, tendencies, goals..."></textarea>
+      </div>
+
+      <!-- RUN BUTTON - sticky inside fit-left -->
+      <div class="run-area">
+        <button class="run-btn" onclick="runFitting()"><i class="ti ti-player-play"></i> Run Fitting</button>
+        <button class="clear-btn" onclick="clearFitting()">Clear all fields</button>
+      </div>
+
+    </div><!-- /fit-left -->
+
+    <div class="fit-right" id="fit-right">
+      <div id="results-panel">
+        <div class="results-empty">
+          <i class="ti ti-adjustments-horizontal"></i>
+          <div class="results-empty-title">Ready to fit</div>
+          <div class="results-empty-sub">Fill in the player's info and click Run Fitting to see recommendations here.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ── SUPABASE ──────────────────────────────────────────────────────────────────
+const SUPABASE_URL = 'https://dfsuklaobtdpfkorqluq.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmc3VrbGFvYnRkcGZrb3JxbHVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0ODA5MTcsImV4cCI6MjA5NzA1NjkxN30.Z9MtgZr0asFMXdnMx65OCQn1tNCeRfaJnz6U0Qy1gEw';
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+const ADMIN_PASS = 'emb2024';
+
+const bioFields = [
+  {id:'swayGap',    label:'Sway Gap',      shortLabel:'Sway Gap',    unit:'in',  col:'sway_gap'},
+  {id:'chestLift',  label:'Chest Lift',    shortLabel:'Chest Lift',  unit:'in',  col:'chest_lift'},
+  {id:'leadElbow',  label:'Lead Elbow',    shortLabel:'Lead Elbow',  unit:'deg', col:'lead_elbow'},
+  {id:'clubHandGap',label:'Club/Hand Gap', shortLabel:'Club/Hand',   unit:'in',  col:'club_hand_gap'},
+  {id:'pelvisSway', label:'Pelvis Sway',   shortLabel:'Pelvis Sway', unit:'in',  col:'pelvis_sway'},
+];
+
+// ── GRIP + POST PROFILE LOOKUP ────────────────────────────────────────────────
+const GRIP_POST_PROFILES = {
+  'On Top|Center':  { weight:67.5, tip:4.50, mid:4.00, handle:4.25, loft:9.75,  n:5,  notes:'Rory, Koepka, Berger, Oosthuizen pattern.' },
+  'On Top|Front':   { weight:78.2, tip:4.33, mid:4.00, handle:4.00, loft:8.92,  n:3,  notes:'Burns, Finau, Scottie pattern. Heaviest shaft weight.' },
+  'On Top|Rear':    { weight:66.3, tip:5.00, mid:4.00, handle:5.00, loft:8.83,  n:3,  notes:'Spieth, Koepka, Woodland. Max tip AND handle stiffness.' },
+  'Under|Center':   { weight:68.9, tip:3.79, mid:4.00, handle:3.25, loft:9.88,  n:8,  notes:'Colin M, JT, Rahm, DJ, Adam Scott. Softest handle.' },
+  'Under|Front':    { weight:68.0, tip:2.00, mid:4.00, handle:3.00, loft:9.00,  n:1,  notes:'Hatton pattern. Softest tip of any combination.' },
+  'Under|Rear':     { weight:66.5, tip:5.00, mid:4.00, handle:4.50, loft:10.50, n:2,  notes:'Keegan, Harris English. Stiff tip despite Under grip.' },
+  'Side On|Front':  { weight:74.0, tip:4.00, mid:2.00, handle:2.00, loft:9.25,  n:2,  notes:'Hideki, Wyndham Clark. Heavy shaft, very active mid/handle.' },
+  'Side On|Center': { weight:66.5, tip:4.00, mid:4.50, handle:4.50, loft:9.50,  n:2,  notes:'Justin Rose pattern. Firm mid and handle.' },
+  'Side On|Rear':   { weight:76.0, tip:5.00, mid:4.00, handle:3.00, loft:9.40,  n:1,  notes:'Max Homa. Heavy shaft, stiff tip, softer handle.' },
+};
+
+// ── SWAY GAP BANDS (from tour data, n=16) ────────────────────────────────────
+// More negative = chest further behind pelvis = shallower/upward AoA
+// Band A (≤ -8.5): Sweep  — avg loft 9.19°, low CG, X flex, handle avg 5.0
+// Band B (-6.5 to -8.4): Mid — avg loft 9.57°, TX flex, handle avg 3.4
+// Band C (≥ -6.4): Vertical — avg loft 9.85°, lighter shafts (67.5g avg), neutral CG
+const SWAY_GAP_BANDS = {
+  A: { max:-8.5,  loftAdj:-0.5,  handleAdj:+0.3,  cgSignal:'low',     label:'Sweep',    desc:'Upward AoA — less static loft needed, low CG to control spin' },
+  B: { min:-8.4, max:-6.5, loftAdj:0,     handleAdj:0,     cgSignal:'neutral', label:'Mid',      desc:'Balanced AoA — standard profile' },
+  C: { min:-6.4,  loftAdj:+0.4,  handleAdj:-0.2,  cgSignal:'neutral', label:'Vertical', desc:'Steeper AoA — more static loft, lighter shaft tendency' },
+};
+
+// ── PELVIS SWAY BANDS (from tour data) ────────────────────────────────────────
+// High (≥6.0): avg tip 3.5 — forward pelvis needs softer tip
+// Mid (4.5–5.9): avg tip 4.38 — neutral
+// Low (<4.5): avg weight 72.4g — heavier shafts
+const PELVIS_BANDS = {
+  high: { min:6.0,  tipAdj:-0.4, weightAdj:0,    label:'High', desc:'Forward pelvis — softer tip' },
+  mid:  { min:4.5, max:5.9, tipAdj:0,   weightAdj:0,    label:'Mid',  desc:'Normal range' },
+  low:  { max:4.5,  tipAdj:0,   weightAdj:+1.5, label:'Low',  desc:'Less forward — heavier shaft tendency' },
+};
+
+// ── FLEX GATE ─────────────────────────────────────────────────────────────────
+// Hard floor/ceiling — engine scoring only picks within valid range
+// TX: 110+ mph | X: 100–134 mph | S: 85–109 mph (overlap 100–109 with X) | R: 75–99 mph (overlap 85–94 with S)
+function getValidFlexes(ss) {
+  if(!ss || ss <= 0) return ['R','S','X','TX'];
+  const valid = [];
+  if(ss >= 75)  valid.push('R');
+  if(ss >= 85)  valid.push('S');
+  if(ss >= 100) valid.push('X');
+  if(ss >= 110) valid.push('TX');
+  // Cap: under 100 = never X or TX
+  return valid.filter(f => {
+    if(ss < 100 && (f==='X'||f==='TX')) return false;
+    if(ss >= 135 && f!=='TX') return false;
+    return true;
+  });
+}
+
+// ── BALL DB ───────────────────────────────────────────────────────────────────
+const BALL_DB = [
+  {name:'Titleist Pro V1',spin_val:3,notes:'Benchmark neutral ball. Penetrating flight, balanced.'},
+  {name:'Titleist Pro V1x',spin_val:4,notes:'Higher with irons. More spin, higher flight.'},
+  {name:'Titleist Pro V1 Left Dot',spin_val:2,notes:'200-300 rpm less than Pro V1. Lower flight.'},
+  {name:'Titleist Pro V1x Left Dash',spin_val:1,notes:'Lowest Titleist driver spin.'},
+  {name:'Titleist AVX',spin_val:2,notes:'Penetrating flight, soft feel.'},
+  {name:'TaylorMade TP5',spin_val:4,notes:'High spin. Elite greenside control.'},
+  {name:'TaylorMade TP5x',spin_val:2,notes:'Lower driver spin. Longer, more penetrating.'},
+  {name:'Callaway Chrome Tour',spin_val:3,notes:'Balanced mid spin. Pro V1 competitor.'},
+  {name:'Callaway Chrome Tour X',spin_val:5,notes:'Highest spinning premium ball.'},
+  {name:'Callaway Chrome Tour Triple Diamond',spin_val:1,notes:'Low spin for 105+ mph.'},
+  {name:'Srixon Z-Star',spin_val:4,notes:'High spinning. Strong short game.'},
+  {name:'Srixon Z-Star Diamond',spin_val:5,notes:'Second highest spinning overall.'},
+  {name:'Srixon Z-Star XV',spin_val:2,notes:'Distance focused, lower spin.'},
+  {name:'Bridgestone Tour B X',spin_val:3,notes:'Mid spin, built for 105+ mph.'},
+  {name:'Bridgestone Tour B XS',spin_val:2,notes:'Lower spinning. Distance focused.'},
+  {name:'Wilson Staff Model X',spin_val:3,notes:'Competitive with Pro V1x.'},
+  {name:'Maxfli Tour X',spin_val:2,notes:'Low driver spin, high wedge spin.'},
+];
+
+// ── IN-MEMORY CACHE ───────────────────────────────────────────────────────────
+let rulesDB = [], bioCorrelations = [], equipmentDB = {drivers:[],shafts:[]}, sessionsList = [];
+let currentSession = null, adminUnlocked = false, currentPage = 'fitting', adminTab = 'rules';
+let aiInsight = '';
+let fittingState = {grip:'',post:'',shotShape:'',tempo:''};
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+function toast(msg,type='success'){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.className=`toast show ${type}`;
+  setTimeout(()=>el.className='toast',2500);
+}
+
+// ── LOAD FROM SUPABASE ────────────────────────────────────────────────────────
+async function loadAll(){
+  try{
+    const [r,b,e,s]=await Promise.all([
+      db.from('rules').select('*').order('created_at'),
+      db.from('bio_correlations').select('*').order('created_at'),
+      db.from('equipment').select('*').order('created_at'),
+      db.from('sessions').select('*').order('created_at',{ascending:false}),
+    ]);
+    rulesDB=r.data||[]; bioCorrelations=b.data||[];
+    equipmentDB.drivers=(e.data||[]).filter(x=>x.type==='driver');
+    equipmentDB.shafts=(e.data||[]).filter(x=>x.type==='shaft');
+    sessionsList=s.data||[];
+    document.getElementById('db-status').innerHTML='<i class="ti ti-database"></i> Connected';
+    document.getElementById('db-status').className='db-status connected';
+    if(rulesDB.length===0) await seedDefaults();
+  }catch(err){
+    document.getElementById('db-status').innerHTML='<i class="ti ti-database-off"></i> Offline';
+    document.getElementById('db-status').className='db-status error';
+  }
+}
+
+async function seedDefaults(){
+  const defaultRules=[
+    {club:'driver',type:'launch_monitor',condition:'swing_speed > 105 AND attack_angle < -3',recommendation:'Low spin head (LS/TD) + low-launch shaft',priority:'high',notes:'High speed + steep AoA = excessive spin.',test_tip:'Verify with 5+ shots. AoA consistency matters.'},
+    {club:'driver',type:'launch_monitor',condition:'swing_speed < 85',recommendation:'Max forgiveness head + lightweight shaft (50–55g)',priority:'high',notes:'Slower swingers need launch help and lighter total weight.',test_tip:'Check total driver weight including grip.'},
+    {club:'driver',type:'launch_monitor',condition:'spin_rate > 3200',recommendation:'Lower spin head + stiffer tip shaft',priority:'high',notes:'High spin destroys distance regardless of speed.',test_tip:'Isolate whether spin is shaft or head driven.'},
+  ];
+  await db.from('rules').insert(defaultRules);
+  await loadAll();
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function showPage(page){
+  currentPage=page;
+  ['fitting','sessions','admin'].forEach(p=>{
+    document.getElementById('nav-'+p).classList.toggle('active',p===page);
+  });
+  if(page==='fitting') renderFitting();
+  else if(page==='sessions') renderSessions();
+  else if(page==='admin'){ if(!adminUnlocked) renderAdminLock(); else renderAdmin(); }
+}
+
+// ── FITTING PAGE ──────────────────────────────────────────────────────────────
+function renderFitting(){
+  document.getElementById('main-wrap').innerHTML = `
+    <div class="fit-left" id="fit-left">
+
+      <!-- SECTION 1: PLAYER INFO -->
+      <div class="fit-section">
+        <div class="step-label"><div class="step-num">1</div><div class="step-title">Player Info</div></div>
+        <div class="field-row cols2" style="margin-bottom:10px">
+          <div class="field"><label>Player name</label><input id="f-name" placeholder="Full name" /></div>
+          <div class="field"><label>Handicap</label><input id="f-hdcp" type="number" placeholder="12" /></div>
+        </div>
+        <div class="field-row cols2" style="margin-bottom:10px">
+          <div class="field"><label>Current gamer</label><input id="f-gamer" placeholder="e.g. TSR2 / Ventus Blue" /></div>
+          <div class="field"><label>Ball played</label>
+            <select id="f-ball">
+              <option value="">— Select ball —</option>
+              ${BALL_DB.map(b=>`<option value="${b.name}">${b.name}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2: SWING PROFILE -->
+      <div class="fit-section">
+        <div class="step-label"><div class="step-num">2</div><div class="step-title">Swing Profile</div></div>
+
+        <div class="chip-section">
+          <div class="chip-section-label">Grip type</div>
+          <div class="chip-row">
+            <button class="chip ${fittingState.grip==='On Top'?'selected':''}" onclick="setChip('grip','On Top')">On Top</button>
+            <button class="chip ${fittingState.grip==='Under'?'selected':''}" onclick="setChip('grip','Under')">Under</button>
+            <button class="chip ${fittingState.grip==='Side On'?'selected':''}" onclick="setChip('grip','Side On')">Side On</button>
+          </div>
+        </div>
+        <div class="chip-section">
+          <div class="chip-section-label">Post position</div>
+          <div class="chip-row">
+            <button class="chip ${fittingState.post==='Front'?'selected':''}" onclick="setChip('post','Front')">Front</button>
+            <button class="chip ${fittingState.post==='Center'?'selected':''}" onclick="setChip('post','Center')">Center</button>
+            <button class="chip ${fittingState.post==='Rear'?'selected':''}" onclick="setChip('post','Rear')">Rear</button>
+          </div>
+        </div>
+        <div class="chip-section">
+          <div class="chip-section-label">Shot shape</div>
+          <div class="chip-row">
+            <button class="chip ${fittingState.shotShape==='Fade'?'selected':''}" onclick="setChip('shotShape','Fade')">Fade</button>
+            <button class="chip ${fittingState.shotShape==='Draw'?'selected':''}" onclick="setChip('shotShape','Draw')">Draw</button>
+            <button class="chip ${fittingState.shotShape==='Straight'?'selected':''}" onclick="setChip('shotShape','Straight')">Straight</button>
+            <button class="chip ${fittingState.shotShape==='Both'?'selected':''}" onclick="setChip('shotShape','Both')">Both</button>
+          </div>
+        </div>
+        <div class="chip-section" style="margin-bottom:0">
+          <div class="chip-section-label">Tempo</div>
+          <div class="chip-row">
+            <button class="chip ${fittingState.tempo==='Slow'?'selected':''}" onclick="setChip('tempo','Slow')">Slow</button>
+            <button class="chip ${fittingState.tempo==='Medium'?'selected':''}" onclick="setChip('tempo','Medium')">Medium</button>
+            <button class="chip ${fittingState.tempo==='Fast'?'selected':''}" onclick="setChip('tempo','Fast')">Fast</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: SPORTSBOX -->
+      <div class="fit-section">
+        <div class="step-label"><div class="step-num">3</div><div class="step-title">SportsBox AI Metrics</div></div>
+        <div class="sb-strip">
+          ${bioFields.map(f=>`
+          <div class="sb-cell">
+            <div class="sb-cell-name">${f.shortLabel}</div>
+            <input id="bio-${f.id}" type="number" step="0.1" placeholder="—" oninput="liveUpdate()" />
+            <div class="sb-cell-unit">${f.unit}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+
+      <!-- SECTION 4: LAUNCH MONITOR -->
+      <div class="fit-section">
+        <div class="step-label"><div class="step-num">4</div><div class="step-title">Launch Monitor</div></div>
+        <div class="lm-strip" style="margin-bottom:10px">
+          <div class="lm-cell"><label>Swing Speed</label><input id="f-ss" type="number" placeholder="95" oninput="liveUpdate()" /><div class="lm-unit">mph</div></div>
+          <div class="lm-cell"><label>Ball Speed</label><input id="f-bs" type="number" placeholder="140" /><div class="lm-unit">mph</div></div>
+          <div class="lm-cell"><label>Spin Rate</label><input id="f-sr" type="number" placeholder="2400" oninput="liveUpdate()" /><div class="lm-unit">rpm</div></div>
+          <div class="lm-cell"><label>Attack Angle</label><input id="f-aa" type="number" step="0.1" placeholder="-2.5" /><div class="lm-unit">deg</div></div>
+        </div>
+        <div class="lm-strip">
+          <div class="lm-cell"><label>Launch Angle</label><input id="f-la" type="number" step="0.1" placeholder="12.5" /><div class="lm-unit">deg</div></div>
+          <div class="lm-cell"><label>Club Path</label><input id="f-cp" type="number" step="0.1" placeholder="-1.5" /><div class="lm-unit">deg</div></div>
+          <div class="lm-cell"><label>Dynamic Loft</label><input id="f-dl" type="number" step="0.1" placeholder="15.2" /><div class="lm-unit">deg</div></div>
+          <div class="lm-cell"><label>Smash Factor</label><input id="f-smash" type="number" step="0.01" placeholder="1.47" /><div class="lm-unit">ratio</div></div>
+        </div>
+      </div>
+
+      <!-- SECTION 5: NOTES -->
+      <div class="fit-section">
+        <div class="step-label"><div class="step-num">5</div><div class="step-title">Notes</div></div>
+        <textarea id="f-notes" class="notes-field" rows="3" placeholder="Observations, tendencies, goals..."></textarea>
+      </div>
+
+      <!-- RUN BUTTON - sticky inside fit-left -->
+      <div class="run-area">
+        <button class="run-btn" onclick="runFitting()"><i class="ti ti-player-play"></i> Run Fitting</button>
+        <button class="clear-btn" onclick="clearFitting()">Clear all fields</button>
+      </div>
+
+    </div><!-- /fit-left -->
+
+    <div class="fit-right" id="fit-right">
+      <div id="results-panel">
+        <div class="results-empty">
+          <i class="ti ti-adjustments-horizontal"></i>
+          <div class="results-empty-title">Ready to fit</div>
+          <div class="results-empty-sub">Fill in the player's info and click Run Fitting to see recommendations here.</div>
+        </div>
+      </div>
+    </div>
+  `;
+  restoreFields();
+}
+
+function setChip(field,value){
+  saveFittingState();
+  fittingState[field]=fittingState[field]===value?'':value;
+  // Only re-render chips, not the whole page
+  renderChips();
+}
+
+function renderChips(){
+  // Update chip selected states without re-rendering the whole page
+  const chipMap = {
+    grip: ['On Top','Under','Side On'],
+    post: ['Front','Center','Rear'],
+    shotShape: ['Fade','Draw','Straight','Both'],
+    tempo: ['Slow','Medium','Fast'],
+  };
+  document.querySelectorAll('.chip').forEach(btn => {
+    const onclick = btn.getAttribute('onclick') || '';
+    const match = onclick.match(/setChip\('(\w+)','([^']+)'\)/);
+    if(match) {
+      const [,field,val] = match;
+      btn.classList.toggle('selected', fittingState[field] === val);
+    }
+  });
+}
+
+function restoreFields(){
+  const ids=['f-name','f-hdcp','f-gamer','f-ball','f-ss','f-bs','f-sr','f-aa','f-la','f-cp','f-dl','f-smash','f-notes'];
+  ids.forEach(id=>{const el=document.getElementById(id);if(el&&fittingState[id]!=null)el.value=fittingState[id];});
+  bioFields.forEach(f=>{const el=document.getElementById('bio-'+f.id);if(el&&fittingState['bio-'+f.id]!=null)el.value=fittingState['bio-'+f.id];});
+}
+
+function saveFittingState(){
+  const g=id=>{const el=document.getElementById(id);return el?el.value:''};
+  ['f-name','f-hdcp','f-gamer','f-ball','f-ss','f-bs','f-sr','f-aa','f-la','f-cp','f-dl','f-smash','f-notes'].forEach(id=>{fittingState[id]=g(id);});
+  bioFields.forEach(f=>{fittingState['bio-'+f.id]=g('bio-'+f.id);});
+}
+
+function getFittingData(){
+  saveFittingState();
+  const g=id=>{const el=document.getElementById(id);return el?el.value:''};
+  const d={
+    name:g('f-name'),hdcp:g('f-hdcp'),gamer:g('f-gamer'),
+    grip:fittingState.grip||'',post:fittingState.post||'',
+    shotShape:fittingState.shotShape||'',tempo:fittingState.tempo||'',
+    ball:g('f-ball')||'',
+    ss:parseFloat(g('f-ss'))||0, bs:parseFloat(g('f-bs'))||0,
+    sr:parseFloat(g('f-sr'))||0, aa:parseFloat(g('f-aa'))||0,
+    la:parseFloat(g('f-la'))||0, cp:parseFloat(g('f-cp'))||0,
+    dl:parseFloat(g('f-dl'))||0, smash:parseFloat(g('f-smash'))||0,
+    notes:g('f-notes'),
+  };
+  bioFields.forEach(f=>{
+    const v=g('bio-'+f.id);
+    d[f.id]=v!==''&&v!==null?parseFloat(v):null;
+  });
+  return d;
+}
+
+function clearFitting(){
+  fittingState={grip:'',post:'',shotShape:'',tempo:''};
+  currentSession=null;
+  document.getElementById('session-label').textContent='No active session';
+  renderFitting();
+}
+
+let liveUpdateTimer=null;
+function liveUpdate(){
+  clearTimeout(liveUpdateTimer);
+  liveUpdateTimer=setTimeout(()=>{
+    const d=getFittingData();
+    if(d.ss>0 || d.swayGap!==null){
+      const recs=buildRecommendations(d);
+      renderResultsPanel(d,recs,false);
+    }
+  },400);
+}
+
+async function runFitting(){
+  const d=getFittingData();
+  const recs=buildRecommendations(d);
+  currentSession={data:d,recs};
+  document.getElementById('session-label').textContent=d.name||'Active session';
+  aiInsight='';
+  renderResultsPanel(d,recs,true);
+  const insight=await fetchAI(d,recs);
+  await saveSession(d,recs,insight);
+}
+
+// ── CORE SCORING ENGINE ───────────────────────────────────────────────────────
+function buildRecommendations(d){
+  let matchedRules=[], bioMatches=[];
+
+  rulesDB.forEach(rule=>{
+    let match=false;
+    try{
+      const expr=rule.condition
+        .replace(/swing_speed/g,d.ss).replace(/attack_angle/g,d.aa)
+        .replace(/spin_rate/g,d.sr).replace(/launch_angle/g,d.la)
+        .replace(/ball_speed/g,d.bs).replace(/sway_gap/g,d.swayGap||0)
+        .replace(/chest_lift/g,d.chestLift||0).replace(/lead_elbow/g,d.leadElbow||0)
+        .replace(/club_hand_gap/g,d.clubHandGap||0).replace(/pelvis_sway/g,d.pelvisSway||0)
+        .replace(/AND/g,'&&').replace(/OR/g,'||');
+      match=eval(expr);
+    }catch(e){}
+    if(match) matchedRules.push(rule);
+  });
+
+  bioCorrelations.forEach(c=>{
+    const val=d[c.bio_var];
+    if(val===null||val===undefined) return;
+    let match=false;
+    try{match=eval(val+' '+c.range);}catch(e){}
+    if(match) bioMatches.push(c);
+  });
+
+  // ── GRIP+POST PROFILE BASELINE ────────────────────────────────────────────
+  const profileKey=(d.grip&&d.post)?`${d.grip}|${d.post}`:null;
+  const profile=profileKey?GRIP_POST_PROFILES[profileKey]:null;
+
+  let targetWeight=profile?.weight??null;
+  let targetTip=   profile?.tip   ??null;
+  let targetMid=   profile?.mid   ??null;
+  let targetHandle=profile?.handle??null;
+  let targetLoft=  profile?.loft  ??null;
+
+  const sportsboxSignals=[];
+
+  // ── SWAY GAP BAND (1.3x weight vs pelvis sway) ───────────────────────────
+  let swayBand=null, swayGapCGSignal=null;
+  let loftFromSway=0, handleFromSway=0;
+
+  if(d.swayGap!==null){
+    if(d.swayGap<=-8.5){
+      swayBand='A';
+      loftFromSway=-0.5; handleFromSway=+0.3; swayGapCGSignal='low';
+      sportsboxSignals.push({var:'Sway Gap',value:d.swayGap+'"',signal:'Sweep — upward AoA',implication:'Less static loft needed · low CG · stiff handle'});
+    } else if(d.swayGap>=-8.4&&d.swayGap<=-6.5){
+      swayBand='B';
+      loftFromSway=0; handleFromSway=0; swayGapCGSignal='neutral';
+      sportsboxSignals.push({var:'Sway Gap',value:d.swayGap+'"',signal:'Mid — balanced AoA',implication:'Standard loft and CG — no sway gap adjustment'});
+    } else {
+      swayBand='C';
+      loftFromSway=+0.4; handleFromSway=-0.2; swayGapCGSignal='neutral';
+      sportsboxSignals.push({var:'Sway Gap',value:d.swayGap+'"',signal:'Vertical — steeper AoA',implication:'More static loft · lighter shaft tendency'});
+    }
+
+    // Shot shape + sway gap combined loft fine-tune
+    if(d.shotShape==='Draw'&&swayBand==='A') loftFromSway-=0.25;
+    if(d.shotShape==='Fade'&&swayBand==='C') loftFromSway+=0.25;
+
+    if(targetLoft!==null) targetLoft+=loftFromSway;
+    if(targetHandle!==null) targetHandle=Math.max(1,Math.min(5,targetHandle+(handleFromSway*1.3)));
+  }
+
+  // ── PELVIS SWAY BAND (1.0x weight) ───────────────────────────────────────
+  let pelvisBand=null, tipFromPelvis=0, weightFromPelvis=0;
+
+  if(d.pelvisSway!==null){
+    if(d.pelvisSway>=6.0){
+      pelvisBand='high'; tipFromPelvis=-0.4; weightFromPelvis=0;
+      sportsboxSignals.push({var:'Pelvis Sway',value:d.pelvisSway+'"',signal:'High — forward pelvis',implication:'Softer tip profile'});
+    } else if(d.pelvisSway>=4.5){
+      pelvisBand='mid'; tipFromPelvis=0; weightFromPelvis=0;
+      sportsboxSignals.push({var:'Pelvis Sway',value:d.pelvisSway+'"',signal:'Normal range',implication:'No pelvis sway adjustment'});
+    } else {
+      pelvisBand='low'; tipFromPelvis=0; weightFromPelvis=+1.5;
+      sportsboxSignals.push({var:'Pelvis Sway',value:d.pelvisSway+'"',signal:'Low — less forward drive',implication:'Heavier shaft tendency'});
+    }
+    if(targetTip!==null) targetTip=Math.max(1,Math.min(5,targetTip+tipFromPelvis));
+    if(targetWeight!==null) targetWeight+=weightFromPelvis;
+  }
+
+  // ── CHEST LIFT ────────────────────────────────────────────────────────────
+  if(d.chestLift!==null){
+    if(d.chestLift<-1.6){
+      if(targetLoft!==null) targetLoft+=0.5;
+      sportsboxSignals.push({var:'Chest Lift',value:d.chestLift+'"',signal:'Chest dropping — delofting',implication:'Add +0.5° loft'});
+    } else if(d.chestLift>0.5){
+      if(targetLoft!==null) targetLoft-=0.5;
+      sportsboxSignals.push({var:'Chest Lift',value:d.chestLift+'"',signal:'Chest rising — flipping',implication:'Reduce -0.5° loft'});
+    } else {
+      sportsboxSignals.push({var:'Chest Lift',value:d.chestLift+'"',signal:'Normal range',implication:'No loft adjustment'});
+    }
+  }
+
+  // ── LEAD ELBOW FLEX ───────────────────────────────────────────────────────
+  let elbowHeadSignal=null;
+  if(d.leadElbow!==null){
+    if(d.leadElbow>168){
+      elbowHeadSignal='neutral';
+      sportsboxSignals.push({var:'Lead Elbow',value:d.leadElbow+'°',signal:'Strong face closure',implication:'Neutral head'});
+    } else if(d.leadElbow>=158){
+      elbowHeadSignal='neutral';
+      sportsboxSignals.push({var:'Lead Elbow',value:d.leadElbow+'°',signal:'Moderate face closure',implication:'Neutral head'});
+    } else if(d.leadElbow>=148){
+      elbowHeadSignal='draw-bias';
+      sportsboxSignals.push({var:'Lead Elbow',value:d.leadElbow+'°',signal:'Moderate face open',implication:'Draw-bias head consideration'});
+    } else {
+      elbowHeadSignal='draw-bias';
+      sportsboxSignals.push({var:'Lead Elbow',value:d.leadElbow+'°',signal:'Chicken wing — face open',implication:'Draw-bias head priority'});
+    }
+  }
+
+  // ── CLUB HAND GAP ─────────────────────────────────────────────────────────
+  const clubHandGripAvg=d.grip==='Under'?-2:d.grip==='Side On'?0:d.grip==='On Top'?2:null;
+  if(d.clubHandGap!==null&&clubHandGripAvg!==null&&targetTip!==null){
+    const dev=d.clubHandGap-clubHandGripAvg;
+    if(dev<-1){
+      const adj=Math.min(Math.abs(dev)*0.25,0.75);
+      targetTip=Math.max(targetTip-adj,1);
+      targetHandle=targetHandle!==null?Math.max(targetHandle-adj,1):targetHandle;
+      sportsboxSignals.push({var:'Club/Hand Gap',value:d.clubHandGap+'"',signal:`${dev.toFixed(1)}" more laid off than ${d.grip} avg`,implication:'Softer tip & handle — later release'});
+    } else if(dev>1){
+      const adj=Math.min(dev*0.25,0.75);
+      targetTip=Math.min(targetTip+adj,5);
+      targetHandle=targetHandle!==null?Math.min(targetHandle+adj,5):targetHandle;
+      sportsboxSignals.push({var:'Club/Hand Gap',value:d.clubHandGap+'"',signal:`${dev.toFixed(1)}" more across line than ${d.grip} avg`,implication:'Stiffer tip & handle — earlier release'});
+    } else {
+      sportsboxSignals.push({var:'Club/Hand Gap',value:d.clubHandGap+'"',signal:'Within norm for grip type',implication:'No adjustment'});
+    }
+  }
+
+  // ── PELVIS SWAY HEAD SIGNAL (post-position cross-check) ──────────────────
+  const pelvisPostAvg=d.post==='Front'?5.4:d.post==='Center'?5.0:d.post==='Rear'?4.5:null;
+  let pelvisHeadSignal=null;
+  if(d.pelvisSway!==null&&pelvisPostAvg!==null){
+    const dev=d.pelvisSway-pelvisPostAvg;
+    if(dev>1){
+      pelvisHeadSignal='draw-bias';
+    } else if(dev<-1){
+      pelvisHeadSignal='neutral';
+    }
+  }
+
+  // ── RESOLVE HEAD BIAS ─────────────────────────────────────────────────────
+  // Shot shape is primary corrective signal
+  // SportsBox signals confirm or contradict
+  let headBias='neutral';
+  if(d.shotShape==='Fade'||d.shotShape==='Both'){
+    headBias='draw-bias'; // corrective
+  } else if(d.shotShape==='Draw'){
+    headBias='neutral'; // don't amplify
+  } else {
+    // No shot shape — use SportsBox signals
+    const allSigs=[elbowHeadSignal,pelvisHeadSignal,swayGapCGSignal==='low'?'neutral':null].filter(Boolean);
+    const drawCount=allSigs.filter(s=>s==='draw-bias').length;
+    const neutCount=allSigs.filter(s=>s==='neutral').length;
+    headBias=drawCount>neutCount?'draw-bias':'neutral';
+  }
+
+  // ── TORQUE TARGET ─────────────────────────────────────────────────────────
+  const torqueTargetMap={'On Top':2,'Side On':3,'Under':4};
+  const targetTorque=d.grip?torqueTargetMap[d.grip]??null:null;
+
+  // ── FLEX GATE ─────────────────────────────────────────────────────────────
+  const validFlexes=getValidFlexes(d.ss);
+
+  // ── SHAFT SCORING ─────────────────────────────────────────────────────────
+  // Weights: Mid 3.0x | Tip 2.0x | Handle 1.5x | Torque 1.0x | Weight 0.25x
+  // Sway gap weight multiplier: 1.3x on handle adjustment (already applied above)
+  let scoredShafts=[];
+  equipmentDB.shafts.forEach(s=>{
+    const w=parseFloat(s.weight)||0;
+    const t=s.tip_val!==null?parseFloat(s.tip_val):null;
+    const m=s.mid_val!==null?parseFloat(s.mid_val):null;
+    const h=s.handle_val!==null?parseFloat(s.handle_val):null;
+    const tq=s.torque_val!==null?parseFloat(s.torque_val):null;
+    if(t===null||m===null||h===null) return;
+
+    // Flex gate — skip shafts outside valid range
+    if(validFlexes.length>0&&s.flex&&!validFlexes.includes(s.flex)) return;
+
+    let score;
+    if(targetWeight===null){
+      score=99;
+    } else {
+      score=
+        Math.abs(w-targetWeight)*0.25+
+        Math.abs(t-targetTip)*2.0+
+        Math.abs(m-targetMid)*3.0+
+        Math.abs(h-targetHandle)*1.5;
+      if(targetTorque!==null&&tq!==null) score+=Math.abs(tq-targetTorque)*1.0;
+    }
+    scoredShafts.push({name:s.name,weight:w,flex:s.flex,tip:t,mid:m,handle:h,torqueVal:tq,torque:s.torque,launch:s.launch,score,notes:s.player_type||'',test_tip:s.test_tip||''});
+  });
+  scoredShafts.sort((a,b)=>a.score-b.score);
+  const topShafts=scoredShafts.slice(0,3);
+
+  // ── BALL SIGNAL ───────────────────────────────────────────────────────────
+  const ballData=d.ball?BALL_DB.find(b=>b.name===d.ball):null;
+  const ballSpinVal=ballData?.spin_val??null;
+  let ballCGSignal=null,ballLoftSignal=null;
+  if(ballSpinVal!==null){
+    if(ballSpinVal>=4){ballCGSignal='forward';ballLoftSignal=-0.5;}
+    else if(ballSpinVal<=2){ballCGSignal='back';ballLoftSignal=+0.5;}
+  }
+
+  // ── HEAD SELECTION ────────────────────────────────────────────────────────
+  let heads=[...equipmentDB.drivers];
+  if(d.ss>0) heads=heads.filter(h=>d.ss>=(h.swing_speed_min||0)&&d.ss<=(h.swing_speed_max||999));
+
+  // Spin rate CG filter
+  let spinCGFilter=null;
+  if(d.sr>0){
+    if(d.sr<=2200){spinCGFilter='back';}
+    else if(d.sr>=2700){spinCGFilter='forward';}
+  }
+
+  // Apply sway gap CG signal — Band A pushes toward low CG
+  const effectiveCGSignal=spinCGFilter||(swayGapCGSignal==='low'?'forward':null)||(headBias==='draw-bias'?'draw':null)||'neutral';
+
+  if(effectiveCGSignal==='forward'){
+    const fwd=heads.filter(h=>h.cg?.includes('forward')||h.spin==='low');
+    const other=heads.filter(h=>!fwd.includes(h));
+    heads=[...fwd,...other];
+  } else if(effectiveCGSignal==='draw'){
+    const draw=heads.filter(h=>h.cg?.includes('heel'));
+    const other=heads.filter(h=>!draw.includes(h));
+    heads=[...draw,...other];
+  } else if(effectiveCGSignal==='back'){
+    const back=heads.filter(h=>h.cg?.includes('back')||h.cg?.includes('high'));
+    const other=heads.filter(h=>!back.includes(h));
+    heads=[...back,...other];
+  }
+
+  // Brand variety
+  const seenBrands=new Set(),varied=[],remainder=[];
+  heads.forEach(h=>{
+    const brand=h.name.split(' ')[0];
+    if(!seenBrands.has(brand)){seenBrands.add(brand);varied.push(h);}
+    else remainder.push(h);
+  });
+  heads=[...varied,...remainder];
+
+  const gripSignals=buildGripSignals(d);
+
+  return {
+    heads:heads.slice(0,3),shafts:topShafts,
+    matchedRules,bioMatches,gripSignals,sportsboxSignals,
+    headBias,swayBand,pelvisBand,validFlexes,
+    profile,profileKey,
+    targetWeight,targetTip,targetMid,targetHandle,targetLoft,targetTorque,
+    ballData,ballSpinVal,ballCGSignal,loftAdjustment:ballLoftSignal||0,
+  };
+}
+
+// ── GRIP SIGNALS ──────────────────────────────────────────────────────────────
+function buildGripSignals(d){
+  const signals=[];
+  const grip=d.grip,post=d.post;
+  if(!grip) return signals;
+  if(grip==='On Top') signals.push({source:'Grip',signal:'On Top grip',recommendation:'Heavier shaft (avg 71g). Stiff tip and handle priority.'});
+  if(grip==='Under') signals.push({source:'Grip',signal:'Under grip',recommendation:'Softer tip (3.86 avg) and handle (3.75 avg) vs On Top.'});
+  if(grip==='Side On') signals.push({source:'Grip',signal:'Side On grip',recommendation:'Similar weight to On Top but watch mid stiffness (avg 3.75).'});
+  if(grip==='On Top'&&post==='Front') signals.push({source:'Grip+Post',signal:'On Top / Front',recommendation:'Heaviest profile in dataset (avg 78g). All faders in tour data.'});
+  if(grip==='On Top'&&post==='Rear') signals.push({source:'Grip+Post',signal:'On Top / Rear',recommendation:'Max tip AND handle stiffness (5.0 both). Spieth/Woodland pattern.'});
+  if(grip==='Under'&&post==='Front') signals.push({source:'Grip+Post',signal:'Under / Front',recommendation:'Softest tip of any combination (2.0). Hatton pattern.'});
+  if(grip==='Under'&&post==='Center') signals.push({source:'Grip+Post',signal:'Under / Center',recommendation:'Softest handle in dataset (3.25). Most common tour combo.'});
+  if(grip==='Under'&&d.shotShape==='Fade') signals.push({source:'Grip+Shot',signal:'Under fader',recommendation:'Uncommon — verify path data. May benefit from draw-bias head.'});
+  if(grip==='On Top'&&d.shotShape==='Draw') signals.push({source:'Grip+Shot',signal:'On Top drawer',recommendation:'Strong in-to-out path likely. Shaft stability important.'});
+  return signals;
+}
+
+// ── RENDER RESULTS PANEL ──────────────────────────────────────────────────────
+function renderResultsPanel(d,recs,showAI){
+  const el=document.getElementById('results-panel');
+  if(!el) return;
+
+  let html='';
+
+  // Player banner
+  html+=`<div class="player-banner">
+    <div>
+      <div class="player-name">${d.name||'Player'}</div>
+      <div class="player-meta">${[d.grip,d.post,d.shotShape].filter(Boolean).join(' · ')||'—'}${d.hdcp?' · Hdcp '+d.hdcp:''}</div>
+      ${d.ball&&recs.ballData?`<div style="font-size:11px;color:var(--teal2);margin-top:3px">${d.ball} · Spin ${recs.ballSpinVal}/5</div>`:''}
+    </div>
+    <div class="player-stats">
+      ${d.ss?`<div class="stat-block"><div class="stat-val">${d.ss}</div><div class="stat-lbl">mph</div></div>`:''}
+      ${d.sr?`<div class="stat-block"><div class="stat-val">${d.sr}</div><div class="stat-lbl">rpm</div></div>`:''}
+      ${d.aa?`<div class="stat-block"><div class="stat-val">${d.aa>0?'+':''}${d.aa}°</div><div class="stat-lbl">AoA</div></div>`:''}
+    </div>
+  </div>`;
+
+  // Flex gate badge
+  if(recs.validFlexes.length>0&&recs.validFlexes.length<4){
+    html+=`<div class="flex-gate"><i class="ti ti-lock" style="font-size:12px"></i>Flex range: ${recs.validFlexes.join(' / ')} only${d.ss>=100&&d.ss<110?' (overlap zone)':''}</div>`;
+  }
+
+  // Signals
+  if(recs.matchedRules.length||recs.gripSignals?.length){
+    html+=`<div class="signals-strip">
+      ${recs.matchedRules.map(r=>`<div class="signal-item"><i class="ti ti-alert-triangle"></i><span><strong>${r.recommendation}</strong> — ${r.notes}</span></div>`).join('')}
+      ${(recs.gripSignals||[]).map(g=>`<div class="signal-item"><i class="ti ti-hand-finger"></i><span><strong>${g.signal}:</strong> ${g.recommendation}</span></div>`).join('')}
+    </div>`;
+  }
+
+  // SportsBox analysis
+  if(recs.sportsboxSignals?.length){
+    html+=`<div class="section-header"><div class="section-title">SportsBox signals</div><div class="section-line"></div></div>
+    <div class="sb-analysis-grid">
+      ${recs.sportsboxSignals.map(s=>`
+      <div class="sb-analysis-card">
+        <div class="sb-analysis-var">${s.var}<span class="sb-analysis-val">${s.value}</span></div>
+        <div class="sb-analysis-signal">${s.signal}</div>
+        <div class="sb-analysis-impl">${s.implication}</div>
+      </div>`).join('')}
+    </div>
+    <div class="verdict-band ${recs.headBias==='draw-bias'?'draw':'neutral'}">
+      <i class="ti ti-${recs.headBias==='draw-bias'?'rotate-clockwise':'minus'}"></i>
+      <strong>${recs.headBias==='draw-bias'?'Draw-bias head recommended':'Neutral head recommended'}</strong>
+      <span style="opacity:0.7;margin-left:4px;font-size:11px">— corrective fit</span>
+    </div>`;
+  }
+
+  // Target shaft profile
+  if(recs.targetWeight!==null){
+    html+=`<div class="profile-strip">
+      <div class="profile-strip-title">Target shaft profile — ${d.grip} / ${d.post}${recs.swayBand?' · Sway Band '+recs.swayBand:''}</div>
+      <div class="profile-vals">
+        <div class="profile-val"><div class="profile-val-num">${recs.targetWeight.toFixed(0)}g</div><div class="profile-val-lbl">Weight</div></div>
+        <div class="profile-val"><div class="profile-val-num">${recs.targetTip?.toFixed(1)??'—'}</div><div class="profile-val-lbl">Tip</div></div>
+        <div class="profile-val"><div class="profile-val-num">${recs.targetMid?.toFixed(1)??'—'}</div><div class="profile-val-lbl">Mid</div></div>
+        <div class="profile-val"><div class="profile-val-num">${recs.targetHandle?.toFixed(1)??'—'}</div><div class="profile-val-lbl">Handle</div></div>
+        ${recs.targetTorque!==null?`<div class="profile-val"><div class="profile-val-num" style="color:var(--teal2)">${recs.targetTorque}</div><div class="profile-val-lbl">Torque</div></div>`:''}
+        ${recs.targetLoft!==null?`<div class="profile-val"><div class="profile-val-num" style="color:var(--teal2)">${recs.targetLoft.toFixed(1)}°</div><div class="profile-val-lbl">Loft</div></div>`:''}
+      </div>
+      <div class="profile-strip-note">${recs.profile?.notes||''}</div>
+    </div>`;
+  }
+
+  // Driver heads
+  if(recs.heads.length){
+    html+=`<div class="section-header"><div class="section-title">Driver heads</div><div class="section-line"></div></div>
+    <div class="rec-grid">
+      ${recs.heads.map((h,i)=>`
+      <div class="rec-card ${i===0?'top-pick':''}">
+        <div class="rec-rank">${i===0?'<div class="cyan-dot"></div>':''} ${i===0?'Top pick':'Option '+(i+1)}</div>
+        <div class="rec-name">${h.name}</div>
+        <div class="rec-tags">
+          <span class="tag ${i===0?'highlight':''}">Spin: ${h.spin}</span>
+          <span class="tag">Launch: ${h.launch}</span>
+          <span class="tag">CG: ${h.cg}</span>
+          <span class="tag">${h.forgiveness} forgiveness</span>
+        </div>
+        <div class="rec-why">${h.notes}</div>
+        ${h.test_tip?`<div class="rec-test"><i class="ti ti-target"></i>${h.test_tip}</div>`:''}
+        <div class="confidence-bar"><div class="confidence-fill" style="width:${i===0?'92':i===1?'72':'52'}%"></div></div>
+      </div>`).join('')}
+    </div>`;
+  }
+
+  // Shafts
+  if(recs.shafts.length){
+    html+=`<div class="section-header"><div class="section-title">Driver shafts</div><div class="section-line"></div></div>
+    <div class="rec-grid">
+      ${recs.shafts.map((s,i)=>{
+        const pct=s.score<1?96:s.score<3?85:s.score<6?70:50;
+        return `<div class="rec-card ${i===0?'top-pick':''}">
+          <div class="rec-rank">${i===0?'<div class="cyan-dot"></div>':''} ${i===0?'Best match':'Match '+(i+1)} <span style="margin-left:auto;font-size:10px;color:var(--text3)">${pct}%</span></div>
+          <div class="rec-name">${s.name}</div>
+          <div class="rec-tags">
+            <span class="tag ${i===0?'highlight':''}">${s.weight}g ${s.flex||''}</span>
+            <span class="tag">Tip ${s.tip?.toFixed(1)??'—'}</span>
+            <span class="tag">Mid ${s.mid?.toFixed(1)??'—'}</span>
+            <span class="tag">Handle ${s.handle?.toFixed(1)??'—'}</span>
+            ${s.torqueVal!=null?`<span class="tag" style="border-color:var(--teal3);color:var(--teal2)">Torque ${s.torqueVal}</span>`:''}
+          </div>
+          ${s.notes?`<div class="rec-why">${s.notes}</div>`:''}
+          ${s.test_tip?`<div class="rec-test"><i class="ti ti-target"></i>${s.test_tip}</div>`:''}
+          <div class="confidence-bar"><div class="confidence-fill" style="width:${pct}%"></div></div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }
+
+  // AI panel
+  html+=`<div class="section-header"><div class="section-title">AI analysis</div><div class="section-line"></div></div>
+  <div class="ai-panel">
+    <div class="ai-header"><div class="ai-dot"></div><div class="ai-title">EMB Fitting Intelligence</div></div>
+    <div class="ai-text" id="ai-text">${showAI?'<div class="spinner"></div> Analyzing...':aiInsight||'Run fitting to generate AI analysis.'}</div>
+  </div>`;
+
+  el.innerHTML=html;
+}
+
+// ── AI ────────────────────────────────────────────────────────────────────────
+async function fetchAI(d,recs){
+  const swayDesc=recs.swayBand?`Band ${recs.swayBand} (${recs.swayBand==='A'?'Sweep':recs.swayBand==='B'?'Mid':'Vertical'})`:'not entered';
+  const prompt=`You are an expert golf club fitter at EMB Fitting. Provide 4-5 sentences of specific, actionable fitting insight. Be direct and professional — this is shown on screen to the client.
+
+Player: ${d.name||'unnamed'}, Hdcp: ${d.hdcp||'—'}, Gamer: ${d.gamer||'—'}
+Swing: Grip ${d.grip||'—'}, Post ${d.post||'—'}, Shot shape ${d.shotShape||'—'}, Tempo ${d.tempo||'—'}
+Ball: ${d.ball||'—'} (spin ${recs.ballSpinVal||'—'}/5)
+Launch monitor: ${d.ss}mph, ${d.sr}rpm, ${d.la}° launch, ${d.aa}° AoA
+SportsBox: Sway Gap ${d.swayGap??'—'}" (${swayDesc}), Chest Lift ${d.chestLift??'—'}in, Lead Elbow ${d.leadElbow??'—'}°, Club/Hand Gap ${d.clubHandGap??'—'}in, Pelvis Sway ${d.pelvisSway??'—'}"
+Engine output: Head bias ${recs.headBias}, Sway band ${recs.swayBand||'—'}, Pelvis band ${recs.pelvisBand||'—'}, Valid flex: ${recs.validFlexes.join('/')}
+Target: ${recs.targetWeight?.toFixed(0)||'—'}g, Tip ${recs.targetTip?.toFixed(1)||'—'}, Mid ${recs.targetMid?.toFixed(1)||'—'}, Handle ${recs.targetHandle?.toFixed(1)||'—'}, Loft ${recs.targetLoft?.toFixed(1)||'—'}°
+Top head: ${recs.heads[0]?.name||'TBD'} | Top shaft: ${recs.shafts[0]?.name||'TBD'}
+Notes: ${d.notes||'none'}`;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+    });
+    const data=await res.json();
+    aiInsight=data.content?.[0]?.text||'Analysis unavailable.';
+  }catch(e){
+    aiInsight='AI analysis unavailable. Rule-based recommendations above remain valid.';
+  }
+  const el=document.getElementById('ai-text');
+  if(el) el.innerHTML=aiInsight;
+  return aiInsight;
+}
+
+// ── SAVE SESSION ──────────────────────────────────────────────────────────────
+async function saveSession(d,recs,insight){
+  const row={
+    player_name:d.name||null,handicap:d.hdcp||null,
+    current_gamer:d.gamer||null,
+    swing_speed:d.ss||null,ball_speed:d.bs||null,
+    launch_angle:d.la||null,spin_rate:d.sr||null,
+    attack_angle:d.aa||null,club_path:d.cp||null,
+    smash_factor:d.smash||null,dynamic_loft:d.dl||null,
+    sway_gap:d.swayGap??null,chest_lift:d.chestLift??null,
+    lead_elbow:d.leadElbow??null,club_hand_gap:d.clubHandGap??null,
+    pelvis_sway:d.pelvisSway??null,
+    notes:d.notes||null,ai_insight:insight||null,
+    recommendations:JSON.stringify({
+      heads:recs.heads.map(h=>h.name),
+      shafts:recs.shafts.map(s=>s.name),
+      targetLoft:recs.targetLoft,swayBand:recs.swayBand,
+    }),
+  };
+  const {error}=await db.from('sessions').insert(row);
+  if(!error){
+    toast('Session saved');
+    const {data}=await db.from('sessions').select('*').order('created_at',{ascending:false});
+    sessionsList=data||[];
+  } else {
+    toast('Could not save session','error');
+  }
+}
+
+// ── SESSIONS PAGE ─────────────────────────────────────────────────────────────
+function renderSessions(){
+  document.getElementById('main-wrap').innerHTML=`<div class="page-full">
+    <div style="margin-bottom:20px">
+      <div style="font-size:18px;font-weight:700;margin-bottom:4px">Fitting sessions</div>
+      <div style="font-size:13px;color:var(--text3)">${sessionsList.length} sessions saved.</div>
+    </div>
+    ${sessionsList.length===0?`<div style="color:var(--text3);text-align:center;padding:60px 0">No sessions yet. Run a fitting to save one.</div>`:''}
+    ${sessionsList.map(s=>`
+    <div class="session-list-item" onclick="loadSession('${s.id}')">
+      <div>
+        <div class="session-list-name">${s.player_name||'Unnamed player'}</div>
+        <div class="session-list-meta">${s.swing_speed?s.swing_speed+' mph · ':''} Hdcp ${s.handicap||'—'} · ${new Date(s.created_at).toLocaleDateString()}</div>
+        ${s.recommendations?`<div style="font-size:11px;color:var(--teal2);margin-top:2px">${JSON.parse(s.recommendations).heads?.[0]||''}</div>`:''}
+      </div>
+      <button class="btn-sm danger" onclick="event.stopPropagation();deleteSession('${s.id}')"><i class="ti ti-trash"></i></button>
+    </div>`).join('')}
+  </div>`;
+}
+
+async function loadSession(id){
+  const s=sessionsList.find(x=>x.id===id);
+  if(!s) return;
+  const d={
+    name:s.player_name||'',hdcp:s.handicap||'',gamer:s.current_gamer||'',
+    ss:s.swing_speed||0,bs:s.ball_speed||0,la:s.launch_angle||0,sr:s.spin_rate||0,
+    aa:s.attack_angle||0,cp:s.club_path||0,smash:s.smash_factor||0,dl:s.dynamic_loft||0,
+    notes:s.notes||'',ball:'',
+    swayGap:s.sway_gap??null,chestLift:s.chest_lift??null,leadElbow:s.lead_elbow??null,
+    clubHandGap:s.club_hand_gap??null,pelvisSway:s.pelvis_sway??null,
+    grip:'',post:'',shotShape:'',tempo:'',
+  };
+  const recs=buildRecommendations(d);
+  currentSession={data:d,recs};
+  aiInsight=s.ai_insight||'';
+  document.getElementById('session-label').textContent=d.name||'Loaded session';
+  showPage('fitting');
+  setTimeout(()=>renderResultsPanel(d,recs,false),50);
+}
+
+async function deleteSession(id){
+  if(!confirm('Delete this session?')) return;
+  const {error}=await db.from('sessions').delete().eq('id',id);
+  if(!error){sessionsList=sessionsList.filter(s=>s.id!==id);toast('Deleted');renderSessions();}
+  else toast('Could not delete','error');
+}
+
+// ── ADMIN ─────────────────────────────────────────────────────────────────────
+function renderAdminLock(){
+  document.getElementById('main-wrap').innerHTML=`<div class="page-full">
+    <div class="admin-lock">
+      <i class="ti ti-shield-lock"></i>
+      <div style="font-size:18px;font-weight:700">Admin access required</div>
+      <div style="font-size:13px;color:var(--text3)">Manage rules, correlations, and equipment.</div>
+      <div class="pw-row">
+        <input type="password" id="pw-input" placeholder="Password" onkeydown="if(event.key==='Enter')tryUnlock()" />
+        <button class="pw-btn" onclick="tryUnlock()">Unlock</button>
+      </div>
+      <div class="pw-err" id="pw-err"></div>
+    </div>
+  </div>`;
+}
+
+function tryUnlock(){
+  if(document.getElementById('pw-input').value===ADMIN_PASS){adminUnlocked=true;renderAdmin();}
+  else document.getElementById('pw-err').textContent='Incorrect password.';
+}
+
+function renderAdmin(){
+  document.getElementById('main-wrap').innerHTML=`<div class="page-full">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <div style="font-size:18px;font-weight:700">Admin</div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="font-size:12px;color:var(--text3)">${rulesDB.length} rules · ${equipmentDB.drivers.length} heads · ${equipmentDB.shafts.length} shafts · ${sessionsList.length} sessions</div>
+        <button class="btn-sm danger" onclick="adminUnlocked=false;renderAdminLock()"><i class="ti ti-lock"></i> Lock</button>
+      </div>
+    </div>
+    <div class="admin-tabs">
+      <button class="admin-tab ${adminTab==='rules'?'active':''}" onclick="setAdminTab('rules')">Rules</button>
+      <button class="admin-tab ${adminTab==='bio'?'active':''}" onclick="setAdminTab('bio')">Biomechanics</button>
+      <button class="admin-tab ${adminTab==='equipment'?'active':''}" onclick="setAdminTab('equipment')">Equipment</button>
+      <button class="admin-tab ${adminTab==='addRule'?'active':''}" onclick="setAdminTab('addRule')">+ Rule</button>
+      <button class="admin-tab ${adminTab==='addBio'?'active':''}" onclick="setAdminTab('addBio')">+ Correlation</button>
+      <button class="admin-tab ${adminTab==='addEquip'?'active':''}" onclick="setAdminTab('addEquip')">+ Equipment</button>
+    </div>
+    <div id="admin-body"></div>
+  </div>`;
+  renderAdminBody();
+}
+
+function setAdminTab(tab){
+  adminTab=tab;
+  document.querySelectorAll('.admin-tab').forEach(el=>{
+    const map={rules:'Rules',bio:'Biomechanics',equipment:'Equipment',addRule:'+ Rule',addBio:'+ Correlation',addEquip:'+ Equipment'};
+    el.classList.toggle('active',el.textContent===map[tab]);
+  });
+  renderAdminBody();
+}
+
+function renderAdminBody(){
+  const el=document.getElementById('admin-body');
+  if(!el) return;
+  if(adminTab==='rules'){
+    el.innerHTML=rulesDB.length===0?'<div style="color:var(--text3);padding:20px">No rules yet.</div>':
+    rulesDB.map(r=>`<div class="admin-card">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+        <div class="admin-card-title" style="margin:0">${r.recommendation}</div>
+        <span class="priority-badge ${r.priority}">${r.priority}</span>
+      </div>
+      <div class="admin-card-cond">${r.condition}</div>
+      <div class="admin-card-meta">${r.notes||''}</div>
+      ${r.test_tip?`<div style="font-size:11px;color:var(--teal2);margin-top:4px"><i class="ti ti-target" style="vertical-align:-2px;margin-right:3px"></i>${r.test_tip}</div>`:''}
+      <div class="admin-actions"><button class="btn-sm danger" onclick="deleteRule('${r.id}')"><i class="ti ti-trash"></i> Delete</button></div>
+    </div>`).join('');
+  } else if(adminTab==='bio'){
+    el.innerHTML=bioCorrelations.length===0?'<div style="color:var(--text3);padding:20px">No correlations.</div>':
+    bioCorrelations.map(c=>`<div class="admin-card">
+      <div class="admin-card-title">${bioFields.find(f=>f.id===c.bio_var)?.label||c.bio_var}</div>
+      <div class="admin-card-cond">${c.range}</div>
+      <div class="admin-card-meta">Shaft: ${c.shaft_profile}<br>Head: ${c.head_profile}<br>${c.notes||''}</div>
+      <div class="admin-actions"><button class="btn-sm danger" onclick="deleteBio('${c.id}')"><i class="ti ti-trash"></i> Delete</button></div>
+    </div>`).join('');
+  } else if(adminTab==='equipment'){
+    el.innerHTML=`
+      <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px">Driver heads (${equipmentDB.drivers.length})</div>
+      ${equipmentDB.drivers.map(h=>`<div class="equip-row">
+        <div style="flex:1">
+          <div class="equip-name">${h.name}</div>
+          <div class="equip-tags"><span class="tag">${h.spin} spin</span><span class="tag">${h.launch} launch</span><span class="tag">CG: ${h.cg}</span><span class="tag">${h.forgiveness}</span></div>
+          <div class="equip-meta">${h.swing_speed_min}–${h.swing_speed_max>=999?'∞':h.swing_speed_max} mph · ${h.notes||''}</div>
+        </div>
+        <button class="btn-sm danger" onclick="deleteEquip('${h.id}')" style="margin-left:12px"><i class="ti ti-trash"></i></button>
+      </div>`).join('')}
+      <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin:20px 0 10px">Shafts (${equipmentDB.shafts.length})</div>
+      ${equipmentDB.shafts.map(s=>`<div class="equip-row">
+        <div style="flex:1">
+          <div class="equip-name">${s.name}</div>
+          <div class="equip-tags"><span class="tag">${s.weight}</span><span class="tag">${s.flex}</span><span class="tag">${s.launch} launch</span></div>
+          <div class="equip-meta">${s.player_type||''}</div>
+        </div>
+        <button class="btn-sm danger" onclick="deleteEquip('${s.id}')" style="margin-left:12px"><i class="ti ti-trash"></i></button>
+      </div>`).join('')}`;
+  } else if(adminTab==='addRule'){
+    el.innerHTML=`<div class="admin-card">
+      <div style="font-size:14px;font-weight:600;margin-bottom:14px">Add fitting rule</div>
+      <div class="form-group"><label>Type</label><select id="r-type"><option value="launch_monitor">Launch monitor</option><option value="biomechanics">Biomechanics</option></select></div>
+      <div class="form-group"><label>Condition</label><input id="r-cond" placeholder="e.g. swing_speed > 110 AND spin_rate > 2800" /><div class="form-hint">Variables: swing_speed · attack_angle · spin_rate · launch_angle · ball_speed · sway_gap · chest_lift · lead_elbow · club_hand_gap · pelvis_sway</div></div>
+      <div class="form-group"><label>Recommendation</label><input id="r-rec" placeholder="e.g. Low spin head + X-stiff shaft" /></div>
+      <div class="form-group"><label>Notes</label><textarea id="r-notes" rows="2"></textarea></div>
+      <div class="form-group"><label>Test tip</label><input id="r-tip" /></div>
+      <div class="form-group"><label>Priority</label><select id="r-pri"><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></div>
+      <button class="add-btn" id="add-rule-btn" onclick="addRule()"><i class="ti ti-plus"></i> Add rule</button>
+      <div id="r-msg"></div>
+    </div>`;
+  } else if(adminTab==='addBio'){
+    el.innerHTML=`<div class="admin-card">
+      <div style="font-size:14px;font-weight:600;margin-bottom:14px">Add biomechanics correlation</div>
+      <div class="form-group"><label>Variable</label><select id="bc-var">${bioFields.map(f=>`<option value="${f.id}">${f.label}</option>`).join('')}</select></div>
+      <div class="form-group"><label>Range</label><input id="bc-range" placeholder="e.g. > 2.5" /><div class="form-hint">Use: &gt; 2.5 or &lt; 1.0</div></div>
+      <div class="form-group"><label>Shaft recommendation</label><input id="bc-shaft" /></div>
+      <div class="form-group"><label>Head recommendation</label><input id="bc-head" /></div>
+      <div class="form-group"><label>Notes</label><textarea id="bc-notes" rows="2"></textarea></div>
+      <button class="add-btn" id="add-bio-btn" onclick="addBio()"><i class="ti ti-plus"></i> Add correlation</button>
+      <div id="bc-msg"></div>
+    </div>`;
+  } else if(adminTab==='addEquip'){
+    el.innerHTML=`<div class="admin-card">
+      <div style="font-size:14px;font-weight:600;margin-bottom:14px">Add equipment</div>
+      <div class="form-group"><label>Type</label><select id="eq-type" onchange="renderEquipForm()"><option value="driver">Driver head</option><option value="shaft">Shaft</option></select></div>
+      <div id="eq-form"></div>
+    </div>`;
+    renderEquipForm();
+  }
+}
+
+function renderEquipForm(){
+  const type=document.getElementById('eq-type')?.value;
+  const el=document.getElementById('eq-form');
+  if(!el) return;
+  if(type==='driver'){
+    el.innerHTML=`
+      <div class="form-group"><label>Model name</label><input id="eq-name" /></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group"><label>Spin</label><select id="eq-spin"><option>low</option><option>mid-low</option><option selected>mid</option><option>mid-high</option><option>high</option></select></div>
+        <div class="form-group"><label>Launch</label><select id="eq-launch"><option>low</option><option>low-mid</option><option selected>mid</option><option>mid-high</option><option>high</option></select></div>
+        <div class="form-group"><label>CG position</label><input id="eq-cg" placeholder="e.g. forward-low" /></div>
+        <div class="form-group"><label>Forgiveness</label><select id="eq-forg"><option>low</option><option>mid-low</option><option selected>mid</option><option>high</option><option>max</option></select></div>
+        <div class="form-group"><label>Min speed</label><input id="eq-ssmin" type="number" placeholder="0" /></div>
+        <div class="form-group"><label>Max speed</label><input id="eq-ssmax" type="number" placeholder="999" /></div>
+      </div>
+      <div class="form-group"><label>Notes</label><textarea id="eq-notes" rows="2"></textarea></div>
+      <div class="form-group"><label>Test tip</label><input id="eq-tip" /></div>
+      <button class="add-btn" onclick="addEquipment('driver')"><i class="ti ti-plus"></i> Add head</button>
+      <div id="eq-msg"></div>`;
+  } else {
+    el.innerHTML=`
+      <div class="form-group"><label>Shaft name</label><input id="eq-name" /></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group"><label>Weight</label><input id="eq-weight" placeholder="65g" /></div>
+        <div class="form-group"><label>Flex</label><select id="eq-flex"><option>L</option><option>A</option><option>R</option><option selected>S</option><option>X</option><option>TX</option></select></div>
+        <div class="form-group"><label>Launch</label><select id="eq-slaunch"><option>low</option><option>low-mid</option><option selected>mid</option><option>mid-high</option><option>high</option></select></div>
+        <div class="form-group"><label>Spin</label><select id="eq-sspin"><option>low</option><option>mid-low</option><option selected>mid</option><option>mid-high</option></select></div>
+        <div class="form-group"><label>Torque (°)</label><input id="eq-torque" type="number" step="0.1" /></div>
+        <div class="form-group"><label>Profile</label><input id="eq-profile" placeholder="e.g. Mid-tip stiff" /></div>
+      </div>
+      <div class="form-group"><label>Player type</label><input id="eq-player" /></div>
+      <div class="form-group"><label>Test tip</label><input id="eq-tip" /></div>
+      <button class="add-btn" onclick="addEquipment('shaft')"><i class="ti ti-plus"></i> Add shaft</button>
+      <div id="eq-msg"></div>`;
+  }
+}
+
+// ── ADMIN CRUD ────────────────────────────────────────────────────────────────
+async function addRule(){
+  const cond=document.getElementById('r-cond').value.trim();
+  const rec=document.getElementById('r-rec').value.trim();
+  const msg=document.getElementById('r-msg');
+  if(!cond||!rec){msg.className='error-msg';msg.textContent='Condition and recommendation required.';return;}
+  const btn=document.getElementById('add-rule-btn');btn.disabled=true;
+  const {error}=await db.from('rules').insert({club:'driver',type:document.getElementById('r-type').value,condition:cond,recommendation:rec,notes:document.getElementById('r-notes').value.trim(),test_tip:document.getElementById('r-tip').value.trim(),priority:document.getElementById('r-pri').value});
+  if(error){msg.className='error-msg';msg.textContent='Error: '+error.message;}
+  else{msg.className='success-msg';msg.textContent='Rule saved.';await loadAll();toast('Rule added');}
+  btn.disabled=false;btn.innerHTML='<i class="ti ti-plus"></i> Add rule';
+}
+
+async function addBio(){
+  const range=document.getElementById('bc-range').value.trim();
+  const shaft=document.getElementById('bc-shaft').value.trim();
+  const msg=document.getElementById('bc-msg');
+  if(!range||!shaft){msg.className='error-msg';msg.textContent='Range and shaft required.';return;}
+  const {error}=await db.from('bio_correlations').insert({bio_var:document.getElementById('bc-var').value,range,shaft_profile:shaft,head_profile:document.getElementById('bc-head').value.trim(),notes:document.getElementById('bc-notes').value.trim()});
+  if(error){msg.className='error-msg';msg.textContent='Error: '+error.message;}
+  else{msg.className='success-msg';msg.textContent='Saved.';await loadAll();toast('Correlation added');}
+}
+
+async function addEquipment(type){
+  const name=document.getElementById('eq-name').value.trim();
+  const msg=document.getElementById('eq-msg');
+  if(!name){msg.className='error-msg';msg.textContent='Name required.';return;}
+  let row={type,name};
+  if(type==='driver'){row={...row,spin:document.getElementById('eq-spin').value,launch:document.getElementById('eq-launch').value,cg:document.getElementById('eq-cg').value,forgiveness:document.getElementById('eq-forg').value,swing_speed_min:parseFloat(document.getElementById('eq-ssmin').value)||0,swing_speed_max:parseFloat(document.getElementById('eq-ssmax').value)||999,notes:document.getElementById('eq-notes').value.trim(),test_tip:document.getElementById('eq-tip').value.trim()};}
+  else{row={...row,weight:document.getElementById('eq-weight').value,flex:document.getElementById('eq-flex').value,launch:document.getElementById('eq-slaunch').value,spin:document.getElementById('eq-sspin').value,torque:document.getElementById('eq-torque').value,profile:document.getElementById('eq-profile').value,player_type:document.getElementById('eq-player').value.trim(),test_tip:document.getElementById('eq-tip').value.trim()};}
+  const {error}=await db.from('equipment').insert(row);
+  if(error){msg.className='error-msg';msg.textContent='Error: '+error.message;}
+  else{msg.className='success-msg';msg.textContent='Saved.';await loadAll();toast('Equipment added');}
+}
+
+async function deleteRule(id){if(!confirm('Delete rule?'))return;await db.from('rules').delete().eq('id',id);await loadAll();renderAdminBody();toast('Deleted');}
+async function deleteBio(id){if(!confirm('Delete correlation?'))return;await db.from('bio_correlations').delete().eq('id',id);await loadAll();renderAdminBody();toast('Deleted');}
+async function deleteEquip(id){if(!confirm('Remove equipment?'))return;await db.from('equipment').delete().eq('id',id);await loadAll();renderAdminBody();toast('Removed');}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+loadAll().then(()=>showPage('fitting'));
+</script>
+
+
+</body></html>
