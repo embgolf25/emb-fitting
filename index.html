@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0052)file:///Users/edmundbroderick/Downloads/index_2.html -->
+<!-- saved from url=(0052)file:///Users/edmundbroderick/Downloads/index_3.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,7 +45,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 .main{flex:1;display:flex;overflow:hidden;height:calc(100vh - 56px)}
 
 /* ── FITTING LAYOUT: left input panel + right sticky results ── */
-.fit-left{width:520px;flex-shrink:0;overflow-y:auto;border-right:1px solid var(--border);background:var(--bg2)}
+.fit-left{width:520px;flex-shrink:0;overflow-y:auto;border-right:1px solid var(--border);background:var(--bg2);display:flex;flex-direction:column}
 .fit-right{flex:1;overflow-y:auto;background:var(--bg);padding:24px}
 
 /* ── LEFT PANEL SECTIONS ── */
@@ -308,7 +308,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
         <div class="chip-section">
           <div class="chip-section-label">Post position</div>
           <div class="chip-row">
-            <button class="chip selected" onclick="setChip(&#39;post&#39;,&#39;Front&#39;)">Front</button>
+            <button class="chip " onclick="setChip(&#39;post&#39;,&#39;Front&#39;)">Front</button>
             <button class="chip " onclick="setChip(&#39;post&#39;,&#39;Center&#39;)">Center</button>
             <button class="chip " onclick="setChip(&#39;post&#39;,&#39;Rear&#39;)">Rear</button>
           </div>
@@ -388,6 +388,12 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
         <textarea id="f-notes" class="notes-field" rows="3" placeholder="Observations, tendencies, goals..."></textarea>
       </div>
 
+      <!-- RUN BUTTON - sticky inside fit-left -->
+      <div class="run-area">
+        <button class="run-btn" onclick="runFitting()"><i class="ti ti-player-play"></i> Run Fitting</button>
+        <button class="clear-btn" onclick="clearFitting()">Clear all fields</button>
+      </div>
+
     </div><!-- /fit-left -->
 
     <div class="fit-right" id="fit-right">
@@ -398,11 +404,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
           <div class="results-empty-sub">Fill in the player's info and click Run Fitting to see recommendations here.</div>
         </div>
       </div>
-    </div>
-
-    <div class="run-area" style="position:fixed;bottom:0;left:0;width:520px">
-      <button class="run-btn" onclick="runFitting()"><i class="ti ti-player-play"></i> Run Fitting</button>
-      <button class="clear-btn" onclick="clearFitting()">Clear all fields</button>
     </div>
   </div>
 
@@ -652,6 +653,12 @@ function renderFitting(){
         <textarea id="f-notes" class="notes-field" rows="3" placeholder="Observations, tendencies, goals..."></textarea>
       </div>
 
+      <!-- RUN BUTTON - sticky inside fit-left -->
+      <div class="run-area">
+        <button class="run-btn" onclick="runFitting()"><i class="ti ti-player-play"></i> Run Fitting</button>
+        <button class="clear-btn" onclick="clearFitting()">Clear all fields</button>
+      </div>
+
     </div><!-- /fit-left -->
 
     <div class="fit-right" id="fit-right">
@@ -662,11 +669,6 @@ function renderFitting(){
           <div class="results-empty-sub">Fill in the player's info and click Run Fitting to see recommendations here.</div>
         </div>
       </div>
-    </div>
-
-    <div class="run-area" style="position:fixed;bottom:0;left:0;width:520px">
-      <button class="run-btn" onclick="runFitting()"><i class="ti ti-player-play"></i> Run Fitting</button>
-      <button class="clear-btn" onclick="clearFitting()">Clear all fields</button>
     </div>
   `;
   restoreFields();
