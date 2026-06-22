@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<!-- saved from url=(0052)file:///Users/edmundbroderick/Downloads/index_3.html -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="en">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EMB Fitting</title>
-<link rel="stylesheet" href="./index_files/tabler-icons.min.css">
-<script src="./index_files/supabase-js@2"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -221,10 +221,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
     </div>
   </div>
   <div class="nav">
-    <button class="nav-btn active" onclick="showPage(&#39;fitting&#39;)" id="nav-fitting"><i class="ti ti-adjustments-horizontal"></i>Fitting</button>
-    <button class="nav-btn" onclick="showPage(&#39;sessions&#39;)" id="nav-sessions"><i class="ti ti-history"></i>Sessions</button>
-    <button class="nav-btn" onclick="showPage(&#39;results&#39;)" id="nav-results"><i class="ti ti-clipboard-list"></i>Results</button>
-    <button class="nav-btn" onclick="showPage(&#39;admin&#39;)" id="nav-admin"><i class="ti ti-shield-lock"></i>Admin</button>
+    <button class="nav-btn active" onclick="showPage('fitting')" id="nav-fitting"><i class="ti ti-adjustments-horizontal"></i>Fitting</button>
+    <button class="nav-btn" onclick="showPage('sessions')" id="nav-sessions"><i class="ti ti-history"></i>Sessions</button>
+    <button class="nav-btn" onclick="showPage('results')" id="nav-results"><i class="ti ti-clipboard-list"></i>Results</button>
+    <button class="nav-btn" onclick="showPage('admin')" id="nav-admin"><i class="ti ti-shield-lock"></i>Admin</button>
   </div>
   <div class="header-right">
     <span class="session-badge" id="session-label">No active session</span>
@@ -233,119 +233,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 </div>
 
 <div class="main">
-  <div class="sidebar" id="sidebar">
-    <div class="sidebar-section">
-      <div class="sidebar-label">Player info</div>
-      <div class="field"><label>Player name</label><input id="f-name" placeholder="Full name"></div>
-      <div class="field-row">
-        <div class="field"><label>Handicap</label><input id="f-hdcp" type="number" placeholder="12"></div>
-        <div class="field"><label>Height (in)</label><input id="f-height" type="number" placeholder="72"></div>
-      </div>
-      <div class="field-row">
-        <div class="field"><label>Wrist-to-floor (in)</label><input id="f-wtf" type="number" step="0.5" placeholder="31"></div>
-        <div class="field"><label>Sway gap P7 (in)</label><input id="f-swaygap" type="number" step="0.1" placeholder="-4.5"></div>
-      </div>
-      <div class="field"><label>Current gamer</label><input id="f-gamer" placeholder="e.g. Titleist TSR2 / Ventus Blue"></div>
-    </div>
-
-    <div class="sidebar-section">
-      <div class="sidebar-label">Grip type</div>
-      <div class="chip-group">
-        <button class="chip " onclick="setChip(&#39;grip&#39;,&#39;On Top&#39;)">On Top</button>
-        <button class="chip " onclick="setChip(&#39;grip&#39;,&#39;Under&#39;)">Under</button>
-        <button class="chip " onclick="setChip(&#39;grip&#39;,&#39;Side On&#39;)">Side On</button>
-      </div>
-      <div class="sidebar-label" style="margin-top:16px">Post position</div>
-      <div class="chip-group">
-        <button class="chip " onclick="setChip(&#39;post&#39;,&#39;Front&#39;)">Front</button>
-        <button class="chip " onclick="setChip(&#39;post&#39;,&#39;Center&#39;)">Center</button>
-        <button class="chip " onclick="setChip(&#39;post&#39;,&#39;Rear&#39;)">Rear</button>
-      </div>
-      <div class="sidebar-label" style="margin-top:16px">Shot shape</div>
-      <div class="chip-group">
-        <button class="chip " onclick="setChip(&#39;shotShape&#39;,&#39;Fade&#39;)">Fade</button>
-        <button class="chip " onclick="setChip(&#39;shotShape&#39;,&#39;Draw&#39;)">Draw</button>
-        <button class="chip " onclick="setChip(&#39;shotShape&#39;,&#39;Straight&#39;)">Straight</button>
-        <button class="chip " onclick="setChip(&#39;shotShape&#39;,&#39;Both&#39;)">Both</button>
-      </div>
-      <div class="sidebar-label" style="margin-top:16px">Ball spin</div>
-      <div class="chip-group">
-        <button class="chip " onclick="setChip(&#39;ballSpin&#39;,&#39;Low&#39;)">Low</button>
-        <button class="chip " onclick="setChip(&#39;ballSpin&#39;,&#39;Mid&#39;)">Mid</button>
-        <button class="chip " onclick="setChip(&#39;ballSpin&#39;,&#39;High&#39;)">High</button>
-      </div>
-      <div class="sidebar-label" style="margin-top:16px">Tempo</div>
-      <div class="chip-group">
-        <button class="chip " onclick="setChip(&#39;tempo&#39;,&#39;Slow&#39;)">Slow</button>
-        <button class="chip " onclick="setChip(&#39;tempo&#39;,&#39;Medium&#39;)">Medium</button>
-        <button class="chip " onclick="setChip(&#39;tempo&#39;,&#39;Fast&#39;)">Fast</button>
-      </div>
-    </div>
-
-    <button class="run-btn" onclick="runFitting()"><i class="ti ti-player-play"></i> Run Fitting</button>
-    <button class="clear-btn" onclick="clearFitting()">Clear all fields</button>
-  </div>
-  <div class="content" id="content">
-    <div style="margin-bottom:24px">
-      <div class="bio-section-title"><span>SportsBox AI</span> — Biomechanics</div>
-      <div style="font-size:13px;color:var(--text3);margin-bottom:20px">Enter player measurements from SportsBox AI. These directly drive the fitting correlation engine.</div>
-      <div class="bio-grid">
-        
-        <div class="bio-card">
-          <div class="bio-card-header">
-            <span class="bio-card-name">Sway Gap at Impact</span>
-            <span class="bio-card-unit">inches</span>
-          </div>
-          <input id="bio-swayGap" type="number" step="0.1" placeholder="—">
-        </div>
-        <div class="bio-card">
-          <div class="bio-card-header">
-            <span class="bio-card-name">Chest Lift Into Impact</span>
-            <span class="bio-card-unit">inches</span>
-          </div>
-          <input id="bio-chestLift" type="number" step="0.1" placeholder="—">
-        </div>
-        <div class="bio-card">
-          <div class="bio-card-header">
-            <span class="bio-card-name">Lead Elbow Flex at Impact</span>
-            <span class="bio-card-unit">degrees</span>
-          </div>
-          <input id="bio-leadElbow" type="number" step="0.1" placeholder="—">
-        </div>
-        <div class="bio-card">
-          <div class="bio-card-header">
-            <span class="bio-card-name">Club Hand Gap at Top</span>
-            <span class="bio-card-unit">inches</span>
-          </div>
-          <input id="bio-clubHandGap" type="number" step="0.1" placeholder="—">
-        </div>
-        <div class="bio-card">
-          <div class="bio-card-header">
-            <span class="bio-card-name">Pelvis Sway at Impact</span>
-            <span class="bio-card-unit">inches</span>
-          </div>
-          <input id="bio-pelvisSway" type="number" step="0.1" placeholder="—">
-        </div>
-      </div>
-    </div>
-
-    <div style="margin-bottom:24px">
-      <div class="bio-section-title"><span>Launch Monitor</span></div>
-      <div class="lm-grid">
-        <div class="lm-card"><label>Swing Speed</label><input id="f-ss" type="number" placeholder="95"><div class="lm-unit">mph</div></div>
-        <div class="lm-card"><label>Ball Speed</label><input id="f-bs" type="number" placeholder="140"><div class="lm-unit">mph</div></div>
-        <div class="lm-card"><label>Smash Factor</label><input id="f-smash" type="number" step="0.01" placeholder="1.47"><div class="lm-unit">ratio</div></div>
-        <div class="lm-card"><label>Launch Angle</label><input id="f-la" type="number" step="0.1" placeholder="12.5"><div class="lm-unit">degrees</div></div>
-        <div class="lm-card"><label>Spin Rate</label><input id="f-sr" type="number" placeholder="2400"><div class="lm-unit">rpm</div></div>
-        <div class="lm-card"><label>Dynamic Loft</label><input id="f-dl" type="number" step="0.1" placeholder="15.2"><div class="lm-unit">degrees</div></div>
-        <div class="lm-card"><label>Attack Angle</label><input id="f-aa" type="number" step="0.1" placeholder="-2.5"><div class="lm-unit">degrees</div></div>
-        <div class="lm-card"><label>Club Path</label><input id="f-cp" type="number" step="0.1" placeholder="-1.5"><div class="lm-unit">degrees</div></div>
-      </div>
-    </div>
-
-    <div class="section-divider"><span>Fitting notes</span></div>
-    <textarea id="f-notes" rows="3" style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 14px;color:var(--text);font-size:13px;font-family:var(--font);resize:vertical;margin-bottom:24px;margin-top:12px" placeholder="Observations, tendencies, goals discussed with player..."></textarea>
-  </div>
+  <div class="sidebar" id="sidebar"></div>
+  <div class="content" id="content"></div>
 </div>
 
 </div>
@@ -1514,6 +1403,5 @@ async function deleteEquip(id) {
 // ── INIT ──────────────────────────────────────────────────────────────────────
 loadAll().then(() => showPage('fitting'));
 </script>
-
-
-</body></html>
+</body>
+</html>
