@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0052)file:///Users/edmundbroderick/Downloads/index_1.html -->
+<!-- saved from url=(0052)file:///Users/edmundbroderick/Downloads/index_2.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -308,7 +308,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
         <div class="chip-section">
           <div class="chip-section-label">Post position</div>
           <div class="chip-row">
-            <button class="chip " onclick="setChip(&#39;post&#39;,&#39;Front&#39;)">Front</button>
+            <button class="chip selected" onclick="setChip(&#39;post&#39;,&#39;Front&#39;)">Front</button>
             <button class="chip " onclick="setChip(&#39;post&#39;,&#39;Center&#39;)">Center</button>
             <button class="chip " onclick="setChip(&#39;post&#39;,&#39;Rear&#39;)">Rear</button>
           </div>
@@ -675,7 +675,26 @@ function renderFitting(){
 function setChip(field,value){
   saveFittingState();
   fittingState[field]=fittingState[field]===value?'':value;
-  renderFitting();
+  // Only re-render chips, not the whole page
+  renderChips();
+}
+
+function renderChips(){
+  // Update chip selected states without re-rendering the whole page
+  const chipMap = {
+    grip: ['On Top','Under','Side On'],
+    post: ['Front','Center','Rear'],
+    shotShape: ['Fade','Draw','Straight','Both'],
+    tempo: ['Slow','Medium','Fast'],
+  };
+  document.querySelectorAll('.chip').forEach(btn => {
+    const onclick = btn.getAttribute('onclick') || '';
+    const match = onclick.match(/setChip\('(\w+)','([^']+)'\)/);
+    if(match) {
+      const [,field,val] = match;
+      btn.classList.toggle('selected', fittingState[field] === val);
+    }
+  });
 }
 
 function restoreFields(){
