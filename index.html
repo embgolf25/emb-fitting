@@ -275,6 +275,32 @@ const GRIP_POST_PROFILES = {
 // Shaft stiffness values come entirely from EMB spreadsheet data loaded via Supabase.
 // No hardcoded shaft profiles — all scoring uses your tip_val, mid_val, handle_val columns.
 
+// ── BALL DATABASE ─────────────────────────────────────────────────────────────
+// spin_val: 1-5 scale based on driver spin relative to field
+// 1 = lowest spin (Chrome Tour TD, Left Dash)
+// 3 = neutral (Pro V1, Chrome Tour)
+// 5 = highest spin (Chrome Tour X, Z-Star Diamond)
+const BALL_DB = [
+  { name:'Titleist Pro V1',               spin_val:3, notes:'Benchmark neutral ball. Penetrating flight, balanced.' },
+  { name:'Titleist Pro V1x',              spin_val:4, notes:'Higher than V1 with irons. More spin, higher flight.' },
+  { name:'Titleist Pro V1 Left Dot',      spin_val:2, notes:'200-300 rpm less than Pro V1. Same greenside control, lower flight.' },
+  { name:'Titleist Pro V1x Left Dash',    spin_val:1, notes:'Lowest Titleist driver spin. High launch, extremely low long game spin.' },
+  { name:'Titleist AVX',                  spin_val:2, notes:'Titleist lowest spinning ball. Penetrating flight, soft feel.' },
+  { name:'TaylorMade TP5',                spin_val:4, notes:'High spin, Rory choice. Elite greenside control, soft feel.' },
+  { name:'TaylorMade TP5x',               spin_val:2, notes:'Lower driver spin than TP5. Longer, firmer, more penetrating.' },
+  { name:'Callaway Chrome Tour',          spin_val:3, notes:'Balanced mid spin. Direct Pro V1 competitor.' },
+  { name:'Callaway Chrome Tour X',        spin_val:5, notes:'Highest spinning premium ball. Maximum control and spin.' },
+  { name:'Callaway Chrome Tour Triple Diamond', spin_val:1, notes:'Low spin for 105+ mph. Penetrating flight, speed-focused.' },
+  { name:'Srixon Z-Star',                 spin_val:4, notes:'High spinning tour ball. Strong short game control.' },
+  { name:'Srixon Z-Star Diamond',         spin_val:5, notes:'Second highest spinning ball overall. Tour-level control.' },
+  { name:'Srixon Z-Star XV',              spin_val:2, notes:'Distance focused, lower spin. Longer off the tee.' },
+  { name:'Bridgestone Tour B X',          spin_val:3, notes:'Mid spin, built for 105+ mph. High speed performance.' },
+  { name:'Bridgestone Tour B XS',         spin_val:2, notes:'Lower spinning than Tour B X. Distance focused.' },
+  { name:'Wilson Staff Model X',          spin_val:3, notes:'Competitive with Pro V1x. Solid all-around performer.' },
+  { name:'Maxfli Tour X',                 spin_val:2, notes:'Low driver spin, high wedge spin. Rare combination.' },
+];
+
+
 // In-memory cache loaded from Supabase
 let rulesDB = [];
 let bioCorrelations = [];
@@ -380,6 +406,12 @@ function renderFitting() {
         <div class="field"><label>Sway gap P7 (in)</label><input id="f-swaygap" type="number" step="0.1" placeholder="-4.5" /></div>
       </div>
       <div class="field"><label>Current gamer</label><input id="f-gamer" placeholder="e.g. Titleist TSR2 / Ventus Blue" /></div>
+      <div class="field"><label>Ball played</label>
+        <select id="f-ball">
+          <option value="">— Select ball —</option>
+          ${BALL_DB.map(b=>'<option value="'+b.name+'">'+b.name+' (Spin '+b.spin_val+'/5)</option>').join('')}
+        </select>
+      </div>
     </div>
 
     <div class="sidebar-section">
@@ -492,6 +524,7 @@ function getFittingData() {
     name:g('f-name'), hdcp:g('f-hdcp'), height:g('f-height'), wtf:g('f-wtf'), gamer:g('f-gamer'),
     grip:fittingState.grip||'', post:fittingState.post||'', shotShape:fittingState.shotShape||'',
     ballSpin:fittingState.ballSpin||'', tempo:fittingState.tempo||'',
+    ball:g('f-ball')||'',
     swayGapP7:parseFloat(g('f-swaygap'))||null,
     ss:parseFloat(g('f-ss'))||0, bs:parseFloat(g('f-bs'))||0,
     la:parseFloat(g('f-la'))||0, sr:parseFloat(g('f-sr'))||0,
@@ -761,6 +794,25 @@ function buildRecommendations(d) {
   scoredShafts.sort((a,b) => a.score - b.score);
   const topShafts = scoredShafts.slice(0, 3);
 
+  // ── BALL SPIN SIGNAL ─────────────────────────────────────────────────────────
+  // Ball choice affects CG priority first, loft only if CG already locked
+  // High spin ball (4-5) → forward CG to compensate (ball adding spin)
+  // Neutral ball (3)     → no change
+  // Low spin ball (1-2)  → back/neutral CG (don't reduce spin further with head)
+  const ballData = d.ball ? BALL_DB.find(b => b.name === d.ball) : null;
+  const ballSpinVal = ballData?.spin_val || null;
+  let ballCGSignal = null;   // 'forward', 'back', or null
+  let ballLoftSignal = null; // +0.5, -0.5, or null (only used if CG already locked)
+  if(ballSpinVal !== null) {
+    if(ballSpinVal >= 4) {
+      ballCGSignal = 'forward';
+      ballLoftSignal = -0.5;
+    } else if(ballSpinVal <= 2) {
+      ballCGSignal = 'back';
+      ballLoftSignal = +0.5;
+    }
+  }
+
   // ── HEAD SELECTION ──────────────────────────────────────────────────────────
   let heads = [...equipmentDB.drivers];
 
@@ -768,58 +820,64 @@ function buildRecommendations(d) {
   if(d.ss > 0) heads = heads.filter(h => d.ss >= (h.swing_speed_min||0) && d.ss <= (h.swing_speed_max||999));
 
   // ── SPIN RATE CG FILTER ──────────────────────────────────────────────────────
-  // Spin drives CG priority before anything else
-  // < 2200 rpm  → neutral or back CG only (player needs more spin for lift)
-  // 2200-2600   → heel or toe CG (ball flight correction is priority)
-  // > 2700 rpm  → forward CG (spin reduction is priority)
   let spinCGFilter = null;
   if(d.sr > 0) {
     if(d.sr <= 2200) {
       spinCGFilter = 'back';
-      // Keep only neutral and back CG heads
       heads = heads.filter(h => {
         const cg = h.cg || '';
         return cg === 'neutral' || cg.includes('back') || cg.includes('high');
       });
     } else if(d.sr <= 2600) {
       spinCGFilter = 'flight';
-      // Promote heel and toe CG — ball flight correction priority
-      // Don't filter, just reorder: heel/toe first, then neutral, then forward
       const flightHeads  = heads.filter(h => h.cg?.includes('heel') || h.cg?.includes('toe'));
       const neutralHeads = heads.filter(h => h.cg === 'neutral');
       const otherHeads   = heads.filter(h => !flightHeads.includes(h) && !neutralHeads.includes(h));
       heads = [...flightHeads, ...neutralHeads, ...otherHeads];
     } else if(d.sr >= 2700) {
       spinCGFilter = 'forward';
-      // Promote forward CG heads — spin reduction priority
-      const forwardHeads  = heads.filter(h => h.cg?.includes('forward') || h.spin === 'low');
-      const neutralHeads  = heads.filter(h => h.cg === 'neutral' && !forwardHeads.includes(h));
-      const otherHeads    = heads.filter(h => !forwardHeads.includes(h) && !neutralHeads.includes(h));
+      const forwardHeads = heads.filter(h => h.cg?.includes('forward') || h.spin === 'low');
+      const neutralHeads = heads.filter(h => h.cg === 'neutral' && !forwardHeads.includes(h));
+      const otherHeads   = heads.filter(h => !forwardHeads.includes(h) && !neutralHeads.includes(h));
       heads = [...forwardHeads, ...neutralHeads, ...otherHeads];
     }
   }
 
   // ── SWING SPEED LOW SPIN OVERRIDE ───────────────────────────────────────────
-  // Speed > 110 always needs low spin regardless of current spin rate
   const needsLowSpin = d.ss > 110;
-
-  // ── DETERMINE HEAD CG PRIORITY FROM SPORTSBOX ───────────────────────────────
   const strongDrawBias = drawBiasCount === 0 && neutralCount >= 2;
   const strongFadeBias = headBias === 'draw-bias';
 
+  // ── DETERMINE CG PRIORITY ───────────────────────────────────────────────────
+  // Ball CG signal is applied here IF spin filter hasn't already locked CG
+  // Ball loft signal is applied ONLY if CG is already locked by spin filter
   let cgPriority = 'neutral';
+  let loftAdjustment = 0;
+
   if(needsLowSpin && strongDrawBias) {
     cgPriority = 'forward-toe';
   } else if(needsLowSpin) {
     cgPriority = 'forward';
   } else if(strongFadeBias && spinCGFilter !== 'back') {
-    // Only apply draw-bias head if spin doesn't require back CG
     cgPriority = 'draw-bias';
   } else if(strongDrawBias && spinCGFilter !== 'back') {
     cgPriority = 'neutral';
   }
 
-  // Apply SportsBox CG priority ordering (only if spin filter hasn't already ordered)
+  // Apply ball CG signal — only if spin filter hasn't already determined CG
+  if(ballCGSignal && !spinCGFilter) {
+    // No spin filter active — ball can influence CG
+    if(ballCGSignal === 'forward' && cgPriority === 'neutral') cgPriority = 'forward';
+    if(ballCGSignal === 'back'    && cgPriority === 'neutral') cgPriority = 'back';
+  } else if(ballCGSignal && spinCGFilter) {
+    // Spin filter already locked CG — use ball for loft adjustment instead
+    if(targetLoft !== null) {
+      loftAdjustment = ballLoftSignal || 0;
+      targetLoft = targetLoft + loftAdjustment;
+    }
+  }
+
+  // Apply CG priority ordering
   if(spinCGFilter !== 'flight' && spinCGFilter !== 'forward') {
     if(cgPriority === 'forward' || cgPriority === 'forward-toe') {
       const lowSpinHeads = heads.filter(h => h.cg?.includes('forward') || h.spin === 'low');
@@ -830,6 +888,10 @@ function buildRecommendations(d) {
       const drawH  = heads.filter(h => h.cg?.includes('heel'));
       const otherH = heads.filter(h => !h.cg?.includes('heel'));
       heads = [...drawH, ...otherH];
+    } else if(cgPriority === 'back') {
+      const backH  = heads.filter(h => h.cg?.includes('back') || h.cg?.includes('high'));
+      const otherH = heads.filter(h => !backH.includes(h));
+      heads = [...backH, ...otherH];
     } else {
       const nonDraw = heads.filter(h => !h.cg?.includes('heel'));
       const drawH   = heads.filter(h => h.cg?.includes('heel'));
@@ -862,6 +924,7 @@ function buildRecommendations(d) {
     drawBiasCount, neutralCount,
     profile, profileKey,
     targetWeight, targetTip, targetMid, targetHandle, targetLoft, targetTorque,
+    ballData, ballSpinVal, ballCGSignal, loftAdjustment,
   };
 }
 
@@ -983,6 +1046,7 @@ function renderResults() {
         <div><span style="color:var(--text3)">Spin </span>${d.sr||'—'} rpm</div>
         <div><span style="color:var(--text3)">AoA </span>${d.aa||'—'}°</div>
         <div><span style="color:var(--text3)">Gamer </span>${d.gamer||'—'}</div>
+        ${d.ball?`<div><span style="color:var(--text3)">Ball </span>${d.ball}</div>`:''}
       </div>
     </div>
     <div class="sidebar-section">
@@ -997,6 +1061,7 @@ function renderResults() {
     <div>
       <div class="player-name">${d.name||'Player'}</div>
       <div class="player-meta">Handicap ${d.hdcp||'—'} · ${d.height?d.height+'"':''} · ${d.wtf?'WTF '+d.wtf+'"':''} · ${[d.grip, d.post, d.shotShape].filter(Boolean).join(' / ')||'—'}</div>
+      ${d.ball?`<div style="font-size:12px;color:var(--teal2);margin-top:4px"><i class="ti ti-circle-filled" style="font-size:8px;vertical-align:1px;margin-right:5px"></i>${d.ball} · Spin ${recs.ballSpinVal}/5</div>`:''}
     </div>
     <div class="player-stats">
       ${d.ss?`<div class="stat-block"><div class="stat-val">${d.ss}</div><div class="stat-lbl">mph</div></div>`:''}
@@ -1004,6 +1069,18 @@ function renderResults() {
       ${d.aa?`<div class="stat-block"><div class="stat-val">${d.aa>0?'+':''}${d.aa}°</div><div class="stat-lbl">AoA</div></div>`:''}
     </div>
   </div>`;
+
+  // Ball signal card
+  if(recs.ballData) {
+    const spinLabel = recs.ballSpinVal >= 4 ? 'High spin ball' : recs.ballSpinVal <= 2 ? 'Low spin ball' : 'Neutral spin ball';
+    const cgAction  = recs.ballCGSignal === 'forward' ? 'Forward CG priority — ball adding spin, head compensates' :
+                      recs.ballCGSignal === 'back'    ? 'Neutral/back CG — ball reducing spin, don\'t compound it' : 'No CG adjustment needed';
+    const loftNote  = recs.loftAdjustment !== 0 ? ` · Loft adjusted ${recs.loftAdjustment > 0 ? '+' : ''}${recs.loftAdjustment}° (CG already locked by spin data)` : '';
+    html += `<div style="background:var(--bg2);border:1px solid var(--teal3);border-left:3px solid var(--teal2);border-radius:var(--radius);padding:12px 16px;margin-bottom:20px">
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--teal2);font-weight:700;margin-bottom:6px"><i class="ti ti-ball-football" style="vertical-align:-2px;margin-right:5px"></i>Ball signal — ${recs.ballData.name}</div>
+      <div style="font-size:12px;color:var(--text);font-weight:500;margin-bottom:3px">${spinLabel} (${recs.ballSpinVal}/5) → ${cgAction}${loftNote}</div>
+      <div style="font-size:11px;color:var(--text3)">${recs.ballData.notes}</div>
+    </div>`;
 
   if(recs.matchedRules.length||recs.bioMatches.length||recs.gripSignals?.length) {
     html += `<div class="rules-strip">
@@ -1110,6 +1187,7 @@ async function fetchAI(d, recs) {
 
 Player: ${d.name||'unnamed'}, Handicap: ${d.hdcp||'unknown'}, Height: ${d.height||'—'}", WTF: ${d.wtf||'—'}", Current gamer: ${d.gamer||'unknown'}
 Swing profile: Grip: ${d.grip||'—'}, Post: ${d.post||'—'}, Shot shape: ${d.shotShape||'—'}, Ball spin: ${d.ballSpin||'—'}, Tempo: ${d.tempo||'—'}, Sway gap P7: ${d.swayGapP7||'—'}"
+Ball played: ${d.ball||'unknown'} (spin rating ${recs.ballSpinVal||'—'}/5)
 Launch monitor: ${d.ss} mph swing, ${d.bs} mph ball, ${d.la}° launch, ${d.sr} rpm spin, ${d.aa}° AoA, ${d.cp}° path, smash ${d.smash||'N/A'}, dynamic loft ${d.dl||'N/A'}°
 SportsBox: Sway Gap ${d.swayGap||'—'}in, Chest Lift ${d.chestLift||'—'}in, Lead Elbow ${d.leadElbow||'—'}°, Club Hand Gap ${d.clubHandGap||'—'}in, Pelvis Sway ${d.pelvisSway||'—'}in
 Signals: ${recs.matchedRules.map(r=>r.recommendation).join('; ')||'none'}
