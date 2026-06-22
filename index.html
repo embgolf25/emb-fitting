@@ -766,26 +766,75 @@ function buildRecommendations(d) {
 
   // Only apply speed filter if swing speed was actually entered
   if(d.ss > 0) heads = heads.filter(h => d.ss >= (h.swing_speed_min||0) && d.ss <= (h.swing_speed_max||999));
-  if(d.sr > 3000) heads = heads.filter(h => h.spin !== 'mid-high');
 
-  // Apply SportsBox head bias — draw-bias head only when majority signals call for it
-  if(headBias === 'draw-bias') {
-    // Fade swing detected — draw-bias head to correct
-    const drawHeads = heads.filter(h=>h.cg?.includes('heel'));
-    const neutralHeads = heads.filter(h=>!h.cg?.includes('heel'));
-    const brands = new Set();
-    const topDrawHeads = drawHeads.filter(h => {
-      const brand = h.name.split(' ')[0];
-      if(brands.has(brand)) return false;
-      brands.add(brand);
-      return true;
-    });
-    heads = [...topDrawHeads, ...neutralHeads];
-  } else {
-    // Draw or neutral swing — deprioritise draw-bias heads
-    const nonDraw = heads.filter(h=>!h.cg?.includes('heel'));
-    const drawHeads = heads.filter(h=>h.cg?.includes('heel'));
-    heads = [...nonDraw, ...drawHeads];
+  // ── SPIN RATE CG FILTER ──────────────────────────────────────────────────────
+  // Spin drives CG priority before anything else
+  // < 2200 rpm  → neutral or back CG only (player needs more spin for lift)
+  // 2200-2600   → heel or toe CG (ball flight correction is priority)
+  // > 2700 rpm  → forward CG (spin reduction is priority)
+  let spinCGFilter = null;
+  if(d.sr > 0) {
+    if(d.sr <= 2200) {
+      spinCGFilter = 'back';
+      // Keep only neutral and back CG heads
+      heads = heads.filter(h => {
+        const cg = h.cg || '';
+        return cg === 'neutral' || cg.includes('back') || cg.includes('high');
+      });
+    } else if(d.sr <= 2600) {
+      spinCGFilter = 'flight';
+      // Promote heel and toe CG — ball flight correction priority
+      // Don't filter, just reorder: heel/toe first, then neutral, then forward
+      const flightHeads  = heads.filter(h => h.cg?.includes('heel') || h.cg?.includes('toe'));
+      const neutralHeads = heads.filter(h => h.cg === 'neutral');
+      const otherHeads   = heads.filter(h => !flightHeads.includes(h) && !neutralHeads.includes(h));
+      heads = [...flightHeads, ...neutralHeads, ...otherHeads];
+    } else if(d.sr >= 2700) {
+      spinCGFilter = 'forward';
+      // Promote forward CG heads — spin reduction priority
+      const forwardHeads  = heads.filter(h => h.cg?.includes('forward') || h.spin === 'low');
+      const neutralHeads  = heads.filter(h => h.cg === 'neutral' && !forwardHeads.includes(h));
+      const otherHeads    = heads.filter(h => !forwardHeads.includes(h) && !neutralHeads.includes(h));
+      heads = [...forwardHeads, ...neutralHeads, ...otherHeads];
+    }
+  }
+
+  // ── SWING SPEED LOW SPIN OVERRIDE ───────────────────────────────────────────
+  // Speed > 110 always needs low spin regardless of current spin rate
+  const needsLowSpin = d.ss > 110;
+
+  // ── DETERMINE HEAD CG PRIORITY FROM SPORTSBOX ───────────────────────────────
+  const strongDrawBias = drawBiasCount === 0 && neutralCount >= 2;
+  const strongFadeBias = headBias === 'draw-bias';
+
+  let cgPriority = 'neutral';
+  if(needsLowSpin && strongDrawBias) {
+    cgPriority = 'forward-toe';
+  } else if(needsLowSpin) {
+    cgPriority = 'forward';
+  } else if(strongFadeBias && spinCGFilter !== 'back') {
+    // Only apply draw-bias head if spin doesn't require back CG
+    cgPriority = 'draw-bias';
+  } else if(strongDrawBias && spinCGFilter !== 'back') {
+    cgPriority = 'neutral';
+  }
+
+  // Apply SportsBox CG priority ordering (only if spin filter hasn't already ordered)
+  if(spinCGFilter !== 'flight' && spinCGFilter !== 'forward') {
+    if(cgPriority === 'forward' || cgPriority === 'forward-toe') {
+      const lowSpinHeads = heads.filter(h => h.cg?.includes('forward') || h.spin === 'low');
+      const neutralH     = heads.filter(h => h.cg === 'neutral' && !lowSpinHeads.includes(h));
+      const otherH       = heads.filter(h => !lowSpinHeads.includes(h) && !neutralH.includes(h));
+      heads = [...lowSpinHeads, ...neutralH, ...otherH];
+    } else if(cgPriority === 'draw-bias') {
+      const drawH  = heads.filter(h => h.cg?.includes('heel'));
+      const otherH = heads.filter(h => !h.cg?.includes('heel'));
+      heads = [...drawH, ...otherH];
+    } else {
+      const nonDraw = heads.filter(h => !h.cg?.includes('heel'));
+      const drawH   = heads.filter(h => h.cg?.includes('heel'));
+      heads = [...nonDraw, ...drawH];
+    }
   }
 
   // Ensure brand variety in top 3 — pick best head per brand first
