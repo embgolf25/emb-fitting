@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0052)file:///Users/edmundbroderick/Downloads/index_5.html -->
+<!-- saved from url=(0052)file:///Users/edmundbroderick/Downloads/index_6.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -262,9 +262,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
     </div>
   </div>
   <div class="nav">
-    <button class="nav-btn active" onclick="showPage(&#39;fitting&#39;)" id="nav-fitting"><i class="ti ti-adjustments-horizontal"></i>Fitting</button>
-    <button class="nav-btn" onclick="showPage(&#39;sessions&#39;)" id="nav-sessions"><i class="ti ti-history"></i>Sessions</button>
-    <button class="nav-btn" onclick="showPage(&#39;admin&#39;)" id="nav-admin"><i class="ti ti-shield-lock"></i>Admin</button>
+    <button class="nav-btn active" id="nav-fitting"><i class="ti ti-adjustments-horizontal"></i>Fitting</button>
+    <button class="nav-btn" id="nav-sessions"><i class="ti ti-history"></i>Sessions</button>
+    <button class="nav-btn" id="nav-admin"><i class="ti ti-shield-lock"></i>Admin</button>
   </div>
   <div class="header-right">
     <span class="session-badge" id="session-label">No active session</span>
@@ -300,34 +300,34 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
         <div class="chip-section">
           <div class="chip-section-label">Grip type</div>
           <div class="chip-row">
-            <button class="chip " onclick="setChip(&#39;grip&#39;,&#39;On Top&#39;)">On Top</button>
-            <button class="chip " onclick="setChip(&#39;grip&#39;,&#39;Under&#39;)">Under</button>
-            <button class="chip " onclick="setChip(&#39;grip&#39;,&#39;Side On&#39;)">Side On</button>
+            <button class="chip " data-chip="grip" data-val="On Top">On Top</button>
+            <button class="chip " data-chip="grip" data-val="Under">Under</button>
+            <button class="chip " data-chip="grip" data-val="Side On">Side On</button>
           </div>
         </div>
         <div class="chip-section">
           <div class="chip-section-label">Post position</div>
           <div class="chip-row">
-            <button class="chip " onclick="setChip(&#39;post&#39;,&#39;Front&#39;)">Front</button>
-            <button class="chip " onclick="setChip(&#39;post&#39;,&#39;Center&#39;)">Center</button>
-            <button class="chip " onclick="setChip(&#39;post&#39;,&#39;Rear&#39;)">Rear</button>
+            <button class="chip " data-chip="post" data-val="Front">Front</button>
+            <button class="chip " data-chip="post" data-val="Center">Center</button>
+            <button class="chip " data-chip="post" data-val="Rear">Rear</button>
           </div>
         </div>
         <div class="chip-section">
           <div class="chip-section-label">Shot shape</div>
           <div class="chip-row">
-            <button class="chip" onclick="setChip(&#39;shotShape&#39;,&#39;Fade&#39;)">Fade</button>
-            <button class="chip " onclick="setChip(&#39;shotShape&#39;,&#39;Draw&#39;)">Draw</button>
-            <button class="chip " onclick="setChip(&#39;shotShape&#39;,&#39;Straight&#39;)">Straight</button>
-            <button class="chip " onclick="setChip(&#39;shotShape&#39;,&#39;Both&#39;)">Both</button>
+            <button class="chip " data-chip="shotShape" data-val="Fade">Fade</button>
+            <button class="chip " data-chip="shotShape" data-val="Draw">Draw</button>
+            <button class="chip" data-chip="shotShape" data-val="Straight">Straight</button>
+            <button class="chip selected" data-chip="shotShape" data-val="Both">Both</button>
           </div>
         </div>
         <div class="chip-section" style="margin-bottom:0">
           <div class="chip-section-label">Tempo</div>
           <div class="chip-row">
-            <button class="chip " onclick="setChip(&#39;tempo&#39;,&#39;Slow&#39;)">Slow</button>
-            <button class="chip " onclick="setChip(&#39;tempo&#39;,&#39;Medium&#39;)">Medium</button>
-            <button class="chip " onclick="setChip(&#39;tempo&#39;,&#39;Fast&#39;)">Fast</button>
+            <button class="chip " data-chip="tempo" data-val="Slow">Slow</button>
+            <button class="chip " data-chip="tempo" data-val="Medium">Medium</button>
+            <button class="chip " data-chip="tempo" data-val="Fast">Fast</button>
           </div>
         </div>
       </div>
@@ -390,8 +390,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 
       <!-- RUN BUTTON - sticky inside fit-left -->
       <div class="run-area">
-        <button class="run-btn" onclick="runFitting()"><i class="ti ti-player-play"></i> Run Fitting</button>
-        <button class="clear-btn" onclick="clearFitting()">Clear all fields</button>
+        <button class="run-btn" id="run-btn"><i class="ti ti-player-play"></i> Run Fitting</button>
+        <button class="clear-btn" id="clear-btn">Clear all fields</button>
       </div>
 
     </div><!-- /fit-left -->
@@ -585,34 +585,34 @@ function renderFitting(){
         <div class="chip-section">
           <div class="chip-section-label">Grip type</div>
           <div class="chip-row">
-            <button class="chip ${fittingState.grip==='On Top'?'selected':''}" onclick="setChip('grip','On Top')">On Top</button>
-            <button class="chip ${fittingState.grip==='Under'?'selected':''}" onclick="setChip('grip','Under')">Under</button>
-            <button class="chip ${fittingState.grip==='Side On'?'selected':''}" onclick="setChip('grip','Side On')">Side On</button>
+            <button class="chip ${fittingState.grip==='On Top'?'selected':''}" data-chip="grip" data-val="On Top">On Top</button>
+            <button class="chip ${fittingState.grip==='Under'?'selected':''}" data-chip="grip" data-val="Under">Under</button>
+            <button class="chip ${fittingState.grip==='Side On'?'selected':''}" data-chip="grip" data-val="Side On">Side On</button>
           </div>
         </div>
         <div class="chip-section">
           <div class="chip-section-label">Post position</div>
           <div class="chip-row">
-            <button class="chip ${fittingState.post==='Front'?'selected':''}" onclick="setChip('post','Front')">Front</button>
-            <button class="chip ${fittingState.post==='Center'?'selected':''}" onclick="setChip('post','Center')">Center</button>
-            <button class="chip ${fittingState.post==='Rear'?'selected':''}" onclick="setChip('post','Rear')">Rear</button>
+            <button class="chip ${fittingState.post==='Front'?'selected':''}" data-chip="post" data-val="Front">Front</button>
+            <button class="chip ${fittingState.post==='Center'?'selected':''}" data-chip="post" data-val="Center">Center</button>
+            <button class="chip ${fittingState.post==='Rear'?'selected':''}" data-chip="post" data-val="Rear">Rear</button>
           </div>
         </div>
         <div class="chip-section">
           <div class="chip-section-label">Shot shape</div>
           <div class="chip-row">
-            <button class="chip ${fittingState.shotShape==='Fade'?'selected':''}" onclick="setChip('shotShape','Fade')">Fade</button>
-            <button class="chip ${fittingState.shotShape==='Draw'?'selected':''}" onclick="setChip('shotShape','Draw')">Draw</button>
-            <button class="chip ${fittingState.shotShape==='Straight'?'selected':''}" onclick="setChip('shotShape','Straight')">Straight</button>
-            <button class="chip ${fittingState.shotShape==='Both'?'selected':''}" onclick="setChip('shotShape','Both')">Both</button>
+            <button class="chip ${fittingState.shotShape==='Fade'?'selected':''}" data-chip="shotShape" data-val="Fade">Fade</button>
+            <button class="chip ${fittingState.shotShape==='Draw'?'selected':''}" data-chip="shotShape" data-val="Draw">Draw</button>
+            <button class="chip ${fittingState.shotShape==='Straight'?'selected':''}" data-chip="shotShape" data-val="Straight">Straight</button>
+            <button class="chip ${fittingState.shotShape==='Both'?'selected':''}" data-chip="shotShape" data-val="Both">Both</button>
           </div>
         </div>
         <div class="chip-section" style="margin-bottom:0">
           <div class="chip-section-label">Tempo</div>
           <div class="chip-row">
-            <button class="chip ${fittingState.tempo==='Slow'?'selected':''}" onclick="setChip('tempo','Slow')">Slow</button>
-            <button class="chip ${fittingState.tempo==='Medium'?'selected':''}" onclick="setChip('tempo','Medium')">Medium</button>
-            <button class="chip ${fittingState.tempo==='Fast'?'selected':''}" onclick="setChip('tempo','Fast')">Fast</button>
+            <button class="chip ${fittingState.tempo==='Slow'?'selected':''}" data-chip="tempo" data-val="Slow">Slow</button>
+            <button class="chip ${fittingState.tempo==='Medium'?'selected':''}" data-chip="tempo" data-val="Medium">Medium</button>
+            <button class="chip ${fittingState.tempo==='Fast'?'selected':''}" data-chip="tempo" data-val="Fast">Fast</button>
           </div>
         </div>
       </div>
@@ -655,8 +655,8 @@ function renderFitting(){
 
       <!-- RUN BUTTON - sticky inside fit-left -->
       <div class="run-area">
-        <button class="run-btn" onclick="runFitting()"><i class="ti ti-player-play"></i> Run Fitting</button>
-        <button class="clear-btn" onclick="clearFitting()">Clear all fields</button>
+        <button class="run-btn" id="run-btn"><i class="ti ti-player-play"></i> Run Fitting</button>
+        <button class="clear-btn" id="clear-btn">Clear all fields</button>
       </div>
 
     </div><!-- /fit-left -->
@@ -682,20 +682,11 @@ function setChip(field,value){
 }
 
 function renderChips(){
-  // Update chip selected states without re-rendering the whole page
-  const chipMap = {
-    grip: ['On Top','Under','Side On'],
-    post: ['Front','Center','Rear'],
-    shotShape: ['Fade','Draw','Straight','Both'],
-    tempo: ['Slow','Medium','Fast'],
-  };
-  document.querySelectorAll('.chip').forEach(btn => {
-    const onclick = btn.getAttribute('onclick') || '';
-    const match = onclick.match(/setChip\('(\w+)','([^']+)'\)/);
-    if(match) {
-      const [,field,val] = match;
-      btn.classList.toggle('selected', fittingState[field] === val);
-    }
+  // Update chip selected states using data attributes (CSP safe)
+  document.querySelectorAll('.chip[data-chip]').forEach(btn => {
+    const field = btn.dataset.chip;
+    const val   = btn.dataset.val;
+    btn.classList.toggle('selected', fittingState[field] === val);
   });
 }
 
@@ -1229,13 +1220,13 @@ function renderSessions(){
     </div>
     ${sessionsList.length===0?`<div style="color:var(--text3);text-align:center;padding:60px 0">No sessions yet. Run a fitting to save one.</div>`:''}
     ${sessionsList.map(s=>`
-    <div class="session-list-item" onclick="loadSession('${s.id}')">
+    <div class="session-list-item" data-load-session="${s.id}" style="cursor:pointer">
       <div>
         <div class="session-list-name">${s.player_name||'Unnamed player'}</div>
         <div class="session-list-meta">${s.swing_speed?s.swing_speed+' mph · ':''} Hdcp ${s.handicap||'—'} · ${new Date(s.created_at).toLocaleDateString()}</div>
         ${s.recommendations?`<div style="font-size:11px;color:var(--teal2);margin-top:2px">${JSON.parse(s.recommendations).heads?.[0]||''}</div>`:''}
       </div>
-      <button class="btn-sm danger" onclick="event.stopPropagation();deleteSession('${s.id}')"><i class="ti ti-trash"></i></button>
+      <button class="btn-sm danger" data-delete-session="${s.id}"><i class="ti ti-trash"></i></button>
     </div>`).join('')}
   </div>`;
 }
@@ -1275,8 +1266,8 @@ function renderAdminLock(){
       <div style="font-size:18px;font-weight:700">Admin access required</div>
       <div style="font-size:13px;color:var(--text3)">Manage rules, correlations, and equipment.</div>
       <div class="pw-row">
-        <input type="password" id="pw-input" placeholder="Password" onkeydown="if(event.key==='Enter')tryUnlock()" />
-        <button class="pw-btn" onclick="tryUnlock()">Unlock</button>
+        <input type="password" id="pw-input" placeholder="Password" id="pw-input-field" />
+        <button class="pw-btn" id="pw-btn">Unlock</button>
       </div>
       <div class="pw-err" id="pw-err"></div>
     </div>
@@ -1294,16 +1285,16 @@ function renderAdmin(){
       <div style="font-size:18px;font-weight:700">Admin</div>
       <div style="display:flex;align-items:center;gap:12px">
         <div style="font-size:12px;color:var(--text3)">${rulesDB.length} rules · ${equipmentDB.drivers.length} heads · ${equipmentDB.shafts.length} shafts · ${sessionsList.length} sessions</div>
-        <button class="btn-sm danger" onclick="adminUnlocked=false;renderAdminLock()"><i class="ti ti-lock"></i> Lock</button>
+        <button class="btn-sm danger" id="admin-lock-btn"><i class="ti ti-lock"></i> Lock</button>
       </div>
     </div>
     <div class="admin-tabs">
-      <button class="admin-tab ${adminTab==='rules'?'active':''}" onclick="setAdminTab('rules')">Rules</button>
-      <button class="admin-tab ${adminTab==='bio'?'active':''}" onclick="setAdminTab('bio')">Biomechanics</button>
-      <button class="admin-tab ${adminTab==='equipment'?'active':''}" onclick="setAdminTab('equipment')">Equipment</button>
-      <button class="admin-tab ${adminTab==='addRule'?'active':''}" onclick="setAdminTab('addRule')">+ Rule</button>
-      <button class="admin-tab ${adminTab==='addBio'?'active':''}" onclick="setAdminTab('addBio')">+ Correlation</button>
-      <button class="admin-tab ${adminTab==='addEquip'?'active':''}" onclick="setAdminTab('addEquip')">+ Equipment</button>
+      <button class="admin-tab ${adminTab==='rules'?'active':''}" data-tab="rules">Rules</button>
+      <button class="admin-tab ${adminTab==='bio'?'active':''}" data-tab="bio">Biomechanics</button>
+      <button class="admin-tab ${adminTab==='equipment'?'active':''}" data-tab="equipment">Equipment</button>
+      <button class="admin-tab ${adminTab==='addRule'?'active':''}" data-tab="addRule">+ Rule</button>
+      <button class="admin-tab ${adminTab==='addBio'?'active':''}" data-tab="addBio">+ Correlation</button>
+      <button class="admin-tab ${adminTab==='addEquip'?'active':''}" data-tab="addEquip">+ Equipment</button>
     </div>
     <div id="admin-body"></div>
   </div>`;
@@ -1332,7 +1323,7 @@ function renderAdminBody(){
       <div class="admin-card-cond">${r.condition}</div>
       <div class="admin-card-meta">${r.notes||''}</div>
       ${r.test_tip?`<div style="font-size:11px;color:var(--teal2);margin-top:4px"><i class="ti ti-target" style="vertical-align:-2px;margin-right:3px"></i>${r.test_tip}</div>`:''}
-      <div class="admin-actions"><button class="btn-sm danger" onclick="deleteRule('${r.id}')"><i class="ti ti-trash"></i> Delete</button></div>
+      <div class="admin-actions"><button class="btn-sm danger" data-delete-rule="${r.id}"><i class="ti ti-trash"></i> Delete</button></div>
     </div>`).join('');
   } else if(adminTab==='bio'){
     el.innerHTML=bioCorrelations.length===0?'<div style="color:var(--text3);padding:20px">No correlations.</div>':
@@ -1340,7 +1331,7 @@ function renderAdminBody(){
       <div class="admin-card-title">${bioFields.find(f=>f.id===c.bio_var)?.label||c.bio_var}</div>
       <div class="admin-card-cond">${c.range}</div>
       <div class="admin-card-meta">Shaft: ${c.shaft_profile}<br>Head: ${c.head_profile}<br>${c.notes||''}</div>
-      <div class="admin-actions"><button class="btn-sm danger" onclick="deleteBio('${c.id}')"><i class="ti ti-trash"></i> Delete</button></div>
+      <div class="admin-actions"><button class="btn-sm danger" data-delete-bio="${c.id}"><i class="ti ti-trash"></i> Delete</button></div>
     </div>`).join('');
   } else if(adminTab==='equipment'){
     el.innerHTML=`
@@ -1351,7 +1342,7 @@ function renderAdminBody(){
           <div class="equip-tags"><span class="tag">${h.spin} spin</span><span class="tag">${h.launch} launch</span><span class="tag">CG: ${h.cg}</span><span class="tag">${h.forgiveness}</span></div>
           <div class="equip-meta">${h.swing_speed_min}–${h.swing_speed_max>=999?'∞':h.swing_speed_max} mph · ${h.notes||''}</div>
         </div>
-        <button class="btn-sm danger" onclick="deleteEquip('${h.id}')" style="margin-left:12px"><i class="ti ti-trash"></i></button>
+        <button class="btn-sm danger" data-delete-equip="${h.id}" style="margin-left:12px"><i class="ti ti-trash"></i></button>
       </div>`).join('')}
       <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin:20px 0 10px">Shafts (${equipmentDB.shafts.length})</div>
       ${equipmentDB.shafts.map(s=>`<div class="equip-row">
@@ -1360,7 +1351,7 @@ function renderAdminBody(){
           <div class="equip-tags"><span class="tag">${s.weight}</span><span class="tag">${s.flex}</span><span class="tag">${s.launch} launch</span></div>
           <div class="equip-meta">${s.player_type||''}</div>
         </div>
-        <button class="btn-sm danger" onclick="deleteEquip('${s.id}')" style="margin-left:12px"><i class="ti ti-trash"></i></button>
+        <button class="btn-sm danger" data-delete-equip="${s.id}" style="margin-left:12px"><i class="ti ti-trash"></i></button>
       </div>`).join('')}`;
   } else if(adminTab==='addRule'){
     el.innerHTML=`<div class="admin-card">
@@ -1371,7 +1362,7 @@ function renderAdminBody(){
       <div class="form-group"><label>Notes</label><textarea id="r-notes" rows="2"></textarea></div>
       <div class="form-group"><label>Test tip</label><input id="r-tip" /></div>
       <div class="form-group"><label>Priority</label><select id="r-pri"><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></div>
-      <button class="add-btn" id="add-rule-btn" onclick="addRule()"><i class="ti ti-plus"></i> Add rule</button>
+      <button class="add-btn" id="add-rule-btn"><i class="ti ti-plus"></i> Add rule</button>
       <div id="r-msg"></div>
     </div>`;
   } else if(adminTab==='addBio'){
@@ -1382,13 +1373,13 @@ function renderAdminBody(){
       <div class="form-group"><label>Shaft recommendation</label><input id="bc-shaft" /></div>
       <div class="form-group"><label>Head recommendation</label><input id="bc-head" /></div>
       <div class="form-group"><label>Notes</label><textarea id="bc-notes" rows="2"></textarea></div>
-      <button class="add-btn" id="add-bio-btn" onclick="addBio()"><i class="ti ti-plus"></i> Add correlation</button>
+      <button class="add-btn" id="add-bio-btn"><i class="ti ti-plus"></i> Add correlation</button>
       <div id="bc-msg"></div>
     </div>`;
   } else if(adminTab==='addEquip'){
     el.innerHTML=`<div class="admin-card">
       <div style="font-size:14px;font-weight:600;margin-bottom:14px">Add equipment</div>
-      <div class="form-group"><label>Type</label><select id="eq-type" onchange="renderEquipForm()"><option value="driver">Driver head</option><option value="shaft">Shaft</option></select></div>
+      <div class="form-group"><label>Type</label><select id="eq-type" id="eq-type"><option value="driver">Driver head</option><option value="shaft">Shaft</option></select></div>
       <div id="eq-form"></div>
     </div>`;
     renderEquipForm();
@@ -1412,7 +1403,7 @@ function renderEquipForm(){
       </div>
       <div class="form-group"><label>Notes</label><textarea id="eq-notes" rows="2"></textarea></div>
       <div class="form-group"><label>Test tip</label><input id="eq-tip" /></div>
-      <button class="add-btn" onclick="addEquipment('driver')"><i class="ti ti-plus"></i> Add head</button>
+      <button class="add-btn" data-add-equip="driver"><i class="ti ti-plus"></i> Add head</button>
       <div id="eq-msg"></div>`;
   } else {
     el.innerHTML=`
@@ -1427,7 +1418,7 @@ function renderEquipForm(){
       </div>
       <div class="form-group"><label>Player type</label><input id="eq-player" /></div>
       <div class="form-group"><label>Test tip</label><input id="eq-tip" /></div>
-      <button class="add-btn" onclick="addEquipment('shaft')"><i class="ti ti-plus"></i> Add shaft</button>
+      <button class="add-btn" data-add-equip="shaft"><i class="ti ti-plus"></i> Add shaft</button>
       <div id="eq-msg"></div>`;
   }
 }
@@ -1470,6 +1461,66 @@ async function addEquipment(type){
 async function deleteRule(id){if(!confirm('Delete rule?'))return;await db.from('rules').delete().eq('id',id);await loadAll();renderAdminBody();toast('Deleted');}
 async function deleteBio(id){if(!confirm('Delete correlation?'))return;await db.from('bio_correlations').delete().eq('id',id);await loadAll();renderAdminBody();toast('Deleted');}
 async function deleteEquip(id){if(!confirm('Remove equipment?'))return;await db.from('equipment').delete().eq('id',id);await loadAll();renderAdminBody();toast('Removed');}
+
+// ── EVENT DELEGATION (CSP-safe, replaces all inline onclick) ─────────────────
+document.addEventListener('click', function(e) {
+  // Chip buttons
+  const chip = e.target.closest('[data-chip]');
+  if(chip) { setChip(chip.dataset.chip, chip.dataset.val); return; }
+
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  const id = btn.id;
+
+  // Nav
+  if(id==='nav-fitting')  { showPage('fitting');  return; }
+  if(id==='nav-sessions') { showPage('sessions'); return; }
+  if(id==='nav-admin')    { showPage('admin');    return; }
+
+  // Fitting
+  if(id==='run-btn')   { runFitting();   return; }
+  if(id==='clear-btn') { clearFitting(); return; }
+
+  // Admin
+  if(id==='pw-btn') { tryUnlock(); return; }
+  if(id==='add-rule-btn') { addRule(); return; }
+  if(id==='add-bio-btn')  { addBio();  return; }
+  if(id==='admin-lock-btn') { adminUnlocked=false; renderAdminLock(); return; }
+
+  // Admin tabs
+  if(btn.dataset.tab) { setAdminTab(btn.dataset.tab); return; }
+
+  // Equipment add buttons (rendered dynamically, use text content)
+  if(btn && btn.dataset.addEquip) { addEquipment(btn.dataset.addEquip); return; }
+
+  // Delete buttons with data-id
+  if(btn.dataset.deleteRule)  { deleteRule(btn.dataset.deleteRule);   return; }
+  if(btn.dataset.deleteBio)   { deleteBio(btn.dataset.deleteBio);     return; }
+  if(btn.dataset.deleteEquip) { deleteEquip(btn.dataset.deleteEquip); return; }
+  if(btn.dataset.deleteSession) {
+    e.stopPropagation();
+    deleteSession(btn.dataset.deleteSession);
+    return;
+  }
+  // Session list div clicks
+  const sessionItem = e.target.closest('[data-load-session]');
+  if(sessionItem && !e.target.closest('[data-delete-session]')) {
+    loadSession(sessionItem.dataset.loadSession); return;
+  }
+
+  if(btn && btn.dataset.loadSession) { loadSession(btn.dataset.loadSession); return; }
+});
+
+document.addEventListener('change', function(e) {
+  if(e.target.id === 'eq-type') { renderEquipForm(); return; }
+});
+
+document.addEventListener('keydown', function(e) {
+  if(e.key==='Enter') {
+    const pw = document.getElementById('pw-input');
+    if(pw && document.activeElement === pw) tryUnlock();
+  }
+});
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 loadAll().then(()=>showPage('fitting'));
