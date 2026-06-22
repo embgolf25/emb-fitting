@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0052)file:///Users/edmundbroderick/Downloads/index_6.html -->
+<!-- saved from url=(0052)file:///Users/edmundbroderick/Downloads/index_7.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -272,145 +272,168 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
   </div>
 </div>
 
-<div class="main" id="main-wrap">
-    <div class="fit-left" id="fit-left">
+<!-- FITTING PAGE (static HTML, always present, shown/hidden by JS) -->
+<div class="main" id="page-fitting" style="display:flex">
+  <div class="fit-left" id="fit-left">
 
-      <!-- SECTION 1: PLAYER INFO -->
-      <div class="fit-section">
-        <div class="step-label"><div class="step-num">1</div><div class="step-title">Player Info</div></div>
-        <div class="field-row cols2" style="margin-bottom:10px">
-          <div class="field"><label>Player name</label><input id="f-name" placeholder="Full name"></div>
-          <div class="field"><label>Handicap</label><input id="f-hdcp" type="number" placeholder="12"></div>
-        </div>
-        <div class="field-row cols2" style="margin-bottom:10px">
-          <div class="field"><label>Current gamer</label><input id="f-gamer" placeholder="e.g. TSR2 / Ventus Blue"></div>
-          <div class="field"><label>Ball played</label>
-            <select id="f-ball">
-              <option value="">— Select ball —</option>
-              <option value="Titleist Pro V1">Titleist Pro V1</option><option value="Titleist Pro V1x">Titleist Pro V1x</option><option value="Titleist Pro V1 Left Dot">Titleist Pro V1 Left Dot</option><option value="Titleist Pro V1x Left Dash">Titleist Pro V1x Left Dash</option><option value="Titleist AVX">Titleist AVX</option><option value="TaylorMade TP5">TaylorMade TP5</option><option value="TaylorMade TP5x">TaylorMade TP5x</option><option value="Callaway Chrome Tour">Callaway Chrome Tour</option><option value="Callaway Chrome Tour X">Callaway Chrome Tour X</option><option value="Callaway Chrome Tour Triple Diamond">Callaway Chrome Tour Triple Diamond</option><option value="Srixon Z-Star">Srixon Z-Star</option><option value="Srixon Z-Star Diamond">Srixon Z-Star Diamond</option><option value="Srixon Z-Star XV">Srixon Z-Star XV</option><option value="Bridgestone Tour B X">Bridgestone Tour B X</option><option value="Bridgestone Tour B XS">Bridgestone Tour B XS</option><option value="Wilson Staff Model X">Wilson Staff Model X</option><option value="Maxfli Tour X">Maxfli Tour X</option>
-            </select>
-          </div>
-        </div>
+    <div class="fit-section">
+      <div class="step-label"><div class="step-num">1</div><div class="step-title">Player Info</div></div>
+      <div class="field-row cols2" style="margin-bottom:10px">
+        <div class="field"><label>Player name</label><input id="f-name" placeholder="Full name"></div>
+        <div class="field"><label>Handicap</label><input id="f-hdcp" type="number" placeholder="12"></div>
       </div>
-
-      <!-- SECTION 2: SWING PROFILE -->
-      <div class="fit-section">
-        <div class="step-label"><div class="step-num">2</div><div class="step-title">Swing Profile</div></div>
-
-        <div class="chip-section">
-          <div class="chip-section-label">Grip type</div>
-          <div class="chip-row">
-            <button class="chip " data-chip="grip" data-val="On Top">On Top</button>
-            <button class="chip " data-chip="grip" data-val="Under">Under</button>
-            <button class="chip " data-chip="grip" data-val="Side On">Side On</button>
-          </div>
-        </div>
-        <div class="chip-section">
-          <div class="chip-section-label">Post position</div>
-          <div class="chip-row">
-            <button class="chip " data-chip="post" data-val="Front">Front</button>
-            <button class="chip " data-chip="post" data-val="Center">Center</button>
-            <button class="chip " data-chip="post" data-val="Rear">Rear</button>
-          </div>
-        </div>
-        <div class="chip-section">
-          <div class="chip-section-label">Shot shape</div>
-          <div class="chip-row">
-            <button class="chip " data-chip="shotShape" data-val="Fade">Fade</button>
-            <button class="chip " data-chip="shotShape" data-val="Draw">Draw</button>
-            <button class="chip" data-chip="shotShape" data-val="Straight">Straight</button>
-            <button class="chip selected" data-chip="shotShape" data-val="Both">Both</button>
-          </div>
-        </div>
-        <div class="chip-section" style="margin-bottom:0">
-          <div class="chip-section-label">Tempo</div>
-          <div class="chip-row">
-            <button class="chip " data-chip="tempo" data-val="Slow">Slow</button>
-            <button class="chip " data-chip="tempo" data-val="Medium">Medium</button>
-            <button class="chip " data-chip="tempo" data-val="Fast">Fast</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- SECTION 3: SPORTSBOX -->
-      <div class="fit-section">
-        <div class="step-label"><div class="step-num">3</div><div class="step-title">SportsBox AI Metrics</div></div>
-        <div class="sb-strip">
-          
-          <div class="sb-cell">
-            <div class="sb-cell-name">Sway Gap</div>
-            <input id="bio-swayGap" type="number" step="0.1" placeholder="—" oninput="liveUpdate()">
-            <div class="sb-cell-unit">in</div>
-          </div>
-          <div class="sb-cell">
-            <div class="sb-cell-name">Chest Lift</div>
-            <input id="bio-chestLift" type="number" step="0.1" placeholder="—" oninput="liveUpdate()">
-            <div class="sb-cell-unit">in</div>
-          </div>
-          <div class="sb-cell">
-            <div class="sb-cell-name">Lead Elbow</div>
-            <input id="bio-leadElbow" type="number" step="0.1" placeholder="—" oninput="liveUpdate()">
-            <div class="sb-cell-unit">deg</div>
-          </div>
-          <div class="sb-cell">
-            <div class="sb-cell-name">Club/Hand</div>
-            <input id="bio-clubHandGap" type="number" step="0.1" placeholder="—" oninput="liveUpdate()">
-            <div class="sb-cell-unit">in</div>
-          </div>
-          <div class="sb-cell">
-            <div class="sb-cell-name">Pelvis Sway</div>
-            <input id="bio-pelvisSway" type="number" step="0.1" placeholder="—" oninput="liveUpdate()">
-            <div class="sb-cell-unit">in</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- SECTION 4: LAUNCH MONITOR -->
-      <div class="fit-section">
-        <div class="step-label"><div class="step-num">4</div><div class="step-title">Launch Monitor</div></div>
-        <div class="lm-strip" style="margin-bottom:10px">
-          <div class="lm-cell"><label>Swing Speed</label><input id="f-ss" type="number" placeholder="95" oninput="liveUpdate()"><div class="lm-unit">mph</div></div>
-          <div class="lm-cell"><label>Ball Speed</label><input id="f-bs" type="number" placeholder="140"><div class="lm-unit">mph</div></div>
-          <div class="lm-cell"><label>Spin Rate</label><input id="f-sr" type="number" placeholder="2400" oninput="liveUpdate()"><div class="lm-unit">rpm</div></div>
-          <div class="lm-cell"><label>Attack Angle</label><input id="f-aa" type="number" step="0.1" placeholder="-2.5"><div class="lm-unit">deg</div></div>
-        </div>
-        <div class="lm-strip">
-          <div class="lm-cell"><label>Launch Angle</label><input id="f-la" type="number" step="0.1" placeholder="12.5"><div class="lm-unit">deg</div></div>
-          <div class="lm-cell"><label>Club Path</label><input id="f-cp" type="number" step="0.1" placeholder="-1.5"><div class="lm-unit">deg</div></div>
-          <div class="lm-cell"><label>Dynamic Loft</label><input id="f-dl" type="number" step="0.1" placeholder="15.2"><div class="lm-unit">deg</div></div>
-          <div class="lm-cell"><label>Smash Factor</label><input id="f-smash" type="number" step="0.01" placeholder="1.47"><div class="lm-unit">ratio</div></div>
-        </div>
-      </div>
-
-      <!-- SECTION 5: NOTES -->
-      <div class="fit-section">
-        <div class="step-label"><div class="step-num">5</div><div class="step-title">Notes</div></div>
-        <textarea id="f-notes" class="notes-field" rows="3" placeholder="Observations, tendencies, goals..."></textarea>
-      </div>
-
-      <!-- RUN BUTTON - sticky inside fit-left -->
-      <div class="run-area">
-        <button class="run-btn" id="run-btn"><i class="ti ti-player-play"></i> Run Fitting</button>
-        <button class="clear-btn" id="clear-btn">Clear all fields</button>
-      </div>
-
-    </div><!-- /fit-left -->
-
-    <div class="fit-right" id="fit-right">
-      <div id="results-panel">
-        <div class="results-empty">
-          <i class="ti ti-adjustments-horizontal"></i>
-          <div class="results-empty-title">Ready to fit</div>
-          <div class="results-empty-sub">Fill in the player's info and click Run Fitting to see recommendations here.</div>
+      <div class="field-row cols2" style="margin-bottom:10px">
+        <div class="field"><label>Current gamer</label><input id="f-gamer" placeholder="e.g. TSR2 / Ventus Blue"></div>
+        <div class="field"><label>Ball played</label>
+          <select id="f-ball">
+            <option value="">— Select ball —</option>
+          <option value="Titleist Pro V1">Titleist Pro V1</option><option value="Titleist Pro V1x">Titleist Pro V1x</option><option value="Titleist Pro V1 Left Dot">Titleist Pro V1 Left Dot</option><option value="Titleist Pro V1x Left Dash">Titleist Pro V1x Left Dash</option><option value="Titleist AVX">Titleist AVX</option><option value="TaylorMade TP5">TaylorMade TP5</option><option value="TaylorMade TP5x">TaylorMade TP5x</option><option value="Callaway Chrome Tour">Callaway Chrome Tour</option><option value="Callaway Chrome Tour X">Callaway Chrome Tour X</option><option value="Callaway Chrome Tour Triple Diamond">Callaway Chrome Tour Triple Diamond</option><option value="Srixon Z-Star">Srixon Z-Star</option><option value="Srixon Z-Star Diamond">Srixon Z-Star Diamond</option><option value="Srixon Z-Star XV">Srixon Z-Star XV</option><option value="Bridgestone Tour B X">Bridgestone Tour B X</option><option value="Bridgestone Tour B XS">Bridgestone Tour B XS</option><option value="Wilson Staff Model X">Wilson Staff Model X</option><option value="Maxfli Tour X">Maxfli Tour X</option></select>
         </div>
       </div>
     </div>
+
+    <div class="fit-section">
+      <div class="step-label"><div class="step-num">2</div><div class="step-title">Swing Profile</div></div>
+      <div class="chip-section">
+        <div class="chip-section-label">Grip type</div>
+        <div class="chip-row">
+          <button class="chip" data-chip="grip" data-val="On Top">On Top</button>
+          <button class="chip" data-chip="grip" data-val="Under">Under</button>
+          <button class="chip selected" data-chip="grip" data-val="Side On">Side On</button>
+        </div>
+      </div>
+      <div class="chip-section">
+        <div class="chip-section-label">Post position</div>
+        <div class="chip-row">
+          <button class="chip" data-chip="post" data-val="Front">Front</button>
+          <button class="chip selected" data-chip="post" data-val="Center">Center</button>
+          <button class="chip" data-chip="post" data-val="Rear">Rear</button>
+        </div>
+      </div>
+      <div class="chip-section">
+        <div class="chip-section-label">Shot shape</div>
+        <div class="chip-row">
+          <button class="chip" data-chip="shotShape" data-val="Fade">Fade</button>
+          <button class="chip" data-chip="shotShape" data-val="Draw">Draw</button>
+          <button class="chip" data-chip="shotShape" data-val="Straight">Straight</button>
+          <button class="chip" data-chip="shotShape" data-val="Both">Both</button>
+        </div>
+      </div>
+      <div class="chip-section" style="margin-bottom:0">
+        <div class="chip-section-label">Tempo</div>
+        <div class="chip-row">
+          <button class="chip" data-chip="tempo" data-val="Slow">Slow</button>
+          <button class="chip" data-chip="tempo" data-val="Medium">Medium</button>
+          <button class="chip selected" data-chip="tempo" data-val="Fast">Fast</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="fit-section">
+      <div class="step-label"><div class="step-num">3</div><div class="step-title">SportsBox AI Metrics</div></div>
+      <div class="sb-strip">
+        <div class="sb-cell"><div class="sb-cell-name">Sway Gap</div><input id="bio-swayGap" type="number" step="0.1" placeholder="—"><div class="sb-cell-unit">in</div></div>
+        <div class="sb-cell"><div class="sb-cell-name">Chest Lift</div><input id="bio-chestLift" type="number" step="0.1" placeholder="—"><div class="sb-cell-unit">in</div></div>
+        <div class="sb-cell"><div class="sb-cell-name">Lead Elbow</div><input id="bio-leadElbow" type="number" step="0.1" placeholder="—"><div class="sb-cell-unit">deg</div></div>
+        <div class="sb-cell"><div class="sb-cell-name">Club/Hand</div><input id="bio-clubHandGap" type="number" step="0.1" placeholder="—"><div class="sb-cell-unit">in</div></div>
+        <div class="sb-cell"><div class="sb-cell-name">Pelvis Sway</div><input id="bio-pelvisSway" type="number" step="0.1" placeholder="—"><div class="sb-cell-unit">in</div></div>
+      </div>
+    </div>
+
+    <div class="fit-section">
+      <div class="step-label"><div class="step-num">4</div><div class="step-title">Launch Monitor</div></div>
+      <div class="lm-strip" style="margin-bottom:10px">
+        <div class="lm-cell"><label>Swing Speed</label><input id="f-ss" type="number" placeholder="95"><div class="lm-unit">mph</div></div>
+        <div class="lm-cell"><label>Ball Speed</label><input id="f-bs" type="number" placeholder="140"><div class="lm-unit">mph</div></div>
+        <div class="lm-cell"><label>Spin Rate</label><input id="f-sr" type="number" placeholder="2400"><div class="lm-unit">rpm</div></div>
+        <div class="lm-cell"><label>Attack Angle</label><input id="f-aa" type="number" step="0.1" placeholder="-2.5"><div class="lm-unit">deg</div></div>
+      </div>
+      <div class="lm-strip">
+        <div class="lm-cell"><label>Launch Angle</label><input id="f-la" type="number" step="0.1" placeholder="12.5"><div class="lm-unit">deg</div></div>
+        <div class="lm-cell"><label>Club Path</label><input id="f-cp" type="number" step="0.1" placeholder="-1.5"><div class="lm-unit">deg</div></div>
+        <div class="lm-cell"><label>Dynamic Loft</label><input id="f-dl" type="number" step="0.1" placeholder="15.2"><div class="lm-unit">deg</div></div>
+        <div class="lm-cell"><label>Smash Factor</label><input id="f-smash" type="number" step="0.01" placeholder="1.47"><div class="lm-unit">ratio</div></div>
+      </div>
+    </div>
+
+    <div class="fit-section">
+      <div class="step-label"><div class="step-num">5</div><div class="step-title">Notes</div></div>
+      <textarea id="f-notes" class="notes-field" rows="3" placeholder="Observations, tendencies, goals..."></textarea>
+    </div>
+
+    <div class="run-area">
+      <button class="run-btn" id="run-btn"><i class="ti ti-player-play"></i> Run Fitting</button>
+      <button class="clear-btn" id="clear-btn">Clear all fields</button>
+    </div>
+
+  </div><!-- /fit-left -->
+
+  <div class="fit-right">
+    <div id="results-panel">
+      <div class="results-empty">
+        <i class="ti ti-adjustments-horizontal"></i>
+        <div class="results-empty-title">Ready to fit</div>
+        <div class="results-empty-sub">Fill in the player info and click Run Fitting to see recommendations here.</div>
+      </div>
+    </div>
   </div>
+</div><!-- /page-fitting -->
+
+<!-- SESSIONS PAGE -->
+<div class="main" id="page-sessions" style="display:none">
+  <div style="flex:1;overflow-y:auto;padding:28px;max-width:900px;margin:0 auto;width:100%">
+    <div style="margin-bottom:20px">
+      <div style="font-size:18px;font-weight:700;margin-bottom:4px">Fitting sessions</div>
+      <div style="font-size:13px;color:var(--text3)" id="sessions-count">0 sessions saved.</div>
+    </div>
+    <div id="sessions-list"></div>
+  </div>
+</div>
+
+<!-- ADMIN PAGE -->
+<div class="main" id="page-admin" style="display:none">
+  <div style="flex:1;overflow-y:auto;padding:28px;max-width:900px;margin:0 auto;width:100%" id="admin-wrap">
+    <div class="admin-lock" id="admin-lock-screen">
+      <i class="ti ti-shield-lock" style="font-size:38px;color:var(--text3)"></i>
+      <div style="font-size:18px;font-weight:700">Admin access required</div>
+      <div style="font-size:13px;color:var(--text3)">Manage rules, correlations, and equipment.</div>
+      <div class="pw-row">
+        <input type="password" id="pw-input" placeholder="Password">
+        <button class="pw-btn" id="pw-btn">Unlock</button>
+      </div>
+      <div class="pw-err" id="pw-err"></div>
+    </div>
+    <div id="admin-content" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <div style="font-size:18px;font-weight:700">Admin</div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="font-size:12px;color:var(--text3)" id="admin-stats"></div>
+          <button class="btn-sm danger" id="admin-lock-btn"><i class="ti ti-lock"></i> Lock</button>
+        </div>
+      </div>
+      <div class="admin-tabs">
+        <button class="admin-tab active" data-tab="rules">Rules</button>
+        <button class="admin-tab" data-tab="bio">Biomechanics</button>
+        <button class="admin-tab" data-tab="equipment">Equipment</button>
+        <button class="admin-tab" data-tab="addRule">+ Rule</button>
+        <button class="admin-tab" data-tab="addBio">+ Correlation</button>
+        <button class="admin-tab" data-tab="addEquip">+ Equipment</button>
+      </div>
+      <div id="admin-body"></div>
+    </div>
+  </div>
+</div>
 
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
+// ── DEBUG: confirm script is running ────────────────────────────────────────
+console.log('EMB Fitting script loaded');
+window.addEventListener('error', function(e) {
+  console.error('JS Error:', e.message, 'at', e.filename, e.lineno);
+});
+
 // ── SUPABASE ──────────────────────────────────────────────────────────────────
 const SUPABASE_URL = 'https://dfsuklaobtdpfkorqluq.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmc3VrbGFvYnRkcGZrb3JxbHVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0ODA5MTcsImV4cCI6MjA5NzA1NjkxN30.Z9MtgZr0asFMXdnMx65OCQn1tNCeRfaJnz6U0Qy1gEw';
@@ -549,129 +572,39 @@ function showPage(page){
   currentPage=page;
   ['fitting','sessions','admin'].forEach(p=>{
     document.getElementById('nav-'+p).classList.toggle('active',p===page);
+    document.getElementById('page-'+p).style.display = p===page ? 'flex' : 'none';
   });
-  if(page==='fitting') renderFitting();
-  else if(page==='sessions') renderSessions();
-  else if(page==='admin'){ if(!adminUnlocked) renderAdminLock(); else renderAdmin(); }
+  if(page==='sessions') renderSessions();
+  if(page==='admin') renderAdminPage();
+}
+
+function renderAdminPage(){
+  if(!adminUnlocked){
+    document.getElementById('admin-lock-screen').style.display='';
+    document.getElementById('admin-content').style.display='none';
+  } else {
+    document.getElementById('admin-lock-screen').style.display='none';
+    document.getElementById('admin-content').style.display='';
+    document.getElementById('admin-stats').textContent=`${rulesDB.length} rules · ${equipmentDB.drivers.length} heads · ${equipmentDB.shafts.length} shafts · ${sessionsList.length} sessions`;
+    renderAdminBody();
+  }
 }
 
 // ── FITTING PAGE ──────────────────────────────────────────────────────────────
 function renderFitting(){
-  document.getElementById('main-wrap').innerHTML = `
-    <div class="fit-left" id="fit-left">
-
-      <!-- SECTION 1: PLAYER INFO -->
-      <div class="fit-section">
-        <div class="step-label"><div class="step-num">1</div><div class="step-title">Player Info</div></div>
-        <div class="field-row cols2" style="margin-bottom:10px">
-          <div class="field"><label>Player name</label><input id="f-name" placeholder="Full name" /></div>
-          <div class="field"><label>Handicap</label><input id="f-hdcp" type="number" placeholder="12" /></div>
-        </div>
-        <div class="field-row cols2" style="margin-bottom:10px">
-          <div class="field"><label>Current gamer</label><input id="f-gamer" placeholder="e.g. TSR2 / Ventus Blue" /></div>
-          <div class="field"><label>Ball played</label>
-            <select id="f-ball">
-              <option value="">— Select ball —</option>
-              ${BALL_DB.map(b=>`<option value="${b.name}">${b.name}</option>`).join('')}
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- SECTION 2: SWING PROFILE -->
-      <div class="fit-section">
-        <div class="step-label"><div class="step-num">2</div><div class="step-title">Swing Profile</div></div>
-
-        <div class="chip-section">
-          <div class="chip-section-label">Grip type</div>
-          <div class="chip-row">
-            <button class="chip ${fittingState.grip==='On Top'?'selected':''}" data-chip="grip" data-val="On Top">On Top</button>
-            <button class="chip ${fittingState.grip==='Under'?'selected':''}" data-chip="grip" data-val="Under">Under</button>
-            <button class="chip ${fittingState.grip==='Side On'?'selected':''}" data-chip="grip" data-val="Side On">Side On</button>
-          </div>
-        </div>
-        <div class="chip-section">
-          <div class="chip-section-label">Post position</div>
-          <div class="chip-row">
-            <button class="chip ${fittingState.post==='Front'?'selected':''}" data-chip="post" data-val="Front">Front</button>
-            <button class="chip ${fittingState.post==='Center'?'selected':''}" data-chip="post" data-val="Center">Center</button>
-            <button class="chip ${fittingState.post==='Rear'?'selected':''}" data-chip="post" data-val="Rear">Rear</button>
-          </div>
-        </div>
-        <div class="chip-section">
-          <div class="chip-section-label">Shot shape</div>
-          <div class="chip-row">
-            <button class="chip ${fittingState.shotShape==='Fade'?'selected':''}" data-chip="shotShape" data-val="Fade">Fade</button>
-            <button class="chip ${fittingState.shotShape==='Draw'?'selected':''}" data-chip="shotShape" data-val="Draw">Draw</button>
-            <button class="chip ${fittingState.shotShape==='Straight'?'selected':''}" data-chip="shotShape" data-val="Straight">Straight</button>
-            <button class="chip ${fittingState.shotShape==='Both'?'selected':''}" data-chip="shotShape" data-val="Both">Both</button>
-          </div>
-        </div>
-        <div class="chip-section" style="margin-bottom:0">
-          <div class="chip-section-label">Tempo</div>
-          <div class="chip-row">
-            <button class="chip ${fittingState.tempo==='Slow'?'selected':''}" data-chip="tempo" data-val="Slow">Slow</button>
-            <button class="chip ${fittingState.tempo==='Medium'?'selected':''}" data-chip="tempo" data-val="Medium">Medium</button>
-            <button class="chip ${fittingState.tempo==='Fast'?'selected':''}" data-chip="tempo" data-val="Fast">Fast</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- SECTION 3: SPORTSBOX -->
-      <div class="fit-section">
-        <div class="step-label"><div class="step-num">3</div><div class="step-title">SportsBox AI Metrics</div></div>
-        <div class="sb-strip">
-          ${bioFields.map(f=>`
-          <div class="sb-cell">
-            <div class="sb-cell-name">${f.shortLabel}</div>
-            <input id="bio-${f.id}" type="number" step="0.1" placeholder="—" oninput="liveUpdate()" />
-            <div class="sb-cell-unit">${f.unit}</div>
-          </div>`).join('')}
-        </div>
-      </div>
-
-      <!-- SECTION 4: LAUNCH MONITOR -->
-      <div class="fit-section">
-        <div class="step-label"><div class="step-num">4</div><div class="step-title">Launch Monitor</div></div>
-        <div class="lm-strip" style="margin-bottom:10px">
-          <div class="lm-cell"><label>Swing Speed</label><input id="f-ss" type="number" placeholder="95" oninput="liveUpdate()" /><div class="lm-unit">mph</div></div>
-          <div class="lm-cell"><label>Ball Speed</label><input id="f-bs" type="number" placeholder="140" /><div class="lm-unit">mph</div></div>
-          <div class="lm-cell"><label>Spin Rate</label><input id="f-sr" type="number" placeholder="2400" oninput="liveUpdate()" /><div class="lm-unit">rpm</div></div>
-          <div class="lm-cell"><label>Attack Angle</label><input id="f-aa" type="number" step="0.1" placeholder="-2.5" /><div class="lm-unit">deg</div></div>
-        </div>
-        <div class="lm-strip">
-          <div class="lm-cell"><label>Launch Angle</label><input id="f-la" type="number" step="0.1" placeholder="12.5" /><div class="lm-unit">deg</div></div>
-          <div class="lm-cell"><label>Club Path</label><input id="f-cp" type="number" step="0.1" placeholder="-1.5" /><div class="lm-unit">deg</div></div>
-          <div class="lm-cell"><label>Dynamic Loft</label><input id="f-dl" type="number" step="0.1" placeholder="15.2" /><div class="lm-unit">deg</div></div>
-          <div class="lm-cell"><label>Smash Factor</label><input id="f-smash" type="number" step="0.01" placeholder="1.47" /><div class="lm-unit">ratio</div></div>
-        </div>
-      </div>
-
-      <!-- SECTION 5: NOTES -->
-      <div class="fit-section">
-        <div class="step-label"><div class="step-num">5</div><div class="step-title">Notes</div></div>
-        <textarea id="f-notes" class="notes-field" rows="3" placeholder="Observations, tendencies, goals..."></textarea>
-      </div>
-
-      <!-- RUN BUTTON - sticky inside fit-left -->
-      <div class="run-area">
-        <button class="run-btn" id="run-btn"><i class="ti ti-player-play"></i> Run Fitting</button>
-        <button class="clear-btn" id="clear-btn">Clear all fields</button>
-      </div>
-
-    </div><!-- /fit-left -->
-
-    <div class="fit-right" id="fit-right">
-      <div id="results-panel">
-        <div class="results-empty">
-          <i class="ti ti-adjustments-horizontal"></i>
-          <div class="results-empty-title">Ready to fit</div>
-          <div class="results-empty-sub">Fill in the player's info and click Run Fitting to see recommendations here.</div>
-        </div>
-      </div>
-    </div>
-  `;
+  // Page is static HTML — just restore saved field values and update chips
   restoreFields();
+  renderChips();
+  // Populate ball select if empty
+  const ballSel = document.getElementById('f-ball');
+  if(ballSel && ballSel.options.length <= 1) {
+    BALL_DB.forEach(b => {
+      const opt = document.createElement('option');
+      opt.value = b.name;
+      opt.textContent = b.name;
+      ballSel.appendChild(opt);
+    });
+  }
 }
 
 function setChip(field,value){
@@ -1213,13 +1146,15 @@ async function saveSession(d,recs,insight){
 
 // ── SESSIONS PAGE ─────────────────────────────────────────────────────────────
 function renderSessions(){
-  document.getElementById('main-wrap').innerHTML=`<div class="page-full">
-    <div style="margin-bottom:20px">
-      <div style="font-size:18px;font-weight:700;margin-bottom:4px">Fitting sessions</div>
-      <div style="font-size:13px;color:var(--text3)">${sessionsList.length} sessions saved.</div>
-    </div>
-    ${sessionsList.length===0?`<div style="color:var(--text3);text-align:center;padding:60px 0">No sessions yet. Run a fitting to save one.</div>`:''}
-    ${sessionsList.map(s=>`
+  const countEl = document.getElementById('sessions-count');
+  const listEl  = document.getElementById('sessions-list');
+  if(!countEl || !listEl) return;
+  countEl.textContent = sessionsList.length + ' sessions saved.';
+  if(sessionsList.length===0){
+    listEl.innerHTML='<div style="color:var(--text3);text-align:center;padding:60px 0">No sessions yet. Run a fitting to save one.</div>';
+    return;
+  }
+  listEl.innerHTML = sessionsList.map(s=>`
     <div class="session-list-item" data-load-session="${s.id}" style="cursor:pointer">
       <div>
         <div class="session-list-name">${s.player_name||'Unnamed player'}</div>
@@ -1227,8 +1162,7 @@ function renderSessions(){
         ${s.recommendations?`<div style="font-size:11px;color:var(--teal2);margin-top:2px">${JSON.parse(s.recommendations).heads?.[0]||''}</div>`:''}
       </div>
       <button class="btn-sm danger" data-delete-session="${s.id}"><i class="ti ti-trash"></i></button>
-    </div>`).join('')}
-  </div>`;
+    </div>`).join('');
 }
 
 async function loadSession(id){
@@ -1247,8 +1181,9 @@ async function loadSession(id){
   currentSession={data:d,recs};
   aiInsight=s.ai_insight||'';
   document.getElementById('session-label').textContent=d.name||'Loaded session';
+  // Switch to fitting page then show results
   showPage('fitting');
-  setTimeout(()=>renderResultsPanel(d,recs,false),50);
+  renderResultsPanel(d,recs,false);
 }
 
 async function deleteSession(id){
@@ -1259,46 +1194,22 @@ async function deleteSession(id){
 }
 
 // ── ADMIN ─────────────────────────────────────────────────────────────────────
-function renderAdminLock(){
-  document.getElementById('main-wrap').innerHTML=`<div class="page-full">
-    <div class="admin-lock">
-      <i class="ti ti-shield-lock"></i>
-      <div style="font-size:18px;font-weight:700">Admin access required</div>
-      <div style="font-size:13px;color:var(--text3)">Manage rules, correlations, and equipment.</div>
-      <div class="pw-row">
-        <input type="password" id="pw-input" placeholder="Password" id="pw-input-field" />
-        <button class="pw-btn" id="pw-btn">Unlock</button>
-      </div>
-      <div class="pw-err" id="pw-err"></div>
-    </div>
-  </div>`;
-}
+function renderAdminLock(){ renderAdminPage(); }
 
 function tryUnlock(){
-  if(document.getElementById('pw-input').value===ADMIN_PASS){adminUnlocked=true;renderAdmin();}
-  else document.getElementById('pw-err').textContent='Incorrect password.';
+  const pw = document.getElementById('pw-input');
+  if(pw && pw.value===ADMIN_PASS){
+    adminUnlocked=true;
+    document.getElementById('pw-err').textContent='';
+    renderAdminPage();
+  } else {
+    const err = document.getElementById('pw-err');
+    if(err) err.textContent='Incorrect password.';
+  }
 }
 
 function renderAdmin(){
-  document.getElementById('main-wrap').innerHTML=`<div class="page-full">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-      <div style="font-size:18px;font-weight:700">Admin</div>
-      <div style="display:flex;align-items:center;gap:12px">
-        <div style="font-size:12px;color:var(--text3)">${rulesDB.length} rules · ${equipmentDB.drivers.length} heads · ${equipmentDB.shafts.length} shafts · ${sessionsList.length} sessions</div>
-        <button class="btn-sm danger" id="admin-lock-btn"><i class="ti ti-lock"></i> Lock</button>
-      </div>
-    </div>
-    <div class="admin-tabs">
-      <button class="admin-tab ${adminTab==='rules'?'active':''}" data-tab="rules">Rules</button>
-      <button class="admin-tab ${adminTab==='bio'?'active':''}" data-tab="bio">Biomechanics</button>
-      <button class="admin-tab ${adminTab==='equipment'?'active':''}" data-tab="equipment">Equipment</button>
-      <button class="admin-tab ${adminTab==='addRule'?'active':''}" data-tab="addRule">+ Rule</button>
-      <button class="admin-tab ${adminTab==='addBio'?'active':''}" data-tab="addBio">+ Correlation</button>
-      <button class="admin-tab ${adminTab==='addEquip'?'active':''}" data-tab="addEquip">+ Equipment</button>
-    </div>
-    <div id="admin-body"></div>
-  </div>`;
-  renderAdminBody();
+  renderAdminPage();
 }
 
 function setAdminTab(tab){
@@ -1511,6 +1422,14 @@ document.addEventListener('click', function(e) {
   if(btn && btn.dataset.loadSession) { loadSession(btn.dataset.loadSession); return; }
 });
 
+document.addEventListener('input', function(e) {
+  const liveIds = ['f-ss','f-sr'];
+  const liveBio = ['bio-swayGap','bio-chestLift','bio-leadElbow','bio-clubHandGap','bio-pelvisSway'];
+  if(liveIds.includes(e.target.id) || liveBio.includes(e.target.id)) {
+    liveUpdate();
+  }
+});
+
 document.addEventListener('change', function(e) {
   if(e.target.id === 'eq-type') { renderEquipForm(); return; }
 });
@@ -1523,7 +1442,19 @@ document.addEventListener('keydown', function(e) {
 });
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
-loadAll().then(()=>showPage('fitting'));
+loadAll().then(()=>{
+  // Populate ball dropdown (static HTML element)
+  const ballSel = document.getElementById('f-ball');
+  if(ballSel) {
+    BALL_DB.forEach(b => {
+      const opt = document.createElement('option');
+      opt.value = b.name;
+      opt.textContent = b.name;
+      ballSel.appendChild(opt);
+    });
+  }
+  showPage('fitting');
+});
 </script>
 
 
