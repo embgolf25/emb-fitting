@@ -1081,6 +1081,7 @@ function renderResults() {
       <div style="font-size:12px;color:var(--text);font-weight:500;margin-bottom:3px">${spinLabel} (${recs.ballSpinVal}/5) → ${cgAction}${loftNote}</div>
       <div style="font-size:11px;color:var(--text3)">${recs.ballData.notes}</div>
     </div>`;
+  }
 
   if(recs.matchedRules.length||recs.bioMatches.length||recs.gripSignals?.length) {
     html += `<div class="rules-strip">
