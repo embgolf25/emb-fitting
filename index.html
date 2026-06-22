@@ -695,22 +695,33 @@ function buildRecommendations(d) {
   else if(neutralCount > drawBiasCount) headBias = 'neutral';
   else headBias = 'neutral'; // tie = neutral, never assume draw-bias
 
+  // ── TORQUE TARGET FROM GRIP TYPE ────────────────────────────────────────────
+  // Grip type correlates to release timing which directly affects how much
+  // torque resistance a player needs:
+  // On Top  → earlier release, face closing fast → lower torque (2) to resist over-rotation
+  // Side On → neutral release → mid torque (3)
+  // Under   → later release, face stays open longer → higher torque acceptable (4)
+  const torqueTargetMap = { 'On Top': 2, 'Side On': 3, 'Under': 4 };
+  const targetTorque = d.grip ? (torqueTargetMap[d.grip] || null) : null;
+
   // ── SHAFT SCORING ───────────────────────────────────────────────────────────
   // Uses ONLY your EMB spreadsheet values from Supabase
-  // Columns: tip_val, mid_val, handle_val (your 1-5 stiffness scale)
+  // Columns: tip_val, mid_val, handle_val, torque_val (your 1-5 stiffness/torque scale)
   //
   // Weights derived from variance analysis of your tour player data:
   // Mid:    3.0x — most consistent predictor within a grip/post profile (variance 0.194)
   // Tip:    2.0x — second most consistent (variance 0.778)
   // Handle: 1.5x — slightly more variable than tip (variance 1.028)
+  // Torque: 1.0x — driven by grip type / release timing (new)
   // Weight: 0.25x — most noise within profiles (variance 19.073), least reliable predictor
   let scoredShafts = [];
 
   equipmentDB.shafts.forEach(s => {
-    const w = parseFloat(s.weight) || 0;
-    const t = s.tip_val    !== null ? parseFloat(s.tip_val)    : null;
-    const m = s.mid_val    !== null ? parseFloat(s.mid_val)    : null;
-    const h = s.handle_val !== null ? parseFloat(s.handle_val) : null;
+    const w  = parseFloat(s.weight)    || 0;
+    const t  = s.tip_val    !== null   ? parseFloat(s.tip_val)    : null;
+    const m  = s.mid_val    !== null   ? parseFloat(s.mid_val)    : null;
+    const h  = s.handle_val !== null   ? parseFloat(s.handle_val) : null;
+    const tq = s.torque_val !== null   ? parseFloat(s.torque_val) : null;
 
     // Skip shafts missing your stiffness data
     if(t === null || m === null || h === null) return;
@@ -719,11 +730,16 @@ function buildRecommendations(d) {
     if(targetWeight === null) {
       score = 99; // No grip/post selected — list all unranked
     } else {
+      // Core stiffness scoring
       score =
         Math.abs(w - targetWeight) * 0.25 +
         Math.abs(t - targetTip)    * 2.0  +
         Math.abs(m - targetMid)    * 3.0  +
         Math.abs(h - targetHandle) * 1.5;
+      // Add torque scoring if grip selected and shaft has torque data
+      if(targetTorque !== null && tq !== null) {
+        score += Math.abs(tq - targetTorque) * 1.0;
+      }
     }
 
     scoredShafts.push({
@@ -733,6 +749,7 @@ function buildRecommendations(d) {
       tip: t,
       mid: m,
       handle: h,
+      torqueVal: tq,
       torque: s.torque,
       launch: s.launch,
       score,
@@ -795,7 +812,7 @@ function buildRecommendations(d) {
     headBias,
     drawBiasCount, neutralCount,
     profile, profileKey,
-    targetWeight, targetTip, targetMid, targetHandle, targetLoft,
+    targetWeight, targetTip, targetMid, targetHandle, targetLoft, targetTorque,
   };
 }
 
@@ -997,12 +1014,13 @@ function renderResults() {
     html += `<div class="section-header"><div class="section-title">Driver shafts</div><div class="section-line"></div></div>`;
 
     if(hasProfile) {
-      html += `<div style="background:var(--bg2);border:1px solid var(--gold3);border-radius:var(--radius);padding:12px 16px;margin-bottom:14px;display:flex;gap:20px;flex-wrap:wrap">
-        <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold);font-weight:600;width:100%;margin-bottom:4px">Target shaft profile — ${d.grip} / ${d.post}</div>
-        <div style="text-align:center"><div style="font-size:18px;font-weight:700;color:var(--gold2)">${recs.targetWeight.toFixed(0)}g</div><div style="font-size:10px;color:var(--text3)">Weight</div></div>
-        <div style="text-align:center"><div style="font-size:18px;font-weight:700;color:var(--gold2)">${recs.targetTip.toFixed(2)}</div><div style="font-size:10px;color:var(--text3)">Tip</div></div>
-        <div style="text-align:center"><div style="font-size:18px;font-weight:700;color:var(--gold2)">${recs.targetMid.toFixed(2)}</div><div style="font-size:10px;color:var(--text3)">Mid</div></div>
-        <div style="text-align:center"><div style="font-size:18px;font-weight:700;color:var(--gold2)">${recs.targetHandle.toFixed(2)}</div><div style="font-size:10px;color:var(--text3)">Handle</div></div>
+      html += `<div style="background:var(--bg2);border:1px solid var(--cyan3);border-radius:var(--radius);padding:12px 16px;margin-bottom:14px;display:flex;gap:20px;flex-wrap:wrap">
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--cyan);font-weight:600;width:100%;margin-bottom:4px">Target shaft profile — ${d.grip} / ${d.post}</div>
+        <div style="text-align:center"><div style="font-size:18px;font-weight:700;color:var(--cyan2)">${recs.targetWeight.toFixed(0)}g</div><div style="font-size:10px;color:var(--text3)">Weight</div></div>
+        <div style="text-align:center"><div style="font-size:18px;font-weight:700;color:var(--cyan2)">${recs.targetTip.toFixed(2)}</div><div style="font-size:10px;color:var(--text3)">Tip</div></div>
+        <div style="text-align:center"><div style="font-size:18px;font-weight:700;color:var(--cyan2)">${recs.targetMid.toFixed(2)}</div><div style="font-size:10px;color:var(--text3)">Mid</div></div>
+        <div style="text-align:center"><div style="font-size:18px;font-weight:700;color:var(--cyan2)">${recs.targetHandle.toFixed(2)}</div><div style="font-size:10px;color:var(--text3)">Handle</div></div>
+        ${recs.targetTorque!==null?`<div style="text-align:center"><div style="font-size:18px;font-weight:700;color:var(--teal2)">${recs.targetTorque}</div><div style="font-size:10px;color:var(--text3)">Torque</div></div>`:''}
         <div style="font-size:11px;color:var(--text3);width:100%;margin-top:4px">${recs.profile?.notes||''}</div>
       </div>`;
     }
@@ -1018,7 +1036,7 @@ function renderResults() {
           <span class="tag">Tip ${s.tip?.toFixed?s.tip.toFixed(1):s.tip||'—'}</span>
           <span class="tag">Mid ${s.mid?.toFixed?s.mid.toFixed(1):s.mid||'—'}</span>
           <span class="tag">Handle ${s.handle?.toFixed?s.handle.toFixed(1):s.handle||'—'}</span>
-          ${s.torque?`<span class="tag">Torque ${s.torque}°</span>`:''}
+          ${s.torqueVal!==null&&s.torqueVal!==undefined?`<span class="tag" style="border-color:var(--teal3);color:var(--teal2)">Torque ${s.torqueVal}</span>`:''}
           ${s.launch?`<span class="tag">${s.launch} launch</span>`:''}
         </div>
         ${s.notes?`<div class="rec-why">${s.notes}</div>`:''}
