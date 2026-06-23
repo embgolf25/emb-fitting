@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0053)file:///Users/edmundbroderick/Downloads/index_12.html -->
+<!-- saved from url=(0053)file:///Users/edmundbroderick/Downloads/index_13.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -223,13 +223,13 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
       <div class="chip-group">
         <button class="chip " onclick="setChip(&#39;grip&#39;,&#39;On Top&#39;)">On Top</button>
         <button class="chip " onclick="setChip(&#39;grip&#39;,&#39;Under&#39;)">Under</button>
-        <button class="chip selected" onclick="setChip(&#39;grip&#39;,&#39;Side On&#39;)">Side On</button>
+        <button class="chip " onclick="setChip(&#39;grip&#39;,&#39;Side On&#39;)">Side On</button>
       </div>
       <div class="sidebar-label" style="margin-top:16px">Post position</div>
       <div class="chip-group">
         <button class="chip " onclick="setChip(&#39;post&#39;,&#39;Front&#39;)">Front</button>
         <button class="chip " onclick="setChip(&#39;post&#39;,&#39;Center&#39;)">Center</button>
-        <button class="chip selected" onclick="setChip(&#39;post&#39;,&#39;Rear&#39;)">Rear</button>
+        <button class="chip " onclick="setChip(&#39;post&#39;,&#39;Rear&#39;)">Rear</button>
       </div>
       <div class="sidebar-label" style="margin-top:16px">Shot shape</div>
       <div class="chip-group">
@@ -413,6 +413,7 @@ function showPage(page) {
   ['fitting','sessions','results','admin'].forEach(p => {
     document.getElementById('nav-'+p).classList.toggle('active', p===page);
   });
+  // Always re-render when switching pages
   if(page==='fitting') renderFitting();
   else if(page==='sessions') renderSessions();
   else if(page==='results') renderResults();
@@ -1201,6 +1202,23 @@ async function addEquipment(type) {
 async function deleteRule(id){if(!confirm('Delete this rule?'))return;await db.from('rules').delete().eq('id',id);await loadAll();renderAdminBody();toast('Rule deleted');}
 async function deleteBio(id){if(!confirm('Delete this correlation?'))return;await db.from('bio_correlations').delete().eq('id',id);await loadAll();renderAdminBody();toast('Correlation deleted');}
 async function deleteEquip(id){if(!confirm('Remove this equipment?'))return;await db.from('equipment').delete().eq('id',id);await loadAll();renderAdminBody();toast('Equipment removed');}
+
+// EVENT DELEGATION — handles all clicks inside dynamically injected HTML
+// GitHub Pages blocks onclick in innerHTML, so we intercept at document level
+document.addEventListener('click', function(e) {
+  var el = e.target;
+  while(el && el !== document.body) {
+    var oc = el.getAttribute ? el.getAttribute('onclick') : null;
+    if(oc) {
+      try { 
+        var fn = new Function(oc);
+        fn.call(el);
+      } catch(err) { console.error('onclick error:', err, oc); }
+      return;
+    }
+    el = el.parentNode;
+  }
+});
 
 loadAll().then(() => showPage('fitting'));
 </script>
