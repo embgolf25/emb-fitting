@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0053)file:///Users/edmundbroderick/Downloads/index_11.html -->
+<!-- saved from url=(0053)file:///Users/edmundbroderick/Downloads/index_12.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -76,6 +76,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 .run-btn{width:100%;background:linear-gradient(135deg,var(--cyan) 0%,var(--teal) 100%);color:#000;border:none;border-radius:var(--radius);padding:14px;font-size:14px;font-weight:800;cursor:pointer;letter-spacing:0.08em;text-transform:uppercase;font-family:var(--font);transition:all 0.2s;margin-top:8px;box-shadow:0 4px 20px rgba(0,212,255,0.25)}
 .run-btn:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(0,212,255,0.4)}
 .run-btn:active{transform:translateY(0)}
+.run-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none}
 .clear-btn{width:100%;background:transparent;border:1px solid var(--border2);color:var(--text3);border-radius:var(--radius);padding:9px;font-size:12px;cursor:pointer;font-family:var(--font);margin-top:8px;transition:all 0.15s}
 .clear-btn:hover{border-color:var(--red);color:var(--red)}
 .player-banner{background:linear-gradient(135deg,var(--bg3) 0%,var(--bg2) 100%);border:1px solid var(--border2);border-top:2px solid var(--cyan3);border-radius:var(--radius2);padding:24px 28px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center}
@@ -126,12 +127,14 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 .session-list-meta{font-size:11px;color:var(--text3)}
 .admin-lock{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:16px}
 .admin-lock i{font-size:40px;color:var(--text3)}
+.admin-lock-title{font-size:18px;font-weight:700}
+.admin-lock-sub{font-size:13px;color:var(--text3)}
 .pw-row{display:flex;gap:10px}
 .pw-row input{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 16px;color:var(--text);font-size:14px;font-family:var(--font);width:220px}
-.pw-row input:focus{outline:none;border-color:var(--cyan3)}
+.pw-row input:focus{outline:none;border-color:var(--cyan3);box-shadow:0 0 0 3px rgba(0,212,255,0.06)}
 .pw-btn{background:linear-gradient(135deg,var(--cyan),var(--teal));color:#000;border:none;border-radius:var(--radius);padding:10px 20px;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font)}
 .pw-err{font-size:12px;color:var(--red)}
-.admin-tabs{display:flex;gap:2px;margin-bottom:24px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.admin-tabs{display:flex;gap:2px;margin-bottom:24px;border-bottom:1px solid var(--border);padding-bottom:0;flex-wrap:wrap}
 .admin-tab{background:transparent;border:none;border-bottom:2px solid transparent;padding:10px 16px;color:var(--text3);font-size:13px;cursor:pointer;font-family:var(--font);margin-bottom:-1px;transition:all 0.15s;font-weight:500}
 .admin-tab.active{color:var(--cyan);border-bottom-color:var(--cyan)}
 .admin-tab:hover{color:var(--text)}
@@ -205,7 +208,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
       </div>
       <div class="field-row">
         <div class="field"><label>Wrist-to-floor (in)</label><input id="f-wtf" type="number" step="0.5" placeholder="31"></div>
-        <div class="field"><label>Swing speed (mph)</label><input id="f-ss" type="number" placeholder="95"></div>
+        <div class="field"><label>Sway gap P7 (in)</label><input id="f-swaygap" type="number" step="0.1" placeholder="-4.5"></div>
       </div>
       <div class="field"><label>Current gamer</label><input id="f-gamer" placeholder="e.g. Titleist TSR2 / Ventus Blue"></div>
       <div class="field"><label>Ball played</label>
@@ -220,13 +223,13 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
       <div class="chip-group">
         <button class="chip " onclick="setChip(&#39;grip&#39;,&#39;On Top&#39;)">On Top</button>
         <button class="chip " onclick="setChip(&#39;grip&#39;,&#39;Under&#39;)">Under</button>
-        <button class="chip " onclick="setChip(&#39;grip&#39;,&#39;Side On&#39;)">Side On</button>
+        <button class="chip selected" onclick="setChip(&#39;grip&#39;,&#39;Side On&#39;)">Side On</button>
       </div>
       <div class="sidebar-label" style="margin-top:16px">Post position</div>
       <div class="chip-group">
         <button class="chip " onclick="setChip(&#39;post&#39;,&#39;Front&#39;)">Front</button>
         <button class="chip " onclick="setChip(&#39;post&#39;,&#39;Center&#39;)">Center</button>
-        <button class="chip " onclick="setChip(&#39;post&#39;,&#39;Rear&#39;)">Rear</button>
+        <button class="chip selected" onclick="setChip(&#39;post&#39;,&#39;Rear&#39;)">Rear</button>
       </div>
       <div class="sidebar-label" style="margin-top:16px">Shot shape</div>
       <div class="chip-group">
@@ -248,7 +251,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
   <div class="content" id="content">
     <div style="margin-bottom:24px">
       <div class="bio-section-title"><span>SportsBox AI</span> — Biomechanics</div>
-      <div style="font-size:13px;color:var(--text3);margin-bottom:20px">Enter player measurements from SportsBox AI.</div>
+      <div style="font-size:13px;color:var(--text3);margin-bottom:20px">Enter player measurements from SportsBox AI. These directly drive the fitting correlation engine.</div>
       <div class="bio-grid">
         
         <div class="bio-card">
@@ -291,6 +294,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
     <div style="margin-bottom:24px">
       <div class="bio-section-title"><span>Launch Monitor</span></div>
       <div class="lm-grid">
+        <div class="lm-card"><label>Swing Speed</label><input id="f-ss" type="number" placeholder="95"><div class="lm-unit">mph</div></div>
         <div class="lm-card"><label>Ball Speed</label><input id="f-bs" type="number" placeholder="140"><div class="lm-unit">mph</div></div>
         <div class="lm-card"><label>Smash Factor</label><input id="f-smash" type="number" step="0.01" placeholder="1.47"><div class="lm-unit">ratio</div></div>
         <div class="lm-card"><label>Launch Angle</label><input id="f-la" type="number" step="0.1" placeholder="12.5"><div class="lm-unit">degrees</div></div>
@@ -301,12 +305,18 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
       </div>
     </div>
     <div class="section-divider"><span>Fitting notes</span></div>
-    <textarea id="f-notes" rows="3" style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 14px;color:var(--text);font-size:13px;font-family:var(--font);resize:vertical;margin-bottom:24px;margin-top:12px" placeholder="Observations, tendencies, goals..."></textarea>
+    <textarea id="f-notes" rows="3" style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 14px;color:var(--text);font-size:13px;font-family:var(--font);resize:vertical;margin-bottom:24px;margin-top:12px" placeholder="Observations, tendencies, goals discussed with player..."></textarea>
   </div>
 </div>
 </div>
 <div class="toast" id="toast"></div>
 <script>
+// ALL STATE VARIABLES DECLARED FIRST WITH VAR (not let) TO PREVENT HOISTING ERRORS
+var fittingState = {grip:'',post:'',shotShape:'',tempo:''};
+var rulesDB = [], bioCorrelations = [], equipmentDB = {drivers:[],shafts:[]}, sessionsList = [];
+var currentSession = null, adminUnlocked = false, currentPage = 'fitting', adminTab = 'rules';
+var aiInsight = '';
+
 const SUPABASE_URL = 'https://dfsuklaobtdpfkorqluq.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmc3VrbGFvYnRkcGZrb3JxbHVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0ODA5MTcsImV4cCI6MjA5NzA1NjkxN30.Z9MtgZr0asFMXdnMx65OCQn1tNCeRfaJnz6U0Qy1gEw';
 const { createClient } = supabase;
@@ -322,116 +332,95 @@ const bioFields = [
 ];
 
 const GRIP_POST_PROFILES = {
-  'On Top|Center':  { weight:67.5, tip:4.50, mid:4.00, handle:4.25, loft:9.75,  notes:'Rory, Koepka, Berger, Oosthuizen pattern.' },
-  'On Top|Front':   { weight:78.2, tip:4.33, mid:4.00, handle:4.00, loft:8.92,  notes:'Burns, Finau, Scottie pattern. Heaviest shaft weight.' },
-  'On Top|Rear':    { weight:66.3, tip:5.00, mid:4.00, handle:5.00, loft:8.83,  notes:'Spieth, Woodland. Max tip AND handle stiffness.' },
-  'Under|Center':   { weight:68.9, tip:3.79, mid:4.00, handle:3.25, loft:9.88,  notes:'Colin M, JT, Rahm, DJ, Adam Scott. Softest handle.' },
-  'Under|Front':    { weight:68.0, tip:2.00, mid:4.00, handle:3.00, loft:9.00,  notes:'Hatton pattern. Softest tip of any combination.' },
-  'Under|Rear':     { weight:66.5, tip:5.00, mid:4.00, handle:4.50, loft:10.50, notes:'Keegan, Harris English. Stiff tip despite Under grip.' },
-  'Side On|Front':  { weight:74.0, tip:4.00, mid:2.00, handle:2.00, loft:9.25,  notes:'Hideki, Wyndham Clark. Heavy shaft, active mid/handle.' },
-  'Side On|Center': { weight:66.5, tip:4.00, mid:4.50, handle:4.50, loft:9.50,  notes:'Justin Rose pattern. Firm mid and handle.' },
-  'Side On|Rear':   { weight:76.0, tip:5.00, mid:4.00, handle:3.00, loft:9.40,  notes:'Max Homa. Heavy, stiff tip, softer handle.' },
+  'On Top|Center':  { weight:67.5, tip:4.50, mid:4.00, handle:4.25, loft:9.75,  n:5,  notes:'Rory, Koepka, Berger, Oosthuizen pattern. Stiff tip and handle, moderate weight.' },
+  'On Top|Front':   { weight:78.2, tip:4.33, mid:4.00, handle:4.00, loft:8.92,  n:3,  notes:'Burns, Finau, Scottie pattern. Heaviest shaft weight of any combination. All faders.' },
+  'On Top|Rear':    { weight:66.3, tip:5.00, mid:4.00, handle:5.00, loft:8.83,  n:3,  notes:'Spieth, Koepka, Woodland pattern. Maximum tip AND handle stiffness.' },
+  'Under|Center':   { weight:68.9, tip:3.79, mid:4.00, handle:3.25, loft:9.88,  n:8,  notes:'Most common tour combination. Colin M, JT, Rahm, Cantlay, DJ, Adam Scott. Softest handle.' },
+  'Under|Front':    { weight:68.0, tip:2.00, mid:4.00, handle:3.00, loft:9.00,  n:1,  notes:'Hatton pattern. Softest tip of any combination. Firm mid, medium handle.' },
+  'Under|Rear':     { weight:66.5, tip:5.00, mid:4.00, handle:4.50, loft:10.50, n:2,  notes:'Keegan, Harris English pattern. Stiff tip despite under grip.' },
+  'Side On|Front':  { weight:74.0, tip:4.00, mid:2.00, handle:2.00, loft:9.25,  n:2,  notes:'Hideki, Wyndham Clark pattern. Heavier shaft but very active mid and handle.' },
+  'Side On|Center': { weight:66.5, tip:4.00, mid:4.50, handle:4.50, loft:9.50,  n:2,  notes:'Justin Rose pattern. Firm mid and handle, moderate tip.' },
+  'Side On|Rear':   { weight:76.0, tip:5.00, mid:4.00, handle:3.00, loft:9.40,  n:1,  notes:'Max Homa pattern. Heavy with stiff tip but softer handle.' },
 };
 
-// ── NEW: SWAY GAP BANDS (tour data n=16) ─────────────────────────────────────
-// More negative = chest further behind pelvis = shallower/upward AoA
-// Band A (≤-8.5): Sweep  — avg loft 9.19°, low CG, handle avg 5.0
-// Band B (-8.4 to -6.5): Mid — avg loft 9.57°, handle avg 3.4
-// Band C (≥-6.4): Vertical — avg loft 9.85°, lighter shafts (67.5g avg)
-function getSwayBand(sg) {
-  if(sg === null) return null;
-  if(sg <= -8.5) return 'A';
-  if(sg <= -6.4) return 'B';
-  return 'C';
-}
-
-// ── NEW: FLEX GATE — hard floor/ceiling by swing speed ───────────────────────
-// TX: 110+mph | X: 100-134mph | S: 85-109mph | R: 75-99mph (overlaps intentional)
-function getValidFlexes(ss) {
-  if(!ss || ss <= 0) return null; // no restriction if no speed entered
-  const valid = [];
-  if(ss >= 75 && ss < 100) valid.push('R');
-  if(ss >= 85 && ss < 110) valid.push('S');
-  if(ss >= 100 && ss < 135) valid.push('X');
-  if(ss >= 110) valid.push('TX');
-  return valid.length ? valid : null;
-}
-
 const BALL_DB = [
-  {name:'Titleist Pro V1',spin_val:3,notes:'Benchmark neutral ball.'},
-  {name:'Titleist Pro V1x',spin_val:4,notes:'Higher spin with irons.'},
-  {name:'Titleist Pro V1 Left Dot',spin_val:2,notes:'200-300 rpm less than Pro V1.'},
-  {name:'Titleist Pro V1x Left Dash',spin_val:1,notes:'Lowest Titleist driver spin.'},
-  {name:'Titleist AVX',spin_val:2,notes:'Penetrating flight, soft feel.'},
-  {name:'TaylorMade TP5',spin_val:4,notes:'High spin. Elite greenside control.'},
-  {name:'TaylorMade TP5x',spin_val:2,notes:'Lower driver spin than TP5.'},
-  {name:'Callaway Chrome Tour',spin_val:3,notes:'Balanced mid spin.'},
-  {name:'Callaway Chrome Tour X',spin_val:5,notes:'Highest spinning premium ball.'},
-  {name:'Callaway Chrome Tour Triple Diamond',spin_val:1,notes:'Low spin for 105+ mph.'},
-  {name:'Srixon Z-Star',spin_val:4,notes:'High spinning tour ball.'},
-  {name:'Srixon Z-Star Diamond',spin_val:5,notes:'Second highest spinning overall.'},
-  {name:'Srixon Z-Star XV',spin_val:2,notes:'Distance focused, lower spin.'},
-  {name:'Bridgestone Tour B X',spin_val:3,notes:'Mid spin, built for 105+ mph.'},
-  {name:'Bridgestone Tour B XS',spin_val:2,notes:'Lower spinning. Distance focused.'},
-  {name:'Wilson Staff Model X',spin_val:3,notes:'Competitive with Pro V1x.'},
-  {name:'Maxfli Tour X',spin_val:2,notes:'Low driver spin, high wedge spin.'},
+  { name:'Titleist Pro V1',               spin_val:3, notes:'Benchmark neutral ball. Penetrating flight, balanced.' },
+  { name:'Titleist Pro V1x',              spin_val:4, notes:'Higher than V1 with irons. More spin, higher flight.' },
+  { name:'Titleist Pro V1 Left Dot',      spin_val:2, notes:'200-300 rpm less than Pro V1. Same greenside control, lower flight.' },
+  { name:'Titleist Pro V1x Left Dash',    spin_val:1, notes:'Lowest Titleist driver spin. High launch, extremely low long game spin.' },
+  { name:'Titleist AVX',                  spin_val:2, notes:'Titleist lowest spinning ball. Penetrating flight, soft feel.' },
+  { name:'TaylorMade TP5',                spin_val:4, notes:'High spin, Rory choice. Elite greenside control, soft feel.' },
+  { name:'TaylorMade TP5x',               spin_val:2, notes:'Lower driver spin than TP5. Longer, firmer, more penetrating.' },
+  { name:'Callaway Chrome Tour',          spin_val:3, notes:'Balanced mid spin. Direct Pro V1 competitor.' },
+  { name:'Callaway Chrome Tour X',        spin_val:5, notes:'Highest spinning premium ball. Maximum control and spin.' },
+  { name:'Callaway Chrome Tour Triple Diamond', spin_val:1, notes:'Low spin for 105+ mph. Penetrating flight, speed-focused.' },
+  { name:'Srixon Z-Star',                 spin_val:4, notes:'High spinning tour ball. Strong short game control.' },
+  { name:'Srixon Z-Star Diamond',         spin_val:5, notes:'Second highest spinning ball overall. Tour-level control.' },
+  { name:'Srixon Z-Star XV',              spin_val:2, notes:'Distance focused, lower spin. Longer off the tee.' },
+  { name:'Bridgestone Tour B X',          spin_val:3, notes:'Mid spin, built for 105+ mph. High speed performance.' },
+  { name:'Bridgestone Tour B XS',         spin_val:2, notes:'Lower spinning than Tour B X. Distance focused.' },
+  { name:'Wilson Staff Model X',          spin_val:3, notes:'Competitive with Pro V1x. Solid all-around performer.' },
+  { name:'Maxfli Tour X',                 spin_val:2, notes:'Low driver spin, high wedge spin. Rare combination.' },
 ];
 
-var rulesDB=[], bioCorrelations=[], equipmentDB={drivers:[],shafts:[]}, sessionsList=[];
-var currentSession=null, adminUnlocked=false, currentPage='fitting', adminTab='rules';
-var aiInsight='';
-var fittingState={grip:'',post:'',shotShape:'',tempo:''};
-
-function toast(msg,type='success'){
-  const el=document.getElementById('toast');
-  el.textContent=msg; el.className=`toast show ${type}`;
-  setTimeout(()=>el.className='toast',2500);
+function toast(msg, type='success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast show ${type}`;
+  setTimeout(() => el.className = 'toast', 2500);
 }
 
-async function loadAll(){
-  try{
-    const [r,b,e,s]=await Promise.all([
+async function loadAll() {
+  try {
+    const [r, b, e, s] = await Promise.all([
       db.from('rules').select('*').order('created_at'),
       db.from('bio_correlations').select('*').order('created_at'),
       db.from('equipment').select('*').order('created_at'),
-      db.from('sessions').select('*').order('created_at',{ascending:false}),
+      db.from('sessions').select('*').order('created_at', {ascending:false}),
     ]);
-    rulesDB=r.data||[]; bioCorrelations=b.data||[];
-    equipmentDB.drivers=(e.data||[]).filter(x=>x.type==='driver');
-    equipmentDB.shafts=(e.data||[]).filter(x=>x.type==='shaft');
-    sessionsList=s.data||[];
-    document.getElementById('db-status').innerHTML='<i class="ti ti-database"></i> Connected';
-    document.getElementById('db-status').className='db-status connected';
+    rulesDB = r.data || [];
+    bioCorrelations = b.data || [];
+    equipmentDB.drivers = (e.data||[]).filter(x=>x.type==='driver');
+    equipmentDB.shafts = (e.data||[]).filter(x=>x.type==='shaft');
+    sessionsList = s.data || [];
+    document.getElementById('db-status').innerHTML = '<i class="ti ti-database"></i> Connected';
+    document.getElementById('db-status').className = 'db-status connected';
     if(rulesDB.length===0) await seedDefaults();
-  }catch(err){
-    document.getElementById('db-status').innerHTML='<i class="ti ti-database-off"></i> Offline';
-    document.getElementById('db-status').className='db-status error';
+  } catch(err) {
+    document.getElementById('db-status').innerHTML = '<i class="ti ti-database-off"></i> Offline';
+    document.getElementById('db-status').className = 'db-status error';
   }
 }
 
-async function seedDefaults(){
-  const defaultRules=[
-    {club:'driver',type:'launch_monitor',condition:'swing_speed > 105 AND attack_angle < -3',recommendation:'Low spin head (LS/TD) + low-launch shaft',priority:'high',notes:'High speed + steep AoA = excessive spin.',test_tip:'Verify with 5+ shots.'},
-    {club:'driver',type:'launch_monitor',condition:'swing_speed < 85',recommendation:'Max forgiveness head + lightweight shaft (50-55g)',priority:'high',notes:'Slower swingers need launch help.',test_tip:'Check total driver weight.'},
-    {club:'driver',type:'launch_monitor',condition:'spin_rate > 3200',recommendation:'Lower spin head + stiffer tip shaft',priority:'high',notes:'High spin destroys distance.',test_tip:'Isolate shaft vs head spin.'},
+async function seedDefaults() {
+  const defaultRules = [
+    {club:'driver',type:'launch_monitor',condition:'swing_speed > 105 AND attack_angle < -3',recommendation:'Low spin head (LS/TD) + low-launch shaft',priority:'high',notes:'High speed + steep AoA = excessive spin. Need low/forward CG.',test_tip:'Verify with at least 5 shots. AoA consistency matters.'},
+    {club:'driver',type:'launch_monitor',condition:'swing_speed < 85',recommendation:'Max forgiveness head + lightweight shaft (50-55g)',priority:'high',notes:'Slower swingers need launch help and lighter total weight.',test_tip:'Check total driver weight including grip.'},
+    {club:'driver',type:'launch_monitor',condition:'spin_rate > 3200',recommendation:'Lower spin head + stiffer tip shaft',priority:'high',notes:'High spin destroys distance regardless of speed.',test_tip:'Isolate whether spin is shaft-driven or head-driven by swapping one at a time.'},
+  ];
+  const defaultBio = [
+    {bio_var:'swayGap',range:'> 1.5',shaft_profile:'Lighter shaft weight (50-60g range)',head_profile:'Higher forgiveness, back CG',notes:'Large sway gap correlates with inconsistent strike pattern.'},
+    {bio_var:'leadElbow',range:'> 20',shaft_profile:'Softer tip profile, mid-to-high launch',head_profile:'Neutral to back CG',notes:'Lead elbow bend at impact tends to reduce dynamic loft.'},
+    {bio_var:'pelvisSway',range:'> 2',shaft_profile:'Mid kick point, stable butt section',head_profile:'Draw-bias consideration if path confirms',notes:'Pelvis sway often correlates with path issues.'},
   ];
   await db.from('rules').insert(defaultRules);
+  await db.from('bio_correlations').insert(defaultBio);
   await loadAll();
 }
 
-function showPage(page){
-  currentPage=page;
-  ['fitting','sessions','results','admin'].forEach(p=>{
-    document.getElementById('nav-'+p).classList.toggle('active',p===page);
+function showPage(page) {
+  currentPage = page;
+  ['fitting','sessions','results','admin'].forEach(p => {
+    document.getElementById('nav-'+p).classList.toggle('active', p===page);
   });
   if(page==='fitting') renderFitting();
   else if(page==='sessions') renderSessions();
   else if(page==='results') renderResults();
-  else if(page==='admin'){ if(!adminUnlocked) renderAdminLock(); else renderAdmin(); }
+  else if(page==='admin') { if(!adminUnlocked) renderAdminLock(); else renderAdmin(); }
 }
 
-function renderFitting(){
-  document.getElementById('sidebar').innerHTML=`
+function renderFitting() {
+  document.getElementById('sidebar').innerHTML = `
     <div class="sidebar-section">
       <div class="sidebar-label">Player info</div>
       <div class="field"><label>Player name</label><input id="f-name" placeholder="Full name" /></div>
@@ -441,7 +430,7 @@ function renderFitting(){
       </div>
       <div class="field-row">
         <div class="field"><label>Wrist-to-floor (in)</label><input id="f-wtf" type="number" step="0.5" placeholder="31" /></div>
-        <div class="field"><label>Swing speed (mph)</label><input id="f-ss" type="number" placeholder="95" /></div>
+        <div class="field"><label>Sway gap P7 (in)</label><input id="f-swaygap" type="number" step="0.1" placeholder="-4.5" /></div>
       </div>
       <div class="field"><label>Current gamer</label><input id="f-gamer" placeholder="e.g. Titleist TSR2 / Ventus Blue" /></div>
       <div class="field"><label>Ball played</label>
@@ -481,10 +470,10 @@ function renderFitting(){
     <button class="run-btn" onclick="runFitting()"><i class="ti ti-player-play"></i> Run Fitting</button>
     <button class="clear-btn" onclick="clearFitting()">Clear all fields</button>
   `;
-  document.getElementById('content').innerHTML=`
+  document.getElementById('content').innerHTML = `
     <div style="margin-bottom:24px">
       <div class="bio-section-title"><span>SportsBox AI</span> — Biomechanics</div>
-      <div style="font-size:13px;color:var(--text3);margin-bottom:20px">Enter player measurements from SportsBox AI.</div>
+      <div style="font-size:13px;color:var(--text3);margin-bottom:20px">Enter player measurements from SportsBox AI. These directly drive the fitting correlation engine.</div>
       <div class="bio-grid">
         ${bioFields.map(f=>`
         <div class="bio-card">
@@ -499,6 +488,7 @@ function renderFitting(){
     <div style="margin-bottom:24px">
       <div class="bio-section-title"><span>Launch Monitor</span></div>
       <div class="lm-grid">
+        <div class="lm-card"><label>Swing Speed</label><input id="f-ss" type="number" placeholder="95" /><div class="lm-unit">mph</div></div>
         <div class="lm-card"><label>Ball Speed</label><input id="f-bs" type="number" placeholder="140" /><div class="lm-unit">mph</div></div>
         <div class="lm-card"><label>Smash Factor</label><input id="f-smash" type="number" step="0.01" placeholder="1.47" /><div class="lm-unit">ratio</div></div>
         <div class="lm-card"><label>Launch Angle</label><input id="f-la" type="number" step="0.1" placeholder="12.5" /><div class="lm-unit">degrees</div></div>
@@ -509,274 +499,242 @@ function renderFitting(){
       </div>
     </div>
     <div class="section-divider"><span>Fitting notes</span></div>
-    <textarea id="f-notes" rows="3" style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 14px;color:var(--text);font-size:13px;font-family:var(--font);resize:vertical;margin-bottom:24px;margin-top:12px" placeholder="Observations, tendencies, goals..."></textarea>
+    <textarea id="f-notes" rows="3" style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 14px;color:var(--text);font-size:13px;font-family:var(--font);resize:vertical;margin-bottom:24px;margin-top:12px" placeholder="Observations, tendencies, goals discussed with player..."></textarea>
   `;
   restoreFields();
 }
 
-function setChip(field,value){
+function setChip(field, value) {
   saveFittingState();
-  fittingState[field]=fittingState[field]===value?'':value;
+  fittingState[field] = fittingState[field] === value ? '' : value;
   renderFitting();
   restoreFields();
 }
 
-function restoreFields(){
-  const fields=['f-name','f-hdcp','f-height','f-wtf','f-gamer','f-ss','f-bs','f-la','f-sr','f-aa','f-cp','f-smash','f-dl','f-notes'];
-  fields.forEach(id=>{const el=document.getElementById(id);if(el&&fittingState[id])el.value=fittingState[id];});
-  bioFields.forEach(f=>{const el=document.getElementById('bio-'+f.id);if(el&&fittingState['bio-'+f.id])el.value=fittingState['bio-'+f.id];});
-  const ball=document.getElementById('f-ball');
-  if(ball&&fittingState['f-ball'])ball.value=fittingState['f-ball'];
+function restoreFields() {
+  const fields = ['f-name','f-hdcp','f-height','f-wtf','f-gamer','f-swaygap','f-ss','f-bs','f-la','f-sr','f-aa','f-cp','f-smash','f-dl','f-notes'];
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if(el && fittingState[id]) el.value = fittingState[id];
+  });
+  bioFields.forEach(f => {
+    const el = document.getElementById('bio-'+f.id);
+    if(el && fittingState['bio-'+f.id]) el.value = fittingState['bio-'+f.id];
+  });
+  const ball = document.getElementById('f-ball');
+  if(ball && fittingState['f-ball']) ball.value = fittingState['f-ball'];
 }
 
-function saveFittingState(){
-  const g=id=>{const el=document.getElementById(id);return el?el.value:''};
-  ['f-name','f-hdcp','f-height','f-wtf','f-gamer','f-ss','f-bs','f-la','f-sr','f-aa','f-cp','f-smash','f-dl','f-notes','f-ball'].forEach(id=>{fittingState[id]=g(id);});
-  bioFields.forEach(f=>{fittingState['bio-'+f.id]=g('bio-'+f.id);});
+function saveFittingState() {
+  const g = id => { const el=document.getElementById(id); return el?el.value:''; };
+  const fields = ['f-name','f-hdcp','f-height','f-wtf','f-gamer','f-swaygap','f-ss','f-bs','f-la','f-sr','f-aa','f-cp','f-smash','f-dl','f-notes','f-ball'];
+  fields.forEach(id => { fittingState[id] = g(id); });
+  bioFields.forEach(f => { fittingState['bio-'+f.id] = g('bio-'+f.id); });
 }
 
-function getFittingData(){
+function getFittingData() {
   saveFittingState();
-  const g=id=>{const el=document.getElementById(id);return el?el.value:''};
-  const d={
-    name:g('f-name'),hdcp:g('f-hdcp'),height:g('f-height'),wtf:g('f-wtf'),gamer:g('f-gamer'),
-    grip:fittingState.grip||'',post:fittingState.post||'',
-    shotShape:fittingState.shotShape||'',tempo:fittingState.tempo||'',
+  const g = id => { const el=document.getElementById(id); return el?el.value:''; };
+  const d = {
+    name:g('f-name'), hdcp:g('f-hdcp'), height:g('f-height'), wtf:g('f-wtf'), gamer:g('f-gamer'),
+    grip:fittingState.grip||'', post:fittingState.post||'', shotShape:fittingState.shotShape||'', tempo:fittingState.tempo||'',
     ball:g('f-ball')||'',
-    ss:parseFloat(g('f-ss'))||0,bs:parseFloat(g('f-bs'))||0,
-    la:parseFloat(g('f-la'))||0,sr:parseFloat(g('f-sr'))||0,
-    aa:parseFloat(g('f-aa'))||0,cp:parseFloat(g('f-cp'))||0,
-    smash:parseFloat(g('f-smash'))||0,dl:parseFloat(g('f-dl'))||0,
+    swayGapP7:parseFloat(g('f-swaygap'))||null,
+    ss:parseFloat(g('f-ss'))||0, bs:parseFloat(g('f-bs'))||0,
+    la:parseFloat(g('f-la'))||0, sr:parseFloat(g('f-sr'))||0,
+    aa:parseFloat(g('f-aa'))||0, cp:parseFloat(g('f-cp'))||0,
+    smash:parseFloat(g('f-smash'))||0, dl:parseFloat(g('f-dl'))||0,
     notes:g('f-notes'),
   };
-  bioFields.forEach(f=>{const v=g('bio-'+f.id);d[f.id]=v!==''?parseFloat(v):null;});
+  bioFields.forEach(f => { d[f.id] = parseFloat(g('bio-'+f.id))||null; });
   return d;
 }
 
-function clearFitting(){
-  fittingState={grip:'',post:'',shotShape:'',tempo:''};
-  currentSession=null;
-  document.getElementById('session-label').textContent='No active session';
+function clearFitting() {
+  fittingState = {grip:'',post:'',shotShape:'',tempo:''};
+  currentSession = null;
+  document.getElementById('session-label').textContent = 'No active session';
   renderFitting();
 }
 
-async function runFitting(){
-  const data=getFittingData();
-  const recs=buildRecommendations(data);
-  currentSession={data,recs};
-  document.getElementById('session-label').textContent=data.name||'Active session';
-  aiInsight='';
+async function runFitting() {
+  const data = getFittingData();
+  const recs = buildRecommendations(data);
+  currentSession = {data, recs};
+  document.getElementById('session-label').textContent = data.name || 'Active session';
+  aiInsight = '';
   showPage('results');
-  const insight=await fetchAI(data,recs);
-  await saveSession(data,recs,insight);
+  const insight = await fetchAI(data, recs);
+  await saveSession(data, recs, insight);
 }
 
-// ── RECOMMENDATION ENGINE ─────────────────────────────────────────────────────
-function buildRecommendations(d){
-  let matchedRules=[],bioMatches=[];
-
-  rulesDB.forEach(rule=>{
-    let match=false;
-    try{
-      const expr=rule.condition
-        .replace(/swing_speed/g,d.ss).replace(/attack_angle/g,d.aa)
-        .replace(/spin_rate/g,d.sr).replace(/launch_angle/g,d.la)
-        .replace(/ball_speed/g,d.bs).replace(/sway_gap/g,d.swayGap||0)
-        .replace(/chest_lift/g,d.chestLift||0).replace(/lead_elbow/g,d.leadElbow||0)
-        .replace(/club_hand_gap/g,d.clubHandGap||0).replace(/pelvis_sway/g,d.pelvisSway||0)
+function buildRecommendations(d) {
+  let matchedRules = [], bioMatches = [];
+  rulesDB.forEach(rule => {
+    let match = false;
+    try {
+      const expr = rule.condition
+        .replace(/swing_speed/g, d.ss).replace(/attack_angle/g, d.aa)
+        .replace(/spin_rate/g, d.sr).replace(/launch_angle/g, d.la)
+        .replace(/ball_speed/g, d.bs).replace(/sway_gap/g, d.swayGap||0)
+        .replace(/chest_lift/g, d.chestLift||0).replace(/lead_elbow/g, d.leadElbow||0)
+        .replace(/club_hand_gap/g, d.clubHandGap||0).replace(/pelvis_sway/g, d.pelvisSway||0)
         .replace(/AND/g,'&&').replace(/OR/g,'||');
-      match=eval(expr);
-    }catch(e){}
+      match = eval(expr);
+    } catch(e){}
     if(match) matchedRules.push(rule);
   });
-
-  bioCorrelations.forEach(c=>{
-    const val=d[c.bio_var];
+  bioCorrelations.forEach(c => {
+    const val = d[c.bio_var];
     if(val===null||val===undefined) return;
-    let match=false;
-    try{match=eval(val+' '+c.range);}catch(e){}
+    let match = false;
+    try { match = eval(val + ' ' + c.range); } catch(e){}
     if(match) bioMatches.push(c);
   });
 
-  const profileKey=(d.grip&&d.post)?`${d.grip}|${d.post}`:null;
-  const profile=profileKey?GRIP_POST_PROFILES[profileKey]:null;
+  const profileKey = (d.grip && d.post) ? `${d.grip}|${d.post}` : null;
+  const profile = profileKey ? GRIP_POST_PROFILES[profileKey] : null;
+  let targetWeight = profile?.weight ?? null;
+  let targetTip    = profile?.tip    ?? null;
+  let targetMid    = profile?.mid    ?? null;
+  let targetHandle = profile?.handle ?? null;
+  let targetLoft   = profile?.loft   ?? null;
 
-  let targetWeight=profile?.weight??null;
-  let targetTip=profile?.tip??null;
-  let targetMid=profile?.mid??null;
-  let targetHandle=profile?.handle??null;
-  let targetLoft=profile?.loft??null;
+  const sportsboxSignals = [];
 
-  const sportsboxSignals=[];
-
-  // ── NEW: SWAY GAP BAND LOGIC (1.3x weight vs pelvis sway) ────────────────
-  const swayBand=getSwayBand(d.swayGap);
-  let swayGapCGSignal=null;
-
-  if(swayBand==='A'){
-    // Sweep: upward AoA — less static loft, low CG, stiffer handle
-    if(targetLoft!==null) targetLoft-=0.5;
-    if(targetHandle!==null) targetHandle=Math.min(5,targetHandle+(0.3*1.3));
-    swayGapCGSignal='low';
-    if(d.shotShape==='Draw'&&targetLoft!==null) targetLoft-=0.25;
-    sportsboxSignals.push({var:'Sway Gap',value:d.swayGap+'"',signal:'Sweep — upward AoA',implication:'Less static loft · low CG · stiffer handle'});
-  } else if(swayBand==='B'){
-    swayGapCGSignal='neutral';
-    sportsboxSignals.push({var:'Sway Gap',value:d.swayGap+'"',signal:'Mid — balanced AoA',implication:'Standard profile — no sway gap adjustment'});
-  } else if(swayBand==='C'){
-    // Vertical: steeper AoA — more static loft, softer handle
-    if(targetLoft!==null) targetLoft+=0.4;
-    if(targetHandle!==null) targetHandle=Math.max(1,targetHandle-(0.2*1.3));
-    swayGapCGSignal='neutral';
-    if(d.shotShape==='Fade'&&targetLoft!==null) targetLoft+=0.25;
-    sportsboxSignals.push({var:'Sway Gap',value:d.swayGap+'"',signal:'Vertical — steeper AoA',implication:'More static loft · lighter shaft tendency'});
+  // SWAY GAP BAND LOGIC
+  let swayBand = null;
+  if(d.swayGap !== null) {
+    if(d.swayGap <= -8.5)      { swayBand = 'A'; if(targetLoft!==null) targetLoft -= 0.5; if(targetHandle!==null) targetHandle = Math.min(5, targetHandle+0.4); sportsboxSignals.push({var:'Sway Gap',value:d.swayGap+'"',signal:'Sweep — upward AoA',implication:'Less static loft · low CG · stiffer handle'}); }
+    else if(d.swayGap <= -6.4) { swayBand = 'B'; sportsboxSignals.push({var:'Sway Gap',value:d.swayGap+'"',signal:'Mid — balanced AoA',implication:'Standard profile'}); }
+    else                        { swayBand = 'C'; if(targetLoft!==null) targetLoft += 0.4; if(targetHandle!==null) targetHandle = Math.max(1, targetHandle-0.3); sportsboxSignals.push({var:'Sway Gap',value:d.swayGap+'"',signal:'Vertical — steeper AoA',implication:'More static loft needed'}); }
   }
 
-  // ── NEW: PELVIS SWAY BAND LOGIC (1.0x weight) ────────────────────────────
-  let pelvisBand=null;
-  if(d.pelvisSway!==null){
-    if(d.pelvisSway>=6.0){
-      pelvisBand='high';
-      if(targetTip!==null) targetTip=Math.max(1,targetTip-0.4);
-      sportsboxSignals.push({var:'Pelvis Sway',value:d.pelvisSway+'"',signal:'High — forward pelvis',implication:'Softer tip profile'});
-    } else if(d.pelvisSway>=4.5){
-      pelvisBand='mid';
-      sportsboxSignals.push({var:'Pelvis Sway',value:d.pelvisSway+'"',signal:'Normal range',implication:'No pelvis sway adjustment'});
-    } else {
-      pelvisBand='low';
-      if(targetWeight!==null) targetWeight+=1.5;
-      sportsboxSignals.push({var:'Pelvis Sway',value:d.pelvisSway+'"',signal:'Low — less forward drive',implication:'Heavier shaft tendency'});
-    }
+  // PELVIS SWAY BAND LOGIC
+  if(d.pelvisSway !== null) {
+    if(d.pelvisSway >= 6.0)      { if(targetTip!==null) targetTip = Math.max(1, targetTip-0.4); sportsboxSignals.push({var:'Pelvis Sway',value:d.pelvisSway+'"',signal:'High — forward pelvis',implication:'Softer tip profile'}); }
+    else if(d.pelvisSway >= 4.5) { sportsboxSignals.push({var:'Pelvis Sway',value:d.pelvisSway+'"',signal:'Normal range',implication:'No adjustment'}); }
+    else                          { if(targetWeight!==null) targetWeight += 1.5; sportsboxSignals.push({var:'Pelvis Sway',value:d.pelvisSway+'"',signal:'Low — less forward drive',implication:'Heavier shaft tendency'}); }
   }
 
-  // ── CHEST LIFT ────────────────────────────────────────────────────────────
-  if(d.chestLift!==null){
-    if(d.chestLift<-1.6){
-      if(targetLoft!==null) targetLoft+=0.5;
-      sportsboxSignals.push({var:'Chest Lift',value:d.chestLift+'"',signal:'Chest dropping — delofting',implication:'Add +0.5° loft'});
-    } else if(d.chestLift>0.5){
-      if(targetLoft!==null) targetLoft-=0.5;
-      sportsboxSignals.push({var:'Chest Lift',value:d.chestLift+'"',signal:'Chest rising — flipping',implication:'Reduce -0.5° loft'});
-    } else {
-      sportsboxSignals.push({var:'Chest Lift',value:d.chestLift+'"',signal:'Normal range',implication:'No loft adjustment'});
-    }
+  // CHEST LIFT
+  if(d.chestLift !== null) {
+    if(d.chestLift < -1.6)      { if(targetLoft!==null) targetLoft += 0.5; sportsboxSignals.push({var:'Chest Lift',value:d.chestLift+'"',signal:'Chest dropping',implication:'Add +0.5° loft'}); }
+    else if(d.chestLift > 0.5)  { if(targetLoft!==null) targetLoft -= 0.5; sportsboxSignals.push({var:'Chest Lift',value:d.chestLift+'"',signal:'Chest rising — flipping',implication:'Reduce -0.5° loft'}); }
+    else                         { sportsboxSignals.push({var:'Chest Lift',value:d.chestLift+'"',signal:'Normal range',implication:'No loft adjustment'}); }
   }
 
-  // ── LEAD ELBOW ────────────────────────────────────────────────────────────
-  let elbowHeadSignal=null;
-  if(d.leadElbow!==null){
-    if(d.leadElbow>168){elbowHeadSignal='neutral';sportsboxSignals.push({var:'Lead Elbow',value:d.leadElbow+'°',signal:'Strong face closure',implication:'Neutral head'});}
-    else if(d.leadElbow>=158){elbowHeadSignal='neutral';sportsboxSignals.push({var:'Lead Elbow',value:d.leadElbow+'°',signal:'Moderate face closure',implication:'Neutral head'});}
-    else if(d.leadElbow>=148){elbowHeadSignal='draw-bias';sportsboxSignals.push({var:'Lead Elbow',value:d.leadElbow+'°',signal:'Moderate face open',implication:'Draw-bias head consideration'});}
-    else{elbowHeadSignal='draw-bias';sportsboxSignals.push({var:'Lead Elbow',value:d.leadElbow+'°',signal:'Chicken wing — face open',implication:'Draw-bias head priority'});}
+  // LEAD ELBOW
+  let elbowHeadSignal = null;
+  if(d.leadElbow !== null) {
+    if(d.leadElbow > 168)       { elbowHeadSignal='neutral'; sportsboxSignals.push({var:'Lead Elbow',value:d.leadElbow+'°',signal:'Strong face closure',implication:'Neutral head'}); }
+    else if(d.leadElbow >= 158) { elbowHeadSignal='neutral'; sportsboxSignals.push({var:'Lead Elbow',value:d.leadElbow+'°',signal:'Moderate face closure',implication:'Neutral head'}); }
+    else if(d.leadElbow >= 148) { elbowHeadSignal='draw-bias'; sportsboxSignals.push({var:'Lead Elbow',value:d.leadElbow+'°',signal:'Moderate face open',implication:'Draw-bias head consideration'}); }
+    else                         { elbowHeadSignal='draw-bias'; sportsboxSignals.push({var:'Lead Elbow',value:d.leadElbow+'°',signal:'Chicken wing — face open',implication:'Draw-bias head priority'}); }
   }
 
-  // ── CLUB HAND GAP ─────────────────────────────────────────────────────────
-  const clubHandGripAvg=d.grip==='Under'?-2:d.grip==='Side On'?0:d.grip==='On Top'?2:null;
-  if(d.clubHandGap!==null&&clubHandGripAvg!==null&&targetTip!==null){
-    const dev=d.clubHandGap-clubHandGripAvg;
-    if(dev<-1){
-      const adj=Math.min(Math.abs(dev)*0.25,0.75);
-      targetTip=Math.max(targetTip-adj,1);
-      if(targetHandle!==null) targetHandle=Math.max(targetHandle-adj,1);
+  // CLUB HAND GAP
+  const clubHandGripAvg = d.grip==='Under'?-2:d.grip==='Side On'?0:d.grip==='On Top'?2:null;
+  if(d.clubHandGap!==null && clubHandGripAvg!==null && targetTip!==null) {
+    const dev = d.clubHandGap - clubHandGripAvg;
+    if(dev < -1) {
+      const adj = Math.min(Math.abs(dev)*0.25, 0.75);
+      targetTip = Math.max(targetTip-adj, 1);
+      if(targetHandle!==null) targetHandle = Math.max(targetHandle-adj, 1);
       sportsboxSignals.push({var:'Club Hand Gap',value:d.clubHandGap+'"',signal:`${dev.toFixed(1)}" laid off vs ${d.grip} avg`,implication:'Softer tip & handle'});
-    } else if(dev>1){
-      const adj=Math.min(dev*0.25,0.75);
-      targetTip=Math.min(targetTip+adj,5);
-      if(targetHandle!==null) targetHandle=Math.min(targetHandle+adj,5);
+    } else if(dev > 1) {
+      const adj = Math.min(dev*0.25, 0.75);
+      targetTip = Math.min(targetTip+adj, 5);
+      if(targetHandle!==null) targetHandle = Math.min(targetHandle+adj, 5);
       sportsboxSignals.push({var:'Club Hand Gap',value:d.clubHandGap+'"',signal:`${dev.toFixed(1)}" across line vs ${d.grip} avg`,implication:'Stiffer tip & handle'});
     } else {
       sportsboxSignals.push({var:'Club Hand Gap',value:d.clubHandGap+'"',signal:'Within norm for grip type',implication:'No adjustment'});
     }
   }
 
-  // ── PELVIS POST CROSS-CHECK ───────────────────────────────────────────────
-  const pelvisPostAvg=d.post==='Front'?5.4:d.post==='Center'?5.0:d.post==='Rear'?4.5:null;
-  let pelvisHeadSignal=null;
-  if(d.pelvisSway!==null&&pelvisPostAvg!==null){
-    const dev=d.pelvisSway-pelvisPostAvg;
-    if(dev>1) pelvisHeadSignal='draw-bias';
-    else if(dev<-1) pelvisHeadSignal='neutral';
+  // PELVIS POST CROSS-CHECK FOR HEAD BIAS
+  const pelvisPostAvg = d.post==='Front'?5.4:d.post==='Center'?5.0:d.post==='Rear'?4.5:null;
+  let pelvisHeadSignal = null;
+  if(d.pelvisSway!==null && pelvisPostAvg!==null) {
+    const dev = d.pelvisSway - pelvisPostAvg;
+    if(dev > 1) pelvisHeadSignal = 'draw-bias';
+    else if(dev < -1) pelvisHeadSignal = 'neutral';
   }
 
-  // ── HEAD BIAS (corrective) ────────────────────────────────────────────────
-  let headBias='neutral';
-  if(d.shotShape==='Fade'||d.shotShape==='Both') headBias='draw-bias';
-  else if(d.shotShape==='Draw') headBias='neutral';
+  // HEAD BIAS — corrective
+  let headBias = 'neutral';
+  if(d.shotShape==='Fade'||d.shotShape==='Both') headBias = 'draw-bias';
+  else if(d.shotShape==='Draw') headBias = 'neutral';
   else {
-    const allSigs=[elbowHeadSignal,pelvisHeadSignal].filter(Boolean);
-    const drawCount=allSigs.filter(s=>s==='draw-bias').length;
-    headBias=drawCount>allSigs.length/2?'draw-bias':'neutral';
+    const allSigs = [elbowHeadSignal, pelvisHeadSignal].filter(Boolean);
+    const drawCount = allSigs.filter(s=>s==='draw-bias').length;
+    headBias = drawCount > allSigs.length/2 ? 'draw-bias' : 'neutral';
   }
 
-  // ── TORQUE TARGET ─────────────────────────────────────────────────────────
-  const torqueTargetMap={'On Top':2,'Side On':3,'Under':4};
-  const targetTorque=d.grip?torqueTargetMap[d.grip]??null:null;
+  const torqueTargetMap = {'On Top':2,'Side On':3,'Under':4};
+  const targetTorque = d.grip ? torqueTargetMap[d.grip]??null : null;
 
-  // ── NEW: FLEX GATE ────────────────────────────────────────────────────────
-  const validFlexes=getValidFlexes(d.ss);
+  // FLEX GATE
+  let validFlexes = null;
+  if(d.ss > 0) {
+    const v = [];
+    if(d.ss >= 75 && d.ss < 100) v.push('R');
+    if(d.ss >= 85 && d.ss < 110) v.push('S');
+    if(d.ss >= 100 && d.ss < 135) v.push('X');
+    if(d.ss >= 110) v.push('TX');
+    if(v.length) validFlexes = v;
+  }
 
-  // ── SHAFT SCORING ─────────────────────────────────────────────────────────
-  // Weights: Mid 3.0x | Tip 2.0x | Handle 1.5x | Torque 1.0x | Weight 0.25x
-  let scoredShafts=[];
-  equipmentDB.shafts.forEach(s=>{
-    const w=parseFloat(s.weight)||0;
-    const t=s.tip_val!==null?parseFloat(s.tip_val):null;
-    const m=s.mid_val!==null?parseFloat(s.mid_val):null;
-    const h=s.handle_val!==null?parseFloat(s.handle_val):null;
-    const tq=s.torque_val!==null?parseFloat(s.torque_val):null;
+  // SHAFT SCORING
+  let scoredShafts = [];
+  equipmentDB.shafts.forEach(s => {
+    const w  = parseFloat(s.weight)||0;
+    const t  = s.tip_val!==null ? parseFloat(s.tip_val) : null;
+    const m  = s.mid_val!==null ? parseFloat(s.mid_val) : null;
+    const h  = s.handle_val!==null ? parseFloat(s.handle_val) : null;
+    const tq = s.torque_val!==null ? parseFloat(s.torque_val) : null;
     if(t===null||m===null||h===null) return;
-
-    // NEW: flex gate — skip shafts outside valid range
-    if(validFlexes&&s.flex&&!validFlexes.includes(s.flex)) return;
-
+    if(validFlexes && s.flex && !validFlexes.includes(s.flex)) return;
     let score;
-    if(targetWeight===null){
-      score=99;
-    } else {
-      score=
-        Math.abs(w-targetWeight)*0.25+
-        Math.abs(t-targetTip)*2.0+
-        Math.abs(m-targetMid)*3.0+
-        Math.abs(h-targetHandle)*1.5;
-      if(targetTorque!==null&&tq!==null) score+=Math.abs(tq-targetTorque)*1.0;
+    if(targetWeight===null) { score=99; } else {
+      score = Math.abs(w-targetWeight)*0.25 + Math.abs(t-targetTip)*2.0 + Math.abs(m-targetMid)*3.0 + Math.abs(h-targetHandle)*1.5;
+      if(targetTorque!==null && tq!==null) score += Math.abs(tq-targetTorque)*1.0;
     }
     scoredShafts.push({name:s.name,weight:w,flex:s.flex,tip:t,mid:m,handle:h,torqueVal:tq,launch:s.launch,score,notes:s.player_type||'',test_tip:s.test_tip||''});
   });
   scoredShafts.sort((a,b)=>a.score-b.score);
-  const topShafts=scoredShafts.slice(0,3);
+  const topShafts = scoredShafts.slice(0,3);
 
-  // ── BALL SIGNAL ───────────────────────────────────────────────────────────
-  const ballData=d.ball?BALL_DB.find(b=>b.name===d.ball):null;
-  const ballSpinVal=ballData?.spin_val??null;
-  let ballCGSignal=null,ballLoftAdj=0;
-  if(ballSpinVal!==null){
-    if(ballSpinVal>=4){ballCGSignal='forward';ballLoftAdj=-0.5;}
-    else if(ballSpinVal<=2){ballCGSignal='back';ballLoftAdj=+0.5;}
+  // BALL SIGNAL
+  const ballData = d.ball ? BALL_DB.find(b=>b.name===d.ball) : null;
+  const ballSpinVal = ballData?.spin_val ?? null;
+  let ballCGSignal = null, loftAdjustment = 0;
+  if(ballSpinVal!==null) {
+    if(ballSpinVal>=4) { ballCGSignal='forward'; loftAdjustment=-0.5; }
+    else if(ballSpinVal<=2) { ballCGSignal='back'; loftAdjustment=+0.5; }
   }
 
-  // ── HEAD SELECTION ────────────────────────────────────────────────────────
-  let heads=[...equipmentDB.drivers];
-  if(d.ss>0) heads=heads.filter(h=>d.ss>=(h.swing_speed_min||0)&&d.ss<=(h.swing_speed_max||999));
+  // HEAD SELECTION
+  let heads = [...equipmentDB.drivers];
+  if(d.ss>0) heads = heads.filter(h=>d.ss>=(h.swing_speed_min||0)&&d.ss<=(h.swing_speed_max||999));
 
-  let spinCGFilter=null;
-  if(d.sr>0){
+  let spinCGFilter = null;
+  if(d.sr>0) {
     if(d.sr<=2200) spinCGFilter='back';
     else if(d.sr>=2700) spinCGFilter='forward';
   }
 
-  // NEW: sway gap band A pushes toward low/forward CG
-  const cgPriority=spinCGFilter||(swayGapCGSignal==='low'?'forward':null)||(headBias==='draw-bias'?'draw':null)||'neutral';
+  const cgPriority = spinCGFilter || (swayBand==='A'?'forward':null) || (headBias==='draw-bias'?'draw':null) || 'neutral';
 
-  if(cgPriority==='forward'){
-    const fwd=heads.filter(h=>h.cg?.includes('forward')||h.spin==='low');
-    heads=[...fwd,...heads.filter(h=>!fwd.includes(h))];
-  } else if(cgPriority==='draw'){
-    const draw=heads.filter(h=>h.cg?.includes('heel'));
-    heads=[...draw,...heads.filter(h=>!draw.includes(h))];
-  } else if(cgPriority==='back'){
-    const back=heads.filter(h=>h.cg?.includes('back')||h.cg?.includes('high'));
-    heads=[...back,...heads.filter(h=>!back.includes(h))];
+  if(cgPriority==='forward') {
+    const fwd = heads.filter(h=>h.cg?.includes('forward')||h.spin==='low');
+    heads = [...fwd,...heads.filter(h=>!fwd.includes(h))];
+  } else if(cgPriority==='draw') {
+    const draw = heads.filter(h=>h.cg?.includes('heel'));
+    heads = [...draw,...heads.filter(h=>!draw.includes(h))];
+  } else if(cgPriority==='back') {
+    const back = heads.filter(h=>h.cg?.includes('back')||h.cg?.includes('high'));
+    heads = [...back,...heads.filter(h=>!back.includes(h))];
   }
 
   const seenBrands=new Set(),varied=[],remainder=[];
@@ -787,69 +745,69 @@ function buildRecommendations(d){
   });
   heads=[...varied,...remainder];
 
-  const gripSignals=buildGripSignals(d);
+  const gripSignals = buildGripSignals(d);
 
   return {
-    heads:heads.slice(0,3),shafts:topShafts,
-    matchedRules,bioMatches,gripSignals,sportsboxSignals,
-    headBias,swayBand,pelvisBand,validFlexes,
-    profile,profileKey,
-    targetWeight,targetTip,targetMid,targetHandle,targetLoft,targetTorque,
-    ballData,ballSpinVal,ballCGSignal,loftAdjustment:ballLoftAdj,
+    heads:heads.slice(0,3), shafts:topShafts,
+    matchedRules, bioMatches, gripSignals, sportsboxSignals,
+    headBias, swayBand, validFlexes,
+    profile, profileKey,
+    targetWeight, targetTip, targetMid, targetHandle, targetLoft, targetTorque,
+    ballData, ballSpinVal, ballCGSignal, loftAdjustment,
   };
 }
 
-function buildGripSignals(d){
-  const signals=[];
-  const grip=d.grip,post=d.post;
+function buildGripSignals(d) {
+  const signals = [];
+  const grip = d.grip, post = d.post;
   if(!grip) return signals;
-  if(grip==='On Top') signals.push({source:'Grip',signal:'On Top grip',recommendation:'Heavier shaft (avg 71g). Stiff tip (4.33 avg) and stiff handle (4.27 avg).',detail:'Tour data: On Top players average 71.1g.'});
-  if(grip==='Under') signals.push({source:'Grip',signal:'Under grip',recommendation:'Softer tip (3.86 avg) and handle (3.75 avg) vs On Top.',detail:'Tour data: Under players average 68.7g, notably softer throughout.'});
-  if(grip==='Side On') signals.push({source:'Grip',signal:'Side On grip',recommendation:'Similar weight to On Top but softer mid (3.75 avg).',detail:'Tour data: Side On players average 71.4g but mid drops to 3.75.'});
-  if(grip==='On Top'&&post==='Front') signals.push({source:'Grip+Post',signal:'On Top / Front',recommendation:'Heaviest profile (avg 78g). All tour players here are faders.',detail:'Burns, Finau, Scottie pattern.'});
-  if(grip==='On Top'&&post==='Rear') signals.push({source:'Grip+Post',signal:'On Top / Rear',recommendation:'Max tip AND handle stiffness (5.0 both).',detail:'Spieth, Woodland pattern.'});
-  if(grip==='Under'&&post==='Front') signals.push({source:'Grip+Post',signal:'Under / Front',recommendation:'Softest tip of any combination (2.0). Hatton pattern.',detail:'Under/Front is the softest tip in the dataset.'});
-  if(grip==='Under'&&post==='Center') signals.push({source:'Grip+Post',signal:'Under / Center',recommendation:'Softest handle (3.25 avg). Most common tour combo.',detail:'Colin M, JT, Rahm, DJ, Adam Scott.'});
-  if(grip==='Under'&&d.shotShape==='Fade') signals.push({source:'Grip+Shot',signal:'Under fader',recommendation:'Uncommon — verify path data. Draw-bias head consideration.',detail:'Rahm, JT, Hatton all use mid-to-soft tip shafts.'});
-  if(grip==='On Top'&&d.shotShape==='Draw') signals.push({source:'Grip+Shot',signal:'On Top drawer',recommendation:'Strong in-to-out path likely. Shaft stability important.',detail:'Aberg, Cam Young use stiff tip profiles.'});
+  if(grip==='On Top') signals.push({source:'Grip profile',signal:'On Top grip',recommendation:'Heavier shaft (avg 71g). Stiff tip (4.33 avg) and stiff handle (4.27 avg). Strong tip stiffness priority.',detail:'Tour data: On Top players average 71.1g, tip value 4.33, handle value 4.27.'});
+  if(grip==='Under') signals.push({source:'Grip profile',signal:'Under grip',recommendation:'Lighter shaft (avg 69g). Softer tip profile (3.86 avg) and softer handle (3.75 avg) vs On Top.',detail:'Tour data: Under players average 68.7g, tip value 3.86, handle value 3.75.'});
+  if(grip==='Side On') signals.push({source:'Grip profile',signal:'Side On grip',recommendation:'Heavier shaft (avg 71g) but softer mid section (3.75 avg). Watch mid stiffness carefully.',detail:'Tour data: Side On players average 71.4g but mid stiffness drops to 3.75.'});
+  if(grip==='On Top'&&post==='Front') signals.push({source:'Grip + Post',signal:'On Top / Front',recommendation:'Heaviest shaft profile of any combination (avg 78g). All tour players in this category are faders.',detail:'Burns, Finau, Fleetwood pattern.'});
+  if(grip==='On Top'&&post==='Rear') signals.push({source:'Grip + Post',signal:'On Top / Rear',recommendation:'Maximum tip AND handle stiffness (5.0 avg both). Ultra-stiff throughout.',detail:'Stiffest profile in dataset. Spieth, Koepka, Woodland pattern.'});
+  if(grip==='Under'&&post==='Front') signals.push({source:'Grip + Post',signal:'Under / Front',recommendation:'Softest tip of any combination (2.0 avg). Mid firm (4.0). Hatton pattern.',detail:'Under / Front is the softest tip combination in the entire dataset.'});
+  if(grip==='Under'&&post==='Center') signals.push({source:'Grip + Post',signal:'Under / Center',recommendation:'Softest handle section (3.25 avg). Mid firm (4.0). Most common tour combination.',detail:'Most represented combination: Colin M, JT, Rahm, Cantlay, DJ, Adam Scott.'});
+  if(grip==='Under'&&d.shotShape==='Fade') signals.push({source:'Grip + Shot shape',signal:'Under grip fader',recommendation:'Uncommon combination — verify path and face data. May benefit from draw-bias head to neutralise.',detail:'Under grip faders in tour data include Rahm, JT, Hatton.'});
+  if(grip==='On Top'&&d.shotShape==='Draw') signals.push({source:'Grip + Shot shape',signal:'On Top grip drawer',recommendation:'Strong in-to-out path likely. Shaft stability important to manage timing. Neutral to back CG.',detail:'On Top drawers (Aberg, Cam Young) use stiff tip profiles.'});
   return signals;
 }
 
-async function saveSession(d,recs,insight){
-  const row={
-    player_name:d.name||null,handicap:d.hdcp||null,height:d.height||null,wrist_to_floor:d.wtf||null,
-    current_gamer:d.gamer||null,swing_speed:d.ss||null,ball_speed:d.bs||null,
-    launch_angle:d.la||null,spin_rate:d.sr||null,attack_angle:d.aa||null,club_path:d.cp||null,
-    smash_factor:d.smash||null,dynamic_loft:d.dl||null,
-    sway_gap:d.swayGap??null,chest_lift:d.chestLift??null,lead_elbow:d.leadElbow??null,
-    club_hand_gap:d.clubHandGap??null,pelvis_sway:d.pelvisSway??null,
-    notes:d.notes||null,ai_insight:insight||null,
+async function saveSession(d, recs, insight) {
+  const row = {
+    player_name:d.name||null, handicap:d.hdcp||null, height:d.height||null, wrist_to_floor:d.wtf||null,
+    current_gamer:d.gamer||null, swing_speed:d.ss||null, ball_speed:d.bs||null,
+    launch_angle:d.la||null, spin_rate:d.sr||null, attack_angle:d.aa||null, club_path:d.cp||null,
+    smash_factor:d.smash||null, dynamic_loft:d.dl||null,
+    sway_gap:d.swayGap??null, chest_lift:d.chestLift??null, lead_elbow:d.leadElbow??null,
+    club_hand_gap:d.clubHandGap??null, pelvis_sway:d.pelvisSway??null,
+    notes:d.notes||null, ai_insight:insight||null,
     recommendations:JSON.stringify({
-      heads:recs.heads.map(h=>h.name),shafts:recs.shafts.map(s=>s.name),
-      swayBand:recs.swayBand,validFlexes:recs.validFlexes,
+      heads:recs.heads.map(h=>h.name), shafts:recs.shafts.map(s=>s.name),
+      swayBand:recs.swayBand, validFlexes:recs.validFlexes,
     }),
   };
-  const {error}=await db.from('sessions').insert(row);
-  if(!error){
-    toast('Session saved');
-    const {data}=await db.from('sessions').select('*').order('created_at',{ascending:false});
-    sessionsList=data||[];
-  } else toast('Could not save session','error');
+  const {error} = await db.from('sessions').insert(row);
+  if(!error) {
+    toast('Session saved to database');
+    const {data} = await db.from('sessions').select('*').order('created_at',{ascending:false});
+    sessionsList = data||[];
+  } else { toast('Could not save session','error'); }
 }
 
-function renderResults(){
-  if(!currentSession){
-    document.getElementById('sidebar').innerHTML='';
-    document.getElementById('content').innerHTML=`<div class="empty"><i class="ti ti-clipboard-list"></i><div class="empty-title">No active fitting</div><div class="empty-sub">Run a fitting to see results here.</div></div>`;
+function renderResults() {
+  if(!currentSession) {
+    document.getElementById('sidebar').innerHTML = '';
+    document.getElementById('content').innerHTML = `<div class="empty"><i class="ti ti-clipboard-list"></i><div class="empty-title">No active fitting</div><div class="empty-sub">Run a fitting or load a past session to see results here.</div></div>`;
     return;
   }
-  const {data:d,recs}=currentSession;
-
-  document.getElementById('sidebar').innerHTML=`
+  const {data:d, recs} = currentSession;
+  document.getElementById('sidebar').innerHTML = `
     <div class="sidebar-section">
       <div class="sidebar-label">Session summary</div>
       <div style="font-size:13px;color:var(--text2);line-height:2">
         <div><span style="color:var(--text3)">Player </span>${d.name||'—'}</div>
+        <div><span style="color:var(--text3)">Handicap </span>${d.hdcp||'—'}</div>
         <div><span style="color:var(--text3)">Grip </span>${d.grip||'—'}</div>
         <div><span style="color:var(--text3)">Post </span>${d.post||'—'}</div>
         <div><span style="color:var(--text3)">Shot shape </span>${d.shotShape||'—'}</div>
@@ -864,12 +822,11 @@ function renderResults(){
     <button class="run-btn" onclick="showPage('fitting')" style="margin-top:8px"><i class="ti ti-edit"></i> New fitting</button>
   `;
 
-  let html=`<div class="player-banner">
+  let html = `<div class="player-banner">
     <div>
       <div class="player-name">${d.name||'Player'}</div>
       <div class="player-meta">${[d.grip,d.post,d.shotShape].filter(Boolean).join(' / ')||'—'}${d.hdcp?' · Hdcp '+d.hdcp:''}</div>
-      ${d.ball&&recs.ballData?`<div style="font-size:12px;color:var(--teal2);margin-top:4px">${d.ball} · Spin ${recs.ballSpinVal}/5</div>`:''}
-      ${recs.swayBand?`<div style="font-size:12px;color:var(--cyan3);margin-top:3px">Sway Gap Band ${recs.swayBand}${recs.validFlexes?' · Flex: '+recs.validFlexes.join('/'):''}${recs.targetLoft?' · Target loft: '+recs.targetLoft.toFixed(1)+'°':''}</div>`:''}
+      ${recs.swayBand?`<div style="font-size:12px;color:var(--cyan3);margin-top:3px">Sway Band ${recs.swayBand}${recs.validFlexes?' · Flex: '+recs.validFlexes.join('/'):''}${recs.targetLoft?' · Target loft: '+recs.targetLoft.toFixed(1)+'°':''}</div>`:''}
     </div>
     <div class="player-stats">
       ${d.ss?`<div class="stat-block"><div class="stat-val">${d.ss}</div><div class="stat-lbl">mph</div></div>`:''}
@@ -878,17 +835,17 @@ function renderResults(){
     </div>
   </div>`;
 
-  if(recs.matchedRules.length||recs.bioMatches.length||recs.gripSignals?.length){
-    html+=`<div class="rules-strip">
-      <div class="rules-strip-title"><i class="ti ti-filter" style="vertical-align:-2px;margin-right:4px"></i>Fitting signals</div>
+  if(recs.matchedRules.length||recs.bioMatches.length||recs.gripSignals?.length) {
+    html += `<div class="rules-strip">
+      <div class="rules-strip-title"><i class="ti ti-filter" style="vertical-align:-2px;margin-right:4px"></i>Fitting signals detected</div>
       ${recs.matchedRules.map(r=>`<div class="rule-item"><i class="ti ti-chevron-right"></i><span><strong style="color:var(--text)">${r.recommendation}</strong> — ${r.notes}</span></div>`).join('')}
       ${recs.bioMatches.map(b=>`<div class="rule-item"><i class="ti ti-activity"></i><span>${b.shaft_profile} · ${b.head_profile}</span></div>`).join('')}
       ${(recs.gripSignals||[]).map(g=>`<div class="rule-item"><i class="ti ti-hand-finger"></i><span><strong style="color:var(--cyan2)">${g.signal}:</strong> ${g.recommendation}</span></div>`).join('')}
     </div>`;
   }
 
-  if(recs.sportsboxSignals?.length){
-    html+=`<div class="section-header"><div class="section-title">SportsBox analysis</div><div class="section-line"></div></div>
+  if(recs.sportsboxSignals?.length) {
+    html += `<div class="section-header"><div class="section-title">SportsBox analysis</div><div class="section-line"></div></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
       ${recs.sportsboxSignals.map(s=>`
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px">
@@ -907,8 +864,8 @@ function renderResults(){
     </div>`;
   }
 
-  if(recs.targetWeight!==null){
-    html+=`<div style="background:var(--bg2);border:1px solid var(--cyan3);border-radius:var(--radius);padding:12px 16px;margin-bottom:14px">
+  if(recs.targetWeight!==null) {
+    html += `<div style="background:var(--bg2);border:1px solid var(--cyan3);border-radius:var(--radius);padding:12px 16px;margin-bottom:14px">
       <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--cyan);font-weight:700;margin-bottom:8px">Target shaft profile — ${d.grip} / ${d.post}${recs.swayBand?' · Band '+recs.swayBand:''}</div>
       <div style="display:flex;gap:20px;flex-wrap:wrap">
         <div style="text-align:center"><div style="font-size:18px;font-weight:700;color:var(--cyan2)">${recs.targetWeight.toFixed(0)}g</div><div style="font-size:10px;color:var(--text3)">Weight</div></div>
@@ -922,10 +879,10 @@ function renderResults(){
     </div>`;
   }
 
-  if(recs.heads.length){
-    html+=`<div class="section-header"><div class="section-title">Driver heads</div><div class="section-line"></div></div><div class="rec-grid">`;
-    recs.heads.forEach((h,i)=>{
-      html+=`<div class="rec-card ${i===0?'top-pick':''}">
+  if(recs.heads.length) {
+    html += `<div class="section-header"><div class="section-title">Driver heads</div><div class="section-line"></div></div><div class="rec-grid">`;
+    recs.heads.forEach((h,i) => {
+      html += `<div class="rec-card ${i===0?'top-pick':''}">
         <div class="rec-rank">${i===0?'<div class="cyan-dot"></div>':''}${i===0?'Top recommendation':'Option '+(i+1)}</div>
         <div class="rec-name">${h.name}</div>
         <div class="rec-tags">
@@ -939,14 +896,14 @@ function renderResults(){
         <div class="confidence-bar"><div class="confidence-fill" style="width:${i===0?'92':i===1?'72':'52'}%"></div></div>
       </div>`;
     });
-    html+=`</div>`;
+    html += `</div>`;
   }
 
-  if(recs.shafts.length){
-    html+=`<div class="section-header"><div class="section-title">Driver shafts${recs.validFlexes?' ('+recs.validFlexes.join('/')+' only)':''}</div><div class="section-line"></div></div><div class="rec-grid">`;
-    recs.shafts.forEach((s,i)=>{
-      const pct=s.score<1?96:s.score<3?85:s.score<6?70:50;
-      html+=`<div class="rec-card ${i===0?'top-pick':''}">
+  if(recs.shafts.length) {
+    html += `<div class="section-header"><div class="section-title">Driver shafts${recs.validFlexes?' ('+recs.validFlexes.join('/')+' only)':''}</div><div class="section-line"></div></div><div class="rec-grid">`;
+    recs.shafts.forEach((s,i) => {
+      const pct = s.score<1?96:s.score<3?85:s.score<6?70:50;
+      html += `<div class="rec-card ${i===0?'top-pick':''}">
         <div class="rec-rank">${i===0?'<div class="cyan-dot"></div>':''}${i===0?'Best match':'Match '+(i+1)} <span style="margin-left:auto;font-size:10px;color:var(--text3)">${pct}%</span></div>
         <div class="rec-name">${s.name}</div>
         <div class="rec-tags">
@@ -961,50 +918,47 @@ function renderResults(){
         <div class="confidence-bar"><div class="confidence-fill" style="width:${pct}%"></div></div>
       </div>`;
     });
-    html+=`</div>`;
+    html += `</div>`;
   }
 
-  html+=`<div class="section-header"><div class="section-title">AI analysis</div><div class="section-line"></div></div>
+  html += `<div class="section-header"><div class="section-title">AI analysis</div><div class="section-line"></div></div>
   <div class="ai-panel">
     <div class="ai-header"><div class="ai-dot"></div><div class="ai-title">EMB Fitting Intelligence</div></div>
     <div class="ai-text" id="ai-text">${aiInsight||'<div class="spinner"></div> Analyzing...'}</div>
   </div>`;
 
-  document.getElementById('content').innerHTML=html;
+  document.getElementById('content').innerHTML = html;
 }
 
-async function fetchAI(d,recs){
-  const prompt=`You are an expert golf club fitter at EMB Fitting. Provide 4-5 sentences of specific, actionable fitting insight. Be direct — this is shown on screen to the client.
-
-Player: ${d.name||'unnamed'}, Hdcp: ${d.hdcp||'—'}, Gamer: ${d.gamer||'—'}
+async function fetchAI(d, recs) {
+  const prompt = `You are an expert golf club fitter at EMB Fitting. Provide 4-5 sentences of specific, actionable fitting insight. Be direct and professional — this displays on screen to the client.
+Player: ${d.name||'unnamed'}, Handicap: ${d.hdcp||'unknown'}, Gamer: ${d.gamer||'unknown'}
 Swing: Grip ${d.grip||'—'}, Post ${d.post||'—'}, Shot shape ${d.shotShape||'—'}, Tempo ${d.tempo||'—'}
-Speed: ${d.ss}mph | Ball: ${d.ball||'—'} spin ${recs.ballSpinVal||'—'}/5
-Launch: ${d.la}° launch, ${d.sr}rpm, ${d.aa}° AoA
+Speed: ${d.ss}mph | Spin: ${d.sr}rpm | AoA: ${d.aa}° | Launch: ${d.la}°
 SportsBox: Sway Gap ${d.swayGap??'—'}" (Band ${recs.swayBand||'—'}), Chest Lift ${d.chestLift??'—'}", Lead Elbow ${d.leadElbow??'—'}°, Club/Hand ${d.clubHandGap??'—'}", Pelvis ${d.pelvisSway??'—'}"
 Engine: Head bias ${recs.headBias}, Valid flex ${recs.validFlexes?.join('/')||'—'}, Target loft ${recs.targetLoft?.toFixed(1)||'—'}°
 Target shaft: ${recs.targetWeight?.toFixed(0)||'—'}g, Tip ${recs.targetTip?.toFixed(1)||'—'}, Mid ${recs.targetMid?.toFixed(1)||'—'}, Handle ${recs.targetHandle?.toFixed(1)||'—'}
-Top head: ${recs.heads[0]?.name||'TBD'} | Top shaft: ${recs.shafts[0]?.name||'TBD'}
-Notes: ${d.notes||'none'}`;
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+Top head: ${recs.heads[0]?.name||'TBD'} | Top shaft: ${recs.shafts[0]?.name||'TBD'}`;
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})
     });
-    const data=await res.json();
-    aiInsight=data.content?.[0]?.text||'Analysis unavailable.';
-  }catch(e){aiInsight='AI analysis unavailable.';}
-  const el=document.getElementById('ai-text');
-  if(el) el.innerHTML=aiInsight;
+    const data = await res.json();
+    aiInsight = data.content?.[0]?.text || 'Analysis unavailable.';
+  } catch(e) { aiInsight = 'AI analysis unavailable.'; }
+  const el = document.getElementById('ai-text');
+  if(el) el.innerHTML = aiInsight;
   return aiInsight;
 }
 
-function renderSessions(){
-  document.getElementById('sidebar').innerHTML=`<div class="sidebar-section"><div class="sidebar-label">Past sessions</div><div style="font-size:12px;color:var(--text3)">${sessionsList.length} sessions saved.</div></div>`;
-  if(sessionsList.length===0){
-    document.getElementById('content').innerHTML=`<div class="empty"><i class="ti ti-history"></i><div class="empty-title">No sessions yet</div><div class="empty-sub">Sessions save automatically after each fitting.</div></div>`;
+function renderSessions() {
+  document.getElementById('sidebar').innerHTML = `<div class="sidebar-section"><div class="sidebar-label">Past sessions</div><div style="font-size:12px;color:var(--text3)">${sessionsList.length} sessions saved.</div></div>`;
+  if(sessionsList.length===0) {
+    document.getElementById('content').innerHTML = `<div class="empty"><i class="ti ti-history"></i><div class="empty-title">No sessions yet</div><div class="empty-sub">Sessions are automatically saved after each fitting.</div></div>`;
     return;
   }
-  document.getElementById('content').innerHTML=`
+  document.getElementById('content').innerHTML = `
     <div style="margin-bottom:20px"><div style="font-size:18px;font-weight:700;margin-bottom:4px">Fitting sessions</div><div style="font-size:13px;color:var(--text3)">${sessionsList.length} sessions saved.</div></div>
     ${sessionsList.map(s=>`
     <div class="session-list-item" onclick="loadSession('${s.id}')">
@@ -1017,38 +971,38 @@ function renderSessions(){
     </div>`).join('')}`;
 }
 
-async function loadSession(id){
-  const session=sessionsList.find(s=>s.id===id);
+async function loadSession(id) {
+  const session = sessionsList.find(s=>s.id===id);
   if(!session) return;
-  const d={
-    name:session.player_name||'',hdcp:session.handicap||'',height:session.height||'',wtf:session.wrist_to_floor||'',gamer:session.current_gamer||'',
-    ss:session.swing_speed||0,bs:session.ball_speed||0,la:session.launch_angle||0,sr:session.spin_rate||0,
-    aa:session.attack_angle||0,cp:session.club_path||0,smash:session.smash_factor||0,dl:session.dynamic_loft||0,
-    notes:session.notes||'',ball:'',grip:'',post:'',shotShape:'',tempo:'',
-    swayGap:session.sway_gap??null,chestLift:session.chest_lift??null,leadElbow:session.lead_elbow??null,
-    clubHandGap:session.club_hand_gap??null,pelvisSway:session.pelvis_sway??null,
+  const d = {
+    name:session.player_name||'', hdcp:session.handicap||'', height:session.height||'', wtf:session.wrist_to_floor||'', gamer:session.current_gamer||'',
+    ss:session.swing_speed||0, bs:session.ball_speed||0, la:session.launch_angle||0, sr:session.spin_rate||0,
+    aa:session.attack_angle||0, cp:session.club_path||0, smash:session.smash_factor||0, dl:session.dynamic_loft||0,
+    notes:session.notes||'', ball:'', grip:'', post:'', shotShape:'', tempo:'',
+    swayGap:session.sway_gap??null, chestLift:session.chest_lift??null, leadElbow:session.lead_elbow??null,
+    clubHandGap:session.club_hand_gap??null, pelvisSway:session.pelvis_sway??null,
   };
-  const recs=buildRecommendations(d);
-  currentSession={data:d,recs};
-  aiInsight=session.ai_insight||'';
-  document.getElementById('session-label').textContent=d.name||'Loaded session';
+  const recs = buildRecommendations(d);
+  currentSession = {data:d, recs};
+  aiInsight = session.ai_insight||'';
+  document.getElementById('session-label').textContent = d.name||'Loaded session';
   showPage('results');
 }
 
-async function deleteSession(id){
+async function deleteSession(id) {
   if(!confirm('Delete this session?')) return;
-  const {error}=await db.from('sessions').delete().eq('id',id);
-  if(!error){sessionsList=sessionsList.filter(s=>s.id!==id);toast('Session deleted');renderSessions();}
-  else toast('Could not delete','error');
+  const {error} = await db.from('sessions').delete().eq('id', id);
+  if(!error) { sessionsList = sessionsList.filter(s=>s.id!==id); toast('Session deleted'); renderSessions(); }
+  else toast('Could not delete session','error');
 }
 
-function renderAdminLock(){
-  document.getElementById('sidebar').innerHTML='';
-  document.getElementById('content').innerHTML=`
+function renderAdminLock() {
+  document.getElementById('sidebar').innerHTML = '';
+  document.getElementById('content').innerHTML = `
     <div class="admin-lock">
       <i class="ti ti-shield-lock"></i>
-      <div style="font-size:18px;font-weight:700">Admin access required</div>
-      <div style="font-size:13px;color:var(--text3)">Manage rules, correlations, and equipment.</div>
+      <div class="admin-lock-title">Admin access required</div>
+      <div class="admin-lock-sub">Manage rules, correlations, and equipment.</div>
       <div class="pw-row">
         <input type="password" id="pw-input" placeholder="Password" onkeydown="if(event.key==='Enter')tryUnlock()" />
         <button class="pw-btn" onclick="tryUnlock()">Unlock</button>
@@ -1057,28 +1011,29 @@ function renderAdminLock(){
     </div>`;
 }
 
-function tryUnlock(){
+function tryUnlock() {
   if(document.getElementById('pw-input').value===ADMIN_PASS){adminUnlocked=true;renderAdmin();}
   else document.getElementById('pw-err').textContent='Incorrect password.';
 }
 
-function renderAdmin(){
-  document.getElementById('sidebar').innerHTML=`
+function renderAdmin() {
+  document.getElementById('sidebar').innerHTML = `
     <div class="sidebar-section">
       <div class="sidebar-label">Admin</div>
-      <div style="font-size:12px;color:var(--text3);line-height:1.7;margin-bottom:16px">Changes save instantly to Supabase.</div>
+      <div style="font-size:12px;color:var(--text3);line-height:1.7;margin-bottom:16px">All changes save instantly to your Supabase database.</div>
       <button class="clear-btn" style="border-color:var(--red);color:var(--red)" onclick="adminUnlocked=false;renderAdminLock()"><i class="ti ti-lock"></i> Lock admin</button>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label">Database stats</div>
       <div style="font-size:12px;color:var(--text2);line-height:2">
         <div><span style="color:var(--text3)">Rules </span>${rulesDB.length}</div>
+        <div><span style="color:var(--text3)">Bio correlations </span>${bioCorrelations.length}</div>
         <div><span style="color:var(--text3)">Driver heads </span>${equipmentDB.drivers.length}</div>
         <div><span style="color:var(--text3)">Shafts </span>${equipmentDB.shafts.length}</div>
         <div><span style="color:var(--text3)">Sessions </span>${sessionsList.length}</div>
       </div>
     </div>`;
-  document.getElementById('content').innerHTML=`
+  document.getElementById('content').innerHTML = `
     <div class="admin-tabs">
       <button class="admin-tab ${adminTab==='rules'?'active':''}" onclick="setAdminTab('rules')">Fitting rules</button>
       <button class="admin-tab ${adminTab==='bio'?'active':''}" onclick="setAdminTab('bio')">Biomechanics</button>
@@ -1091,7 +1046,7 @@ function renderAdmin(){
   renderAdminBody();
 }
 
-function setAdminTab(tab){
+function setAdminTab(tab) {
   adminTab=tab;
   document.querySelectorAll('.admin-tab').forEach(el=>{
     const map={'rules':'Fitting rules','bio':'Biomechanics','equipment':'Equipment','addRule':'+ Add rule','addBio':'+ Add correlation','addEquip':'+ Add equipment'};
@@ -1100,11 +1055,11 @@ function setAdminTab(tab){
   renderAdminBody();
 }
 
-function renderAdminBody(){
-  const el=document.getElementById('admin-body');
+function renderAdminBody() {
+  const el = document.getElementById('admin-body');
   if(!el) return;
-  if(adminTab==='rules'){
-    el.innerHTML=rulesDB.length===0?'<div style="color:var(--text3);padding:20px">No rules yet.</div>':
+  if(adminTab==='rules') {
+    el.innerHTML = rulesDB.length===0?'<div style="color:var(--text3);padding:20px">No rules yet.</div>':
     rulesDB.map(r=>`<div class="admin-card">
       <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px">
         <div class="admin-card-title" style="margin-bottom:0">${r.recommendation}</div>
@@ -1115,16 +1070,16 @@ function renderAdminBody(){
       ${r.test_tip?`<div style="font-size:11px;color:var(--teal2);margin-top:4px"><i class="ti ti-target" style="vertical-align:-2px;margin-right:4px"></i>${r.test_tip}</div>`:''}
       <div class="admin-actions"><button class="btn-sm danger" onclick="deleteRule('${r.id}')"><i class="ti ti-trash"></i> Delete</button></div>
     </div>`).join('');
-  } else if(adminTab==='bio'){
-    el.innerHTML=bioCorrelations.length===0?'<div style="color:var(--text3);padding:20px">No correlations yet.</div>':
+  } else if(adminTab==='bio') {
+    el.innerHTML = bioCorrelations.length===0?'<div style="color:var(--text3);padding:20px">No correlations yet.</div>':
     bioCorrelations.map(c=>`<div class="admin-card">
       <div class="admin-card-title">${bioFields.find(f=>f.id===c.bio_var)?.label||c.bio_var}</div>
       <div class="admin-card-cond">${c.range}</div>
       <div class="admin-card-meta">Shaft: ${c.shaft_profile}<br>Head: ${c.head_profile}<br>${c.notes||''}</div>
       <div class="admin-actions"><button class="btn-sm danger" onclick="deleteBio('${c.id}')"><i class="ti ti-trash"></i> Delete</button></div>
     </div>`).join('');
-  } else if(adminTab==='equipment'){
-    el.innerHTML=`
+  } else if(adminTab==='equipment') {
+    el.innerHTML = `
       <div class="section-divider"><span>Driver heads (${equipmentDB.drivers.length})</span></div>
       ${equipmentDB.drivers.map(h=>`<div class="equip-row">
         <div style="flex:1"><div class="equip-name">${h.name}</div>
@@ -1139,8 +1094,8 @@ function renderAdminBody(){
         <div class="equip-meta">${s.player_type||''}</div></div>
         <button class="btn-sm danger" onclick="deleteEquip('${s.id}')" style="margin-left:12px"><i class="ti ti-trash"></i></button>
       </div>`).join('')}`;
-  } else if(adminTab==='addRule'){
-    el.innerHTML=`<div class="admin-card">
+  } else if(adminTab==='addRule') {
+    el.innerHTML = `<div class="admin-card">
       <div style="font-size:14px;font-weight:600;margin-bottom:16px">Add fitting rule</div>
       <div class="form-group"><label>Type</label><select id="r-type"><option value="launch_monitor">Launch monitor</option><option value="biomechanics">Biomechanics</option></select></div>
       <div class="form-group"><label>Condition</label><input id="r-cond" placeholder="e.g. swing_speed > 110 AND spin_rate > 2800" /><div class="form-hint">Variables: swing_speed · attack_angle · spin_rate · launch_angle · ball_speed · sway_gap · chest_lift · lead_elbow · club_hand_gap · pelvis_sway</div></div>
@@ -1151,19 +1106,19 @@ function renderAdminBody(){
       <button class="add-btn" id="add-rule-btn" onclick="addRule()"><i class="ti ti-plus"></i> Add rule</button>
       <div id="r-msg"></div>
     </div>`;
-  } else if(adminTab==='addBio'){
-    el.innerHTML=`<div class="admin-card">
+  } else if(adminTab==='addBio') {
+    el.innerHTML = `<div class="admin-card">
       <div style="font-size:14px;font-weight:600;margin-bottom:16px">Add biomechanics correlation</div>
       <div class="form-group"><label>Variable</label><select id="bc-var">${bioFields.map(f=>`<option value="${f.id}">${f.label}</option>`).join('')}</select></div>
       <div class="form-group"><label>Range</label><input id="bc-range" placeholder="e.g. > 2.5" /></div>
       <div class="form-group"><label>Shaft recommendation</label><input id="bc-shaft" /></div>
       <div class="form-group"><label>Head recommendation</label><input id="bc-head" /></div>
-      <div class="form-group"><label>Notes</label><textarea id="bc-notes" rows="2"></textarea></div>
+      <div class="form-group"><label>Notes</label><textarea id="bc-notes" rows="3"></textarea></div>
       <button class="add-btn" id="add-bio-btn" onclick="addBio()"><i class="ti ti-plus"></i> Add correlation</button>
       <div id="bc-msg"></div>
     </div>`;
-  } else if(adminTab==='addEquip'){
-    el.innerHTML=`<div class="admin-card">
+  } else if(adminTab==='addEquip') {
+    el.innerHTML = `<div class="admin-card">
       <div style="font-size:14px;font-weight:600;margin-bottom:16px">Add equipment</div>
       <div class="form-group"><label>Type</label><select id="eq-type" onchange="renderEquipForm()"><option value="driver">Driver head</option><option value="shaft">Shaft</option></select></div>
       <div id="eq-form"></div>
@@ -1172,12 +1127,12 @@ function renderAdminBody(){
   }
 }
 
-function renderEquipForm(){
-  const type=document.getElementById('eq-type')?.value;
-  const el=document.getElementById('eq-form');
+function renderEquipForm() {
+  const type = document.getElementById('eq-type')?.value;
+  const el = document.getElementById('eq-form');
   if(!el) return;
-  if(type==='driver'){
-    el.innerHTML=`
+  if(type==='driver') {
+    el.innerHTML = `
       <div class="form-group"><label>Model name</label><input id="eq-name" /></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div class="form-group"><label>Spin</label><select id="eq-spin"><option>low</option><option>mid-low</option><option selected>mid</option><option>mid-high</option><option>high</option></select></div>
@@ -1192,7 +1147,7 @@ function renderEquipForm(){
       <button class="add-btn" onclick="addEquipment('driver')"><i class="ti ti-plus"></i> Add driver head</button>
       <div id="eq-msg"></div>`;
   } else {
-    el.innerHTML=`
+    el.innerHTML = `
       <div class="form-group"><label>Shaft name</label><input id="eq-name" /></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div class="form-group"><label>Weight</label><input id="eq-weight" placeholder="65g" /></div>
@@ -1200,7 +1155,7 @@ function renderEquipForm(){
         <div class="form-group"><label>Launch</label><select id="eq-slaunch"><option>low</option><option>low-mid</option><option selected>mid</option><option>mid-high</option><option>high</option></select></div>
         <div class="form-group"><label>Spin</label><select id="eq-sspin"><option>low</option><option>mid-low</option><option selected>mid</option><option>mid-high</option></select></div>
         <div class="form-group"><label>Torque</label><input id="eq-torque" type="number" step="0.1" /></div>
-        <div class="form-group"><label>Profile</label><input id="eq-profile" placeholder="e.g. Mid-tip stiff" /></div>
+        <div class="form-group"><label>Profile</label><input id="eq-profile" /></div>
       </div>
       <div class="form-group"><label>Player type</label><input id="eq-player" /></div>
       <div class="form-group"><label>Test tip</label><input id="eq-tip" /></div>
@@ -1209,45 +1164,45 @@ function renderEquipForm(){
   }
 }
 
-async function addRule(){
-  const cond=document.getElementById('r-cond').value.trim();
-  const rec=document.getElementById('r-rec').value.trim();
-  const msg=document.getElementById('r-msg');
-  if(!cond||!rec){msg.className='error-msg';msg.textContent='Condition and recommendation required.';return;}
-  const btn=document.getElementById('add-rule-btn');btn.disabled=true;
-  const {error}=await db.from('rules').insert({club:'driver',type:document.getElementById('r-type').value,condition:cond,recommendation:rec,notes:document.getElementById('r-notes').value.trim(),test_tip:document.getElementById('r-tip').value.trim(),priority:document.getElementById('r-pri').value});
+async function addRule() {
+  const cond = document.getElementById('r-cond').value.trim();
+  const rec = document.getElementById('r-rec').value.trim();
+  const msg = document.getElementById('r-msg');
+  if(!cond||!rec){msg.className='error-msg';msg.textContent='Condition and recommendation are required.';return;}
+  const btn = document.getElementById('add-rule-btn'); btn.disabled=true;
+  const {error} = await db.from('rules').insert({club:'driver',type:document.getElementById('r-type').value,condition:cond,recommendation:rec,notes:document.getElementById('r-notes').value.trim(),test_tip:document.getElementById('r-tip').value.trim(),priority:document.getElementById('r-pri').value});
   if(error){msg.className='error-msg';msg.textContent='Error: '+error.message;}
-  else{msg.className='success-msg';msg.textContent='Rule saved.';await loadAll();toast('Rule added');}
-  btn.disabled=false;btn.innerHTML='<i class="ti ti-plus"></i> Add rule';
+  else{msg.className='success-msg';msg.textContent='Rule saved to database.';await loadAll();toast('Rule added');}
+  btn.disabled=false; btn.innerHTML='<i class="ti ti-plus"></i> Add rule';
 }
 
-async function addBio(){
-  const range=document.getElementById('bc-range').value.trim();
-  const shaft=document.getElementById('bc-shaft').value.trim();
-  const msg=document.getElementById('bc-msg');
-  if(!range||!shaft){msg.className='error-msg';msg.textContent='Range and shaft required.';return;}
-  const {error}=await db.from('bio_correlations').insert({bio_var:document.getElementById('bc-var').value,range,shaft_profile:shaft,head_profile:document.getElementById('bc-head').value.trim(),notes:document.getElementById('bc-notes').value.trim()});
+async function addBio() {
+  const range = document.getElementById('bc-range').value.trim();
+  const shaft = document.getElementById('bc-shaft').value.trim();
+  const msg = document.getElementById('bc-msg');
+  if(!range||!shaft){msg.className='error-msg';msg.textContent='Range and shaft profile are required.';return;}
+  const {error} = await db.from('bio_correlations').insert({bio_var:document.getElementById('bc-var').value,range,shaft_profile:shaft,head_profile:document.getElementById('bc-head').value.trim(),notes:document.getElementById('bc-notes').value.trim()});
   if(error){msg.className='error-msg';msg.textContent='Error: '+error.message;}
-  else{msg.className='success-msg';msg.textContent='Saved.';await loadAll();toast('Correlation added');}
+  else{msg.className='success-msg';msg.textContent='Correlation saved.';await loadAll();toast('Correlation added');}
 }
 
-async function addEquipment(type){
-  const name=document.getElementById('eq-name').value.trim();
-  const msg=document.getElementById('eq-msg');
-  if(!name){msg.className='error-msg';msg.textContent='Name required.';return;}
-  let row={type,name};
+async function addEquipment(type) {
+  const name = document.getElementById('eq-name').value.trim();
+  const msg = document.getElementById('eq-msg');
+  if(!name){msg.className='error-msg';msg.textContent='Name is required.';return;}
+  let row = {type, name};
   if(type==='driver'){row={...row,spin:document.getElementById('eq-spin').value,launch:document.getElementById('eq-launch').value,cg:document.getElementById('eq-cg').value,forgiveness:document.getElementById('eq-forg').value,swing_speed_min:parseFloat(document.getElementById('eq-ssmin').value)||0,swing_speed_max:parseFloat(document.getElementById('eq-ssmax').value)||999,notes:document.getElementById('eq-notes').value.trim(),test_tip:document.getElementById('eq-tip').value.trim()};}
   else{row={...row,weight:document.getElementById('eq-weight').value,flex:document.getElementById('eq-flex').value,launch:document.getElementById('eq-slaunch').value,spin:document.getElementById('eq-sspin').value,torque:document.getElementById('eq-torque').value,profile:document.getElementById('eq-profile').value,player_type:document.getElementById('eq-player').value.trim(),test_tip:document.getElementById('eq-tip').value.trim()};}
-  const {error}=await db.from('equipment').insert(row);
+  const {error} = await db.from('equipment').insert(row);
   if(error){msg.className='error-msg';msg.textContent='Error: '+error.message;}
-  else{msg.className='success-msg';msg.textContent='Saved.';await loadAll();toast('Equipment added');}
+  else{msg.className='success-msg';msg.textContent='Equipment saved.';await loadAll();toast('Equipment added');}
 }
 
-async function deleteRule(id){if(!confirm('Delete?'))return;await db.from('rules').delete().eq('id',id);await loadAll();renderAdminBody();toast('Deleted');}
-async function deleteBio(id){if(!confirm('Delete?'))return;await db.from('bio_correlations').delete().eq('id',id);await loadAll();renderAdminBody();toast('Deleted');}
-async function deleteEquip(id){if(!confirm('Remove?'))return;await db.from('equipment').delete().eq('id',id);await loadAll();renderAdminBody();toast('Removed');}
+async function deleteRule(id){if(!confirm('Delete this rule?'))return;await db.from('rules').delete().eq('id',id);await loadAll();renderAdminBody();toast('Rule deleted');}
+async function deleteBio(id){if(!confirm('Delete this correlation?'))return;await db.from('bio_correlations').delete().eq('id',id);await loadAll();renderAdminBody();toast('Correlation deleted');}
+async function deleteEquip(id){if(!confirm('Remove this equipment?'))return;await db.from('equipment').delete().eq('id',id);await loadAll();renderAdminBody();toast('Equipment removed');}
 
-loadAll().then(()=>showPage('fitting'));
+loadAll().then(() => showPage('fitting'));
 </script>
 
 
