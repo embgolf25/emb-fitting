@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0052)file:///Users/edmundbroderick/Downloads/index_8.html -->
+<!-- saved from url=(0052)file:///Users/edmundbroderick/Downloads/index_9.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -380,6 +380,7 @@ const BALL_DB = [
 let rulesDB=[], bioCorrelations=[], equipmentDB={drivers:[],shafts:[]}, sessionsList=[];
 let currentSession=null, adminUnlocked=false, currentPage='fitting', adminTab='rules';
 let aiInsight='';
+let fittingState={grip:'',post:'',shotShape:'',tempo:''};
 
 function toast(msg,type='success'){
   const el=document.getElementById('toast');
@@ -512,8 +513,6 @@ function renderFitting(){
   `;
   restoreFields();
 }
-
-let fittingState={grip:'',post:'',shotShape:'',tempo:''};
 
 function setChip(field,value){
   saveFittingState();
