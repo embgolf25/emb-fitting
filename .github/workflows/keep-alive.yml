@@ -1,0 +1,29 @@
+name: Supabase Keep-Alive
+
+on:
+  schedule:
+    # Runs every 3 days at 09:00 UTC
+    - cron: '0 9 */3 * *'
+  workflow_dispatch: # allows manual trigger from the Actions tab for testing
+
+jobs:
+  ping-supabase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Query shafts table to keep project active
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" \
+            "https://dfsuklaobtdpfkorqluq.supabase.co/rest/v1/shafts?select=id&limit=1" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}")
+
+          echo "Response code: $response"
+
+          if [ "$response" -ne 200 ]; then
+            echo "Keep-alive ping failed with status $response"
+            exit 1
+          fi
+
+          echo "Keep-alive ping succeeded"
+
+          #Keep Supabase Data alive without pauses
