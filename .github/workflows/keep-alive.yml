@@ -10,10 +10,10 @@ jobs:
   ping-supabase:
     runs-on: ubuntu-latest
     steps:
-      - name: Query shafts table to keep project active
+      - name: Query equipment table to keep project active
         run: |
           response=$(curl -s -o /dev/null -w "%{http_code}" \
-            "https://dfsuklaobtdpfkorqluq.supabase.co/rest/v1/shafts?select=id&limit=1" \
+            "https://dfsuklaobtdpfkorqluq.supabase.co/rest/v1/equipment?select=id&limit=1" \
             -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
             -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}")
 
