@@ -1261,7 +1261,7 @@ function renderAdminBody() {
       var info = el('div'); info.style.flex='1';
       info.appendChild(el('div','equip-name',s.name));
       var tags = el('div','equip-tags');
-      tags.innerHTML='<span class="tag">'+s.weight+'</span><span class="tag">'+s.flex+'</span><span class="tag">'+s.launch+' launch</span>';
+      tags.innerHTML='<span class="tag">'+s.weight+'</span><span class="tag">'+s.flex+'</span>'+(s.launch?'<span class="tag">'+s.launch+' launch</span>':'')+(s.tip_val!=null&&s.mid_val!=null&&s.handle_val!=null?'<span class="tag">Tip '+s.tip_val+' · Mid '+s.mid_val+' · Handle '+s.handle_val+'</span>':'<span class="tag" style="color:var(--red)">No ratings – hidden from Shaft Map</span>');
       info.appendChild(tags);
       info.appendChild(el('div','equip-meta',s.player_type||''));
       row.appendChild(info);
@@ -1340,6 +1340,13 @@ function renderEquipForm() {
         <div class="form-group"><label>Torque</label><input id="eq-torque" type="number" step="0.1" /></div>
         <div class="form-group"><label>Profile</label><input id="eq-profile" /></div>
       </div>
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--cyan);font-weight:700;margin:6px 0 8px">Stiffness ratings (1 soft – 5 stiff) · required for Shaft Map</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px">
+        <div class="form-group"><label>Tip</label><select id="eq-tipval"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
+        <div class="form-group"><label>Mid</label><select id="eq-midval"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
+        <div class="form-group"><label>Handle</label><select id="eq-handleval"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
+        <div class="form-group"><label>Torque rating</label><select id="eq-torqueval"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
+      </div>
       <div class="form-group"><label>Player type</label><input id="eq-player" /></div>
       <div class="form-group"><label>Test tip</label><input id="eq-tip" /></div>`;
     var btn2 = el('button','add-btn'); btn2.innerHTML='<i class="ti ti-plus"></i> Add shaft';
@@ -1371,7 +1378,7 @@ async function addEquipment(type) {
   if(!name){msg.className='error-msg';msg.textContent='Name required.';return;}
   var row={type:type,name:name};
   if(type==='driver') row=Object.assign(row,{spin:g('eq-spin'),launch:g('eq-launch'),cg:g('eq-cg'),forgiveness:g('eq-forg'),swing_speed_min:parseFloat(g('eq-ssmin'))||0,swing_speed_max:parseFloat(g('eq-ssmax'))||999,notes:g('eq-notes').trim(),test_tip:g('eq-tip').trim()});
-  else row=Object.assign(row,{weight:g('eq-weight'),flex:g('eq-flex'),launch:g('eq-slaunch'),spin:g('eq-sspin'),torque:g('eq-torque'),profile:g('eq-profile'),player_type:g('eq-player').trim(),test_tip:g('eq-tip').trim()});
+  else row=Object.assign(row,{weight:g('eq-weight'),flex:g('eq-flex'),launch:g('eq-slaunch'),spin:g('eq-sspin'),torque:g('eq-torque'),profile:g('eq-profile'),tip_val:parseInt(g('eq-tipval')),mid_val:parseInt(g('eq-midval')),handle_val:parseInt(g('eq-handleval')),torque_val:parseInt(g('eq-torqueval')),player_type:g('eq-player').trim(),test_tip:g('eq-tip').trim()});
   var result = await db.from('equipment').insert(row);
   if(result.error){msg.className='error-msg';msg.textContent='Error: '+result.error.message;}
   else{msg.className='success-msg';msg.textContent='Equipment saved.';await loadAll();toast('Equipment added');}
