@@ -209,7 +209,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 </div>
 <div class="toast" id="toast"></div>
 <script>
-var fittingState = {grip:'',post:'',shotShape:''};
+var fittingState = {grip:'',post:'',shotShape:'',leadGrip:''};
 var rulesDB = [], bioCorrelations = [], equipmentDB = {drivers:[],shafts:[]}, sessionsList = [];
 var currentSession = null, adminUnlocked = false, currentPage = 'fitting', adminTab = 'rules';
 
@@ -492,6 +492,9 @@ function renderFitting() {
   var sec2 = el('div','sidebar-section');
   sec2.appendChild(makeSidebarLabel('Grip type'));
   sec2.appendChild(makeChipGroup('grip', ['On Top','Under','Side On']));
+  var leadLbl = makeSidebarLabel('Lead hand grip'); leadLbl.style.marginTop='16px';
+  sec2.appendChild(leadLbl);
+  sec2.appendChild(makeChipGroup('leadGrip', ['Strong','Neutral','Weak']));
   var postLbl = makeSidebarLabel('Post position'); postLbl.style.marginTop='16px';
   sec2.appendChild(postLbl);
   sec2.appendChild(makeChipGroup('post', ['Front','Center','Rear']));
@@ -549,6 +552,8 @@ function renderFitting() {
    {id:'f-dl',label:'Dynamic Loft',unit:'degrees',ph:'15.2',step:'0.1'},
    {id:'f-aa',label:'Attack Angle',unit:'degrees',ph:'-2.5',step:'0.1'},
    {id:'f-cp',label:'Club Path',unit:'degrees',ph:'-1.5',step:'0.1'},
+   {id:'f-axis',label:'Spin Axis',unit:'degrees · + = fade',ph:'2.0',step:'0.1'},
+   {id:'f-axisrange',label:'Spin Axis Range',unit:'degrees · max − min across shots',ph:'21',step:'0.1'},
   ].forEach(function(f){
     var card = el('div','lm-card');
     card.appendChild(el('label',null,f.label));
@@ -627,7 +632,7 @@ function setChip(field, value) {
 }
 
 function restoreFields() {
-  var textFields = ['f-name','f-hdcp','f-height','f-ss','f-bs','f-la','f-sr','f-aa','f-cp','f-smash','f-dl','f-notes','f-curhead','f-curhead-other','f-curloft'];
+  var textFields = ['f-name','f-hdcp','f-height','f-ss','f-bs','f-la','f-sr','f-aa','f-cp','f-axis','f-axisrange','f-smash','f-dl','f-notes','f-curhead','f-curhead-other','f-curloft'];
   textFields.forEach(function(id){
     var e = document.getElementById(id);
     if(e && fittingState[id] !== undefined) e.value = fittingState[id];
@@ -646,7 +651,7 @@ function restoreFields() {
 
 function saveFittingState() {
   var g = function(id){ var e=document.getElementById(id); return e?e.value:''; };
-  ['f-name','f-hdcp','f-height','f-ss','f-bs','f-la','f-sr','f-aa','f-cp','f-smash','f-dl','f-notes','f-ball','f-curhead','f-curhead-other','f-curloft'].forEach(function(id){
+  ['f-name','f-hdcp','f-height','f-ss','f-bs','f-la','f-sr','f-aa','f-cp','f-axis','f-axisrange','f-smash','f-dl','f-notes','f-ball','f-curhead','f-curhead-other','f-curloft'].forEach(function(id){
     fittingState[id] = g(id);
   });
   bioFields.forEach(function(f){ fittingState['bio-'+f.id] = g('bio-'+f.id); });
@@ -658,6 +663,9 @@ function getFittingData() {
   var d = {
     name:g('f-name'), hdcp:g('f-hdcp'), height:g('f-height'),
     grip:fittingState.grip||'', post:fittingState.post||'', shotShape:fittingState.shotShape||'',
+    leadGrip:fittingState.leadGrip||'',
+    spinAxis: g('f-axis')!=='' && !isNaN(parseFloat(g('f-axis'))) ? parseFloat(g('f-axis')) : null,
+    spinAxisRange: parseFloat(g('f-axisrange'))||null,
     ball:g('f-ball')||'',
     ss:parseFloat(g('f-ss'))||0, bs:parseFloat(g('f-bs'))||0,
     la:parseFloat(g('f-la'))||0, sr:parseFloat(g('f-sr'))||0,
@@ -672,7 +680,7 @@ function getFittingData() {
 }
 
 function clearFitting() {
-  fittingState = {grip:'',post:'',shotShape:''};
+  fittingState = {grip:'',post:'',shotShape:'',leadGrip:''};
   currentSession = null;
   document.getElementById('session-label').textContent = 'No active session';
   renderFitting();
@@ -786,6 +794,24 @@ function buildRecommendations(d) {
   var torqueMap = {'On Top':2,'Side On':3,'Under':4};
   var targetTorque = d.grip ? (torqueMap[d.grip]||null) : null;
 
+  // ── Lead grip + spin axis → driver shaft profile shape (handle minus tip), 10.27 tour data ──
+  // Shape cut-off matches the workbook: handle − tip ≥ 1 = butt-stiff, ≤ −1 = tip-stiff, else even.
+  var shapePrefs = [];
+  if(d.leadGrip==='Strong') shapePrefs.push('butt');                 // 5 of 9 strong lead grips butt-stiff vs 33%
+  if(d.leadGrip==='Weak') { shapePrefs.push('notButt'); if(targetWeight!==null) targetWeight += 3; } // none butt-stiff; 73g vs 67g (4 players)
+  if(d.spinAxis!==null && d.spinAxis < 0) shapePrefs.push('butt');    // draw-biased: 3 of 5 butt-stiff vs 26%
+  if(d.spinAxis!==null && d.spinAxis > 3) shapePrefs.push('notButt'); // fade-biased: 0 of 12 butt-stiff
+  if(d.spinAxisRange!==null && d.spinAxisRange <= 19) shapePrefs.push('even'); // consistent: 5 of 7 evenly stiff
+  function shapePenalty(h, t) {
+    var diff = h - t, pen = 0;
+    shapePrefs.forEach(function(p){
+      if(p==='butt')    pen += Math.max(0, 1 - diff) * 1.5;
+      if(p==='notButt') pen += Math.max(0, diff) * 1.5;
+      if(p==='even')    pen += Math.max(0, Math.abs(diff) - 0.5) * 1.0;
+    });
+    return pen;
+  }
+
   var validFlexes = null;
   if(d.ss > 0) {
     var v = [];
@@ -809,6 +835,7 @@ function buildRecommendations(d) {
     if(targetWeight===null) { score=99; } else {
       score = Math.abs(w-targetWeight)*0.25 + Math.abs(t-targetTip)*2.0 + Math.abs(m-targetMid)*3.0 + Math.abs(h-targetHandle)*1.5;
       if(targetTorque!==null&&tq!==null) score += Math.abs(tq-targetTorque)*1.0;
+      score += shapePenalty(h, t);
     }
     scoredShafts.push({name:s.name,weight:w,flex:s.flex,tip:t,mid:m,handle:h,torqueVal:tq,launch:s.launch,score:score,notes:s.player_type||'',test_tip:s.test_tip||''});
   });
@@ -844,27 +871,59 @@ function buildRecommendations(d) {
     }
   }
 
+  // ── HEAD SCORING ── numeric 1-5 ratings (spin_val, launch_val, cg_depth, cg_bias, forgiveness_val);
+  // falls back to the text fields for heads entered before ratings existed.
   var heads = equipmentDB.drivers.slice();
   if(d.ss>0) heads = heads.filter(function(h){return d.ss>=(h.swing_speed_min||0)&&d.ss<=(h.swing_speed_max||999);});
-  var spinCGFilter = null;
+  var tSpin = 3, headReasons = [];
   if(spinGap!==null) {
-    // Gap-based: how far current spin sits from the optimal spin for this player's actual ball speed + AoA
-    if(spinGap >= 300) spinCGFilter='forward';       // spinning noticeably more than optimal → lower-spin, forward CG
-    else if(spinGap <= -300) spinCGFilter='back';     // spinning noticeably less than optimal → higher-spin, back CG
+    if(spinGap >= 600)      { tSpin=1.5; headReasons.push('spin '+spinGap+' rpm over optimal'); }
+    else if(spinGap >= 300) { tSpin=2;   headReasons.push('spin '+spinGap+' rpm over optimal'); }
+    else if(spinGap <= -600){ tSpin=4.5; headReasons.push('spin '+Math.abs(spinGap)+' rpm under optimal'); }
+    else if(spinGap <= -300){ tSpin=4;   headReasons.push('spin '+Math.abs(spinGap)+' rpm under optimal'); }
   } else if(d.sr>0) {
-    // Fallback: static thresholds when ball speed or AoA aren't available for a gap calc
-    if(d.sr<=2200) spinCGFilter='back'; else if(d.sr>=2700) spinCGFilter='forward';
+    if(d.sr<=2200) { tSpin=4; headReasons.push('low spin rate'); } else if(d.sr>=2700) { tSpin=2; headReasons.push('high spin rate'); }
   }
-  var cgPriority = spinCGFilter || (swayBand==='A'?'forward':null) || (headBias==='draw-bias'?'draw':null) || 'neutral';
-  if(cgPriority==='forward') { var fwd=heads.filter(function(h){return h.cg&&(h.cg.includes('forward')||h.spin==='low');}); heads=[...fwd,...heads.filter(function(h){return!fwd.includes(h);})]; }
-  else if(cgPriority==='draw') { var drw=heads.filter(function(h){return h.cg&&h.cg.includes('heel');}); heads=[...drw,...heads.filter(function(h){return!drw.includes(h);})]; }
-  else if(cgPriority==='back') { var bck=heads.filter(function(h){return h.cg&&(h.cg.includes('back')||h.cg.includes('high'));}); heads=[...bck,...heads.filter(function(h){return!bck.includes(h);})]; }
+  var tDepth = Math.max(1, Math.min(5, 2*tSpin-3));
+  if(swayBand==='A') { tDepth = Math.max(1, tDepth-1); headReasons.push('large sway gap → forward CG'); }
+  var tBias = headBias==='draw-bias' ? 5 : 3;
+  if(headBias==='draw-bias') headReasons.push('draw-bias signals');
+  var tLaunch = null;
+  if(launchGap!==null) { if(launchGap<=-1.5) { tLaunch=4; headReasons.push('launching low'); } else if(launchGap>=1.5) { tLaunch=2; headReasons.push('launching high'); } }
+  var forgWeight = d.ss>=105 ? 0.2 : 0.4;
+  heads.forEach(function(h){
+    var n = headNums(h);
+    var sc = 2.0*Math.abs(n.spin-tSpin) + 1.0*Math.abs(n.depth-tDepth) + 2.0*Math.abs(n.bias-tBias) + forgWeight*(5-n.forg);
+    if(tLaunch!==null) sc += 1.0*Math.abs(n.launch-tLaunch);
+    h._score = Math.round(sc*10)/10;
+  });
+  heads.sort(function(a,b){ return a._score-b._score; });
+  // Best head per brand first, so the demo list spans manufacturers; then the rest by score
   var seenBrands=new Set(),varied=[],remainder2=[];
   heads.forEach(function(h){ var brand=h.name.split(' ')[0]; if(!seenBrands.has(brand)){seenBrands.add(brand);varied.push(h);}else remainder2.push(h); });
   heads=[...varied,...remainder2];
 
   var gripSignals = buildGripSignals(d);
-  return {heads:heads.slice(0,3),shafts:topShafts,matchedRules:matchedRules,bioMatches:bioMatches,gripSignals:gripSignals,sportsboxSignals:sportsboxSignals,headBias:headBias,headBiasNote:headBiasNote,swayBand:swayBand,validFlexes:validFlexes,profile:profile,profileKey:profileKey,targetWeight:targetWeight,targetTip:targetTip,targetMid:targetMid,targetHandle:targetHandle,targetLoft:targetLoft,targetTorque:targetTorque,ballData:ballData,ballSpinVal:ballSpinVal,ballCGSignal:ballCGSignal,loftAdjustment:loftAdjustment,optimalData:optimalData,spinGap:spinGap,launchGap:launchGap,spinGapNote:spinGapNote,launchGapNote:launchGapNote,curHead:d.curHead||'',curLoft:d.curLoft||null};
+  return {heads:heads.slice(0,3),headReasons:headReasons,shafts:topShafts,matchedRules:matchedRules,bioMatches:bioMatches,gripSignals:gripSignals,sportsboxSignals:sportsboxSignals,headBias:headBias,headBiasNote:headBiasNote,shapePrefs:shapePrefs,swayBand:swayBand,validFlexes:validFlexes,profile:profile,profileKey:profileKey,targetWeight:targetWeight,targetTip:targetTip,targetMid:targetMid,targetHandle:targetHandle,targetLoft:targetLoft,targetTorque:targetTorque,ballData:ballData,ballSpinVal:ballSpinVal,ballCGSignal:ballCGSignal,loftAdjustment:loftAdjustment,optimalData:optimalData,spinGap:spinGap,launchGap:launchGap,spinGapNote:spinGapNote,launchGapNote:launchGapNote,curHead:d.curHead||'',curLoft:d.curLoft||null};
+}
+
+// Driver head ratings on a 1-5 scale. Uses the numeric columns when present,
+// otherwise maps the older text fields (spin / launch / cg / forgiveness).
+function headNums(h) {
+  var num = function(v){ var x=parseFloat(v); return isNaN(x)?null:x; };
+  var spinMap   = {'low':2,'mid-low':2.5,'mid':3,'mid-high':4,'high':5};
+  var launchMap = {'low':1,'low-mid':2,'mid':3,'mid-high':4,'high':5};
+  var forgMap   = {'low':1,'mid-low':2,'mid':3,'high':4,'max':5};
+  var cg = (h.cg||'').toLowerCase();
+  var depthTxt = cg.indexOf('forward')===0 ? 1 : cg.indexOf('back-high')>=0 ? 5 : cg.indexOf('back')>=0 ? 4 : 3;
+  var biasTxt  = cg.indexOf('heel')>=0 ? 5 : cg.indexOf('toe')>=0 ? 1 : 3;
+  return {
+    spin:   num(h.spin_val)        ?? spinMap[h.spin]          ?? 3,
+    launch: num(h.launch_val)      ?? launchMap[h.launch]      ?? 3,
+    depth:  num(h.cg_depth)        ?? depthTxt,
+    bias:   num(h.cg_bias)         ?? biasTxt,
+    forg:   num(h.forgiveness_val) ?? forgMap[h.forgiveness]   ?? 3,
+  };
 }
 
 function buildGripSignals(d) {
@@ -883,6 +942,13 @@ function buildGripSignals(d) {
   if(grip==='Under'&&d.shotShape==='Fade') signals.push({signal:'Profile 7/8/9 fader',recommendation:'Common on tour — 7 of 11 Under-grip players fade it. No head adjustment needed for an intended fade.'});
   if(grip==='On Top'&&d.shotShape==='Draw') signals.push({signal:'Profile 1/2/3 drawer',recommendation:'Uncommon on tour (2 of 13 On Top players). Strong in-to-out path likely; shaft stability important.'});
   if(d.shotShape==='Fade') signals.push({signal:'Fade flight',recommendation:'If confirmed on the launch monitor (spin axis above +3°), 15 of 17 tour faders play tip-stiff iron shafts (88% vs 56%). A stated fade alone is a weaker signal (11 of 18).'});
+  if(d.leadGrip==='Strong') signals.push({signal:'Strong lead grip',recommendation:'Leans butt-stiff in the driver: 5 of 9 strong lead grips vs 33% of the field. Shaft ranking nudged toward a firmer handle.'});
+  if(d.leadGrip==='Weak')   signals.push({signal:'Weak lead grip',recommendation:'No butt-stiff drivers among weak lead grips, and heavier shafts (73g vs 67g). Target weight +3g. Very early — 4 players.'});
+  if(d.spinAxis!==null && d.spinAxis < 0) signals.push({signal:'Draw-biased spin axis ('+d.spinAxis+'°)',recommendation:'Butt-stiff drivers average a +0.4° axis, the most draw-side group; 3 of 5 draw-biased players play one. Ranking nudged toward butt-stiff.'});
+  if(d.spinAxis!==null && d.spinAxis > 3) signals.push({signal:'Fade-biased spin axis (+'+d.spinAxis+'°)',recommendation:'None of the 12 fade-biased tour players with a rated driver shaft is butt-stiff. Ranking steers away from butt-stiff. 15 of 17 play tip-stiff irons.'});
+  if(d.spinAxis!==null && d.spinAxis >= 0 && d.spinAxis <= 3) signals.push({signal:'Neutral spin axis ('+d.spinAxis+'°)',recommendation:'Neutral-axis players carry a firmer mid section than draw-biased players (3.9 vs 3.2).'});
+  if(d.spinAxisRange!==null && d.spinAxisRange <= 19) signals.push({signal:'Consistent spin axis (range '+d.spinAxisRange+'°)',recommendation:'5 of 7 of the most consistent tour drivers play evenly stiff profiles. Ranking favors even shafts.'});
+  if(d.spinAxisRange!==null && d.spinAxisRange >= 24) signals.push({signal:'Inconsistent spin axis (range '+d.spinAxisRange+'°)',recommendation:'Wide start/curve spread. No tour shaft pattern yet — prioritize strike and head stability.'});
   if(d.shotShape==='Draw') signals.push({signal:'Draw flight',recommendation:'Tour drawers lean butt-stiff in the driver (3 of 7 vs about a quarter of the field). Early sign.'});
   return signals;
 }
@@ -908,13 +974,14 @@ function renderResults() {
   sec.appendChild(makeSidebarLabel('Session summary'));
   var sumLines = [
     ['Player', d.name||'—'], ['Handicap',d.hdcp||'—'], ['Profile', recs.profileKey?profileName(recs.profileKey):(d.grip&&d.post?d.grip+'/'+d.post:'—')],
-    ['Shot shape',d.shotShape||'—'], ['Shot shape',d.shotShape||'—'],
+    ['Shot shape',d.shotShape||'—'], ['Lead grip',d.leadGrip||'—'],
     ['Swing speed',(d.ss||'—')+' mph'],
   ];
 
   if(recs.swayBand)   sumLines.push(['Sway band',recs.swayBand]);
   if(recs.validFlexes) sumLines.push(['Valid flex',recs.validFlexes.join(' / ')]);
   sumLines.push(['Spin',(d.sr||'—')+' rpm'], ['AoA',(d.aa||'—')+'°']);
+  if(d.spinAxis!=null) sumLines.push(['Spin axis',(d.spinAxis>0?'+':'')+d.spinAxis+'°'+(d.spinAxisRange?' (range '+d.spinAxisRange+'°)':'')]);
   var sumDiv = el('div'); sumDiv.style.cssText='font-size:13px;color:var(--text2);line-height:2';
   sumLines.forEach(function(ln){
     var row = el('div');
@@ -1001,9 +1068,11 @@ function renderResults() {
     recs.heads.forEach(function(h,i){
       recsHTML += '<div class="rec-card'+(i===0?' top-pick':'')+'"><div class="rec-rank">'+(i===0?'<div class="cyan-dot"></div>':'')+( i===0?'Top recommendation':'Option '+(i+1))+'</div>';
       recsHTML += '<div class="rec-name">'+h.name+'</div><div class="rec-tags"><span class="tag'+(i===0?' highlight':'')+'">Spin: '+h.spin+'</span><span class="tag">Launch: '+h.launch+'</span><span class="tag">CG: '+h.cg+'</span><span class="tag">'+h.forgiveness+' forgiveness</span></div>';
-      recsHTML += '<div class="rec-why">'+h.notes+'</div>';
+      if(h.notes) recsHTML += '<div class="rec-why">'+h.notes+'</div>';
+      if(i===0) recsHTML += '<div class="rec-why" style="color:var(--text3)">Ranked on: '+(recs.headReasons&&recs.headReasons.length?recs.headReasons.join(' · '):'neutral targets (no launch-monitor or swing signals)')+'</div>';
       if(h.test_tip) recsHTML += '<div class="rec-test"><i class="ti ti-target"></i>'+h.test_tip+'</div>';
-      recsHTML += '<div class="confidence-bar"><div class="confidence-fill" style="width:'+(i===0?92:i===1?72:52)+'%"></div></div></div>';
+      var fitPct = Math.max(25, Math.min(98, Math.round(100 - (h._score||0)*12)));
+      recsHTML += '<div class="confidence-bar" title="Fit score '+(h._score!=null?h._score:'—')+' (lower is better)"><div class="confidence-fill" style="width:'+fitPct+'%"></div></div></div>';
     });
     recsHTML += '</div>';
   }
@@ -1058,6 +1127,8 @@ async function saveSession(d, recs, insight) {
     smash_factor:d.smash||null,dynamic_loft:d.dl||null,
     sway_gap:d.swayGap,chest_lift:d.chestLift,lead_elbow:d.leadElbow,
     club_hand_gap:d.clubHandGap,pelvis_sway:d.pelvisSway,
+    grip:d.grip||null,post:d.post||null,shot_shape:d.shotShape||null,lead_grip:d.leadGrip||null,
+    spin_axis:d.spinAxis,spin_axis_range:d.spinAxisRange,
     notes:d.notes||null,ai_insight:insight||null,
     recommendations:JSON.stringify({heads:recs.heads.map(function(h){return h.name;}),shafts:recs.shafts.map(function(s){return s.name;}),swayBand:recs.swayBand,validFlexes:recs.validFlexes}),
   };
@@ -1127,7 +1198,8 @@ async function loadSession(id) {
     name:session.player_name||'',hdcp:session.handicap||'',height:session.height||'',
     ss:session.swing_speed||0,bs:session.ball_speed||0,la:session.launch_angle||0,sr:session.spin_rate||0,
     aa:session.attack_angle||0,cp:session.club_path||0,smash:session.smash_factor||0,dl:session.dynamic_loft||0,
-    notes:session.notes||'',ball:'',grip:'',post:'',shotShape:'',
+    notes:session.notes||'',ball:'',grip:session.grip||'',post:session.post||'',shotShape:session.shot_shape||'',
+    leadGrip:session.lead_grip||'',spinAxis:session.spin_axis!=null?parseFloat(session.spin_axis):null,spinAxisRange:session.spin_axis_range!=null?parseFloat(session.spin_axis_range):null,
     swayGap:session.sway_gap,chestLift:session.chest_lift,leadElbow:session.lead_elbow,
     clubHandGap:session.club_hand_gap,pelvisSway:session.pelvis_sway,
   };
@@ -1264,7 +1336,8 @@ function renderAdminBody() {
       var info = el('div'); info.style.flex='1';
       info.appendChild(el('div','equip-name',h.name));
       var tags = el('div','equip-tags');
-      tags.innerHTML='<span class="tag">'+h.spin+' spin</span><span class="tag">'+h.launch+' launch</span><span class="tag">CG: '+h.cg+'</span><span class="tag">'+h.forgiveness+'</span>';
+      var hn = headNums(h);
+      tags.innerHTML='<span class="tag">Spin '+hn.spin+'</span><span class="tag">Launch '+hn.launch+'</span><span class="tag">CG depth '+hn.depth+'</span><span class="tag">Heel-toe '+hn.bias+'</span><span class="tag">Forgiveness '+hn.forg+'</span>';
       info.appendChild(tags);
       info.appendChild(el('div','equip-meta',h.swing_speed_min+'–'+(h.swing_speed_max>=999?'∞':h.swing_speed_max)+' mph · '+(h.notes||'')));
       row.appendChild(info);
@@ -1336,10 +1409,12 @@ function renderEquipForm() {
     ef.innerHTML = `
       <div class="form-group"><label>Model name</label><input id="eq-name" /></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <div class="form-group"><label>Spin</label><select id="eq-spin"><option>low</option><option>mid-low</option><option selected>mid</option><option>mid-high</option><option>high</option></select></div>
-        <div class="form-group"><label>Launch</label><select id="eq-launch"><option>low</option><option>low-mid</option><option selected>mid</option><option>mid-high</option><option>high</option></select></div>
-        <div class="form-group"><label>CG position</label><input id="eq-cg" placeholder="e.g. forward-low" /></div>
-        <div class="form-group"><label>Forgiveness</label><select id="eq-forg"><option>low</option><option>mid-low</option><option selected>mid</option><option>high</option><option>max</option></select></div>
+        <div class="form-group"><label>Spin (1–5)</label><select id="eq-spinval"><option value="1">1 · lowest</option><option value="2">2 · low</option><option value="3" selected>3 · mid</option><option value="4">4 · mid-high</option><option value="5">5 · highest</option></select></div>
+        <div class="form-group"><label>Launch (1–5)</label><select id="eq-launchval"><option value="1">1 · lowest</option><option value="2">2 · low</option><option value="3" selected>3 · mid</option><option value="4">4 · mid-high</option><option value="5">5 · highest</option></select></div>
+        <div class="form-group"><label>CG depth (1 fwd – 5 back)</label><select id="eq-cgdepth"><option value="1">1 · forward</option><option value="2">2 · forward-mid</option><option value="3" selected>3 · neutral</option><option value="4">4 · back</option><option value="5">5 · back-high</option></select></div>
+        <div class="form-group"><label>CG heel-toe (1 fade – 5 draw)</label><select id="eq-cgbias"><option value="1">1 · fade bias</option><option value="2">2 · slight fade</option><option value="3" selected>3 · neutral</option><option value="4">4 · slight draw</option><option value="5">5 · draw bias</option></select></div>
+        <div class="form-group"><label>Forgiveness (1–5)</label><select id="eq-forgval"><option value="1">1 · least</option><option value="2">2 · low</option><option value="3" selected>3 · mid</option><option value="4">4 · high</option><option value="5">5 · max (MOI)</option></select></div>
+        <div class="form-group"></div>
         <div class="form-group"><label>Min speed</label><input id="eq-ssmin" type="number" placeholder="0" /></div>
         <div class="form-group"><label>Max speed</label><input id="eq-ssmax" type="number" placeholder="999" /></div>
       </div>
@@ -1396,7 +1471,15 @@ async function addEquipment(type) {
   var name=g('eq-name').trim(), msg=document.getElementById('eq-msg');
   if(!name){msg.className='error-msg';msg.textContent='Name required.';return;}
   var row={type:type,name:name};
-  if(type==='driver') row=Object.assign(row,{spin:g('eq-spin'),launch:g('eq-launch'),cg:g('eq-cg'),forgiveness:g('eq-forg'),swing_speed_min:parseFloat(g('eq-ssmin'))||0,swing_speed_max:parseFloat(g('eq-ssmax'))||999,notes:g('eq-notes').trim(),test_tip:g('eq-tip').trim()});
+  if(type==='driver') {
+    var sv=parseInt(g('eq-spinval')), lv=parseInt(g('eq-launchval')), cd=parseInt(g('eq-cgdepth')), cb=parseInt(g('eq-cgbias')), fv=parseInt(g('eq-forgval'));
+    var depthTxt={1:'forward-low',2:'forward',3:'neutral',4:'back',5:'back-high'}[cd];
+    var cgTxt = cb>=4 ? (cd===3?'heel':'heel-'+depthTxt) : cb<=2 ? (cd===3?'toe':'toe-'+depthTxt) : depthTxt;
+    row=Object.assign(row,{spin_val:sv,launch_val:lv,cg_depth:cd,cg_bias:cb,forgiveness_val:fv,
+      spin:{1:'low',2:'low',3:'mid',4:'mid-high',5:'high'}[sv],launch:{1:'low',2:'low-mid',3:'mid',4:'mid-high',5:'high'}[lv],
+      cg:cgTxt,forgiveness:{1:'low',2:'mid-low',3:'mid',4:'high',5:'max'}[fv]});
+  }
+  if(type==='driver') row=Object.assign(row,{swing_speed_min:parseFloat(g('eq-ssmin'))||0,swing_speed_max:parseFloat(g('eq-ssmax'))||999,notes:g('eq-notes').trim(),test_tip:g('eq-tip').trim()});
   else row=Object.assign(row,{weight:g('eq-weight'),flex:g('eq-flex'),launch:g('eq-slaunch'),spin:g('eq-sspin'),torque:g('eq-torque'),profile:g('eq-profile'),tip_val:parseInt(g('eq-tipval')),mid_val:parseInt(g('eq-midval')),handle_val:parseInt(g('eq-handleval')),torque_val:parseInt(g('eq-torqueval')),player_type:g('eq-player').trim(),test_tip:g('eq-tip').trim()});
   var result = await db.from('equipment').insert(row);
   if(result.error){msg.className='error-msg';msg.textContent='Error: '+result.error.message;}
