@@ -209,7 +209,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 </div>
 <div class="toast" id="toast"></div>
 <script>
-var fittingState = {grip:'',post:'',shotShape:'',leadGrip:''};
+var fittingState = {grip:'',post:'',leadGrip:''};
 var rulesDB = [], bioCorrelations = [], equipmentDB = {drivers:[],shafts:[]}, sessionsList = [];
 var currentSession = null, adminUnlocked = false, currentPage = 'fitting', adminTab = 'rules';
 
@@ -512,9 +512,19 @@ function renderFitting() {
     profilePreview.innerHTML = '<span style="font-size:12px;color:var(--text3)">Select both grip and post to see profile</span>';
   }
   sec2.appendChild(profilePreview);
-  var shapeLbl = makeSidebarLabel('Shot shape'); shapeLbl.style.marginTop='16px';
-  sec2.appendChild(shapeLbl);
-  sec2.appendChild(makeChipGroup('shotShape', ['Fade','Draw','Straight','Both']));
+  // Driver spin axis replaces the old shot-shape chips. − = draw, + = fade.
+  // Workbook thresholds: below 0 = draw-biased, above +3 = fade-biased, 0 to +3 = neutral.
+  var axisSel = document.createElement('select');
+  axisSel.id = 'f-axis';
+  var axisDef = el('option',null,'— Select spin axis —'); axisDef.value=''; axisSel.appendChild(axisDef);
+  var axisVals = [-15]; for(var ax=-14; ax<=14; ax+=2) axisVals.push(ax); axisVals.push(15);
+  axisVals.forEach(function(ax){
+    var lbl = ax===-15 ? '−15° or more (draw)' : ax===15 ? '+15° or more (fade)' : (ax>0?'+':(ax<0?'−':''))+Math.abs(ax)+'°';
+    var ao = el('option',null,lbl); ao.value = String(ax); axisSel.appendChild(ao);
+  });
+  var axisField = makeField('Driver spin axis', axisSel);
+  axisField.style.marginTop = '16px';
+  sec2.appendChild(axisField);
   wrap.appendChild(sec2);
 
   // ── Section 3: SportsBox AI ──
@@ -552,7 +562,6 @@ function renderFitting() {
    {id:'f-dl',label:'Dynamic Loft',unit:'degrees',ph:'15.2',step:'0.1'},
    {id:'f-aa',label:'Attack Angle',unit:'degrees',ph:'-2.5',step:'0.1'},
    {id:'f-cp',label:'Club Path',unit:'degrees',ph:'-1.5',step:'0.1'},
-   {id:'f-axis',label:'Spin Axis',unit:'degrees · + = fade',ph:'2.0',step:'0.1'},
   ].forEach(function(f){
     var card = el('div','lm-card');
     card.appendChild(el('label',null,f.label));
@@ -661,7 +670,7 @@ function getFittingData() {
   var g = function(id){ var e=document.getElementById(id); return e?e.value:''; };
   var d = {
     name:g('f-name'), hdcp:g('f-hdcp'), height:g('f-height'),
-    grip:fittingState.grip||'', post:fittingState.post||'', shotShape:fittingState.shotShape||'',
+    grip:fittingState.grip||'', post:fittingState.post||'', shotShape:'',
     leadGrip:fittingState.leadGrip||'',
     spinAxis: g('f-axis')!=='' && !isNaN(parseFloat(g('f-axis'))) ? parseFloat(g('f-axis')) : null,
     ball:g('f-ball')||'',
@@ -674,11 +683,20 @@ function getFittingData() {
     curLoft: parseFloat(g('f-curloft'))||null,
   };
   bioFields.forEach(function(f){ d[f.id] = parseFloat(g('bio-'+f.id))||null; });
+  d.shotShape = axisToShape(d.spinAxis);
   return d;
 }
 
+// Ball flight from driver spin axis, using the workbook's thresholds (Notes tab)
+function axisToShape(axis) {
+  if(axis===null || axis===undefined || isNaN(axis)) return '';
+  if(axis < 0) return 'Draw';
+  if(axis > 3) return 'Fade';
+  return 'Straight';
+}
+
 function clearFitting() {
-  fittingState = {grip:'',post:'',shotShape:'',leadGrip:''};
+  fittingState = {grip:'',post:'',leadGrip:''};
   currentSession = null;
   document.getElementById('session-label').textContent = 'No active session';
   renderFitting();
@@ -782,7 +800,7 @@ function buildRecommendations(d) {
   // fade does NOT trigger draw-bias. Only swing signals can push toward draw-bias.
   var headBias = 'neutral';
   var headBiasNote = null;
-  if(d.shotShape==='Fade') headBiasNote = 'Tour faders play neutral heads (23 of 24). If the fade is unwanted, test a draw-bias head.';
+  if(d.shotShape==='Fade') headBiasNote = 'Fade-biased tour players use neutral heads (23 of 24). If the fade is unwanted, test a draw-bias head.';
   if(d.shotShape==='Fade'||d.shotShape==='Draw'||d.shotShape==='Both') headBias='neutral';
   else {
     var allSigs = [elbowHeadSignal,pelvisHeadSignal].filter(Boolean);
@@ -935,15 +953,13 @@ function buildGripSignals(d) {
   if(grip==='On Top'&&post==='Rear')  signals.push({signal:'Profile 3',recommendation:'Maximum tip AND handle stiffness (5.0 avg both).'});
   if(grip==='Under'&&post==='Front')  signals.push({signal:'Profile 7',recommendation:'Softest tip of any combination (2.0). Hatton pattern — one player, treat as a hunch.'});
   if(grip==='Under'&&post==='Center') signals.push({signal:'Profile 8',recommendation:'Most common tour combination (8 players). Handle 3.6, tip 3.9.'});
-  if(grip==='Under'&&d.shotShape==='Fade') signals.push({signal:'Profile 7/8/9 fader',recommendation:'Common on tour — 7 of 11 Under-grip players fade it. No head adjustment needed for an intended fade.'});
-  if(grip==='On Top'&&d.shotShape==='Draw') signals.push({signal:'Profile 1/2/3 drawer',recommendation:'Uncommon on tour (2 of 13 On Top players). Strong in-to-out path likely; shaft stability important.'});
-  if(d.shotShape==='Fade') signals.push({signal:'Fade flight',recommendation:'If confirmed on the launch monitor (spin axis above +3°), 15 of 17 tour faders play tip-stiff iron shafts (88% vs 56%). A stated fade alone is a weaker signal (11 of 18).'});
+  if(grip==='Under'&&d.shotShape==='Fade') signals.push({signal:'Profile 7/8/9 fader',recommendation:'4 of 12 Under-grip tour players are fade-biased. An intended fade needs no head change.'});
+  if(grip==='On Top'&&d.shotShape==='Draw') signals.push({signal:'Profile 1/2/3 drawer',recommendation:'Uncommon on tour (2 of 16 On Top players are draw-biased). Strong in-to-out path likely; shaft stability important.'});
   if(d.leadGrip==='Strong') signals.push({signal:'Strong lead grip',recommendation:'Leans butt-stiff in the driver: 5 of 9 strong lead grips vs 33% of the field. Shaft ranking nudged toward a firmer handle.'});
   if(d.leadGrip==='Weak')   signals.push({signal:'Weak lead grip',recommendation:'No butt-stiff drivers among weak lead grips, and heavier shafts (73g vs 67g). Target weight +3g. Very early — 4 players.'});
-  if(d.spinAxis!==null && d.spinAxis < 0) signals.push({signal:'Draw-biased spin axis ('+d.spinAxis+'°)',recommendation:'Butt-stiff drivers average a +0.4° axis, the most draw-side group; 3 of 5 draw-biased players play one. Ranking nudged toward butt-stiff.'});
-  if(d.spinAxis!==null && d.spinAxis > 3) signals.push({signal:'Fade-biased spin axis (+'+d.spinAxis+'°)',recommendation:'None of the 12 fade-biased tour players with a rated driver shaft is butt-stiff. Ranking steers away from butt-stiff. 15 of 17 play tip-stiff irons.'});
-  if(d.spinAxis!==null && d.spinAxis >= 0 && d.spinAxis <= 3) signals.push({signal:'Neutral spin axis ('+d.spinAxis+'°)',recommendation:'Neutral-axis players carry a firmer mid section than draw-biased players (3.9 vs 3.2).'});
-  if(d.shotShape==='Draw') signals.push({signal:'Draw flight',recommendation:'Tour drawers lean butt-stiff in the driver (3 of 7 vs about a quarter of the field). Early sign.'});
+  if(d.spinAxis!==null && d.spinAxis < 0) signals.push({signal:'Draw-biased spin axis ('+d.spinAxis+'°'+(d.spinAxis<=-15?' or more':'')+')',recommendation:'Butt-stiff drivers average a +0.4° axis, the most draw-side group; 3 of 5 draw-biased players play one. Ranking nudged toward butt-stiff.'});
+  if(d.spinAxis!==null && d.spinAxis > 3) signals.push({signal:'Fade-biased spin axis (+'+d.spinAxis+'°'+(d.spinAxis>=15?' or more':'')+')',recommendation:'None of the 12 fade-biased tour players with a rated driver shaft is butt-stiff. Ranking steers away from butt-stiff. 15 of 17 play tip-stiff irons.'});
+  if(d.spinAxis!==null && d.spinAxis >= 0 && d.spinAxis <= 3) signals.push({signal:'Neutral spin axis ('+(d.spinAxis>0?'+':'')+d.spinAxis+'°)',recommendation:'Neutral-axis players carry a firmer mid section than draw-biased players (3.9 vs 3.2).'});
   return signals;
 }
 
@@ -968,14 +984,13 @@ function renderResults() {
   sec.appendChild(makeSidebarLabel('Session summary'));
   var sumLines = [
     ['Player', d.name||'—'], ['Handicap',d.hdcp||'—'], ['Profile', recs.profileKey?profileName(recs.profileKey):(d.grip&&d.post?d.grip+'/'+d.post:'—')],
-    ['Shot shape',d.shotShape||'—'], ['Lead grip',d.leadGrip||'—'],
+    ['Spin axis', d.spinAxis!=null ? (d.spinAxis>0?'+':'')+d.spinAxis+'°'+(Math.abs(d.spinAxis)>=15?' or more':'')+' ('+(d.shotShape==='Straight'?'Neutral':d.shotShape)+')' : '—'], ['Lead grip',d.leadGrip||'—'],
     ['Swing speed',(d.ss||'—')+' mph'],
   ];
 
   if(recs.swayBand)   sumLines.push(['Sway band',recs.swayBand]);
   if(recs.validFlexes) sumLines.push(['Valid flex',recs.validFlexes.join(' / ')]);
   sumLines.push(['Spin',(d.sr||'—')+' rpm'], ['AoA',(d.aa||'—')+'°']);
-  if(d.spinAxis!=null) sumLines.push(['Spin axis',(d.spinAxis>0?'+':'')+d.spinAxis+'°']);
   var sumDiv = el('div'); sumDiv.style.cssText='font-size:13px;color:var(--text2);line-height:2';
   sumLines.forEach(function(ln){
     var row = el('div');
@@ -1192,11 +1207,12 @@ async function loadSession(id) {
     name:session.player_name||'',hdcp:session.handicap||'',height:session.height||'',
     ss:session.swing_speed||0,bs:session.ball_speed||0,la:session.launch_angle||0,sr:session.spin_rate||0,
     aa:session.attack_angle||0,cp:session.club_path||0,smash:session.smash_factor||0,dl:session.dynamic_loft||0,
-    notes:session.notes||'',ball:'',grip:session.grip||'',post:session.post||'',shotShape:session.shot_shape||'',
+    notes:session.notes||'',ball:'',grip:session.grip||'',post:session.post||'',shotShape:'',
     leadGrip:session.lead_grip||'',spinAxis:session.spin_axis!=null?parseFloat(session.spin_axis):null,
     swayGap:session.sway_gap,chestLift:session.chest_lift,leadElbow:session.lead_elbow,
     clubHandGap:session.club_hand_gap,pelvisSway:session.pelvis_sway,
   };
+  d.shotShape = axisToShape(d.spinAxis);
   currentSession = {data:d, recs:buildRecommendations(d)};
   document.getElementById('session-label').textContent = d.name||'Loaded session';
   showPage('results');
