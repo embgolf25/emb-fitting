@@ -67,6 +67,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 .lm-card input{width:100%;background:transparent;border:none;border-bottom:1px solid var(--border2);color:var(--text);font-size:18px;font-weight:600;padding:2px 0;font-family:var(--font)}
 .lm-card input:focus{outline:none;border-color:var(--cyan3)}
 .lm-card input::placeholder{color:var(--border2);font-size:14px;font-weight:400}
+.bio-card select{width:100%;background:transparent;border:none;border-bottom:2px solid var(--border2);color:var(--cyan2);font-size:20px;font-weight:700;padding:4px 0;font-family:var(--font);cursor:pointer}
+.bio-card select:focus{outline:none;border-color:var(--cyan)}
+.lm-card select{width:100%;background:transparent;border:none;border-bottom:1px solid var(--border2);color:var(--text);font-size:17px;font-weight:600;padding:2px 0;font-family:var(--font);cursor:pointer}
+.lm-card select:focus{outline:none;border-color:var(--cyan3)}
+.lm-card .lm-calc{font-size:18px;font-weight:600;color:var(--text);padding:2px 0;border-bottom:1px dashed var(--border2)}
 .lm-card .lm-unit{font-size:10px;color:var(--text3);margin-top:4px}
 .chip-group{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .chip{background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:7px 16px;font-size:13px;cursor:pointer;color:var(--text2);font-family:var(--font);transition:all 0.15s;font-weight:500}
@@ -450,6 +455,58 @@ function makeInput(id, type, placeholder, step) {
   return i;
 }
 
+// ── Dropdown ranges for every fitting input. Edit here to change what the menus offer. ──
+// min/max/step in the field's own unit; openLow/openHigh label the end values "or less"/"or more".
+var INPUT_RANGES = {
+  'f-hdcp':      {list:(function(){var v=[];for(var i=6;i>=1;i--)v.push(['+'+i,'+'+i]);for(var j=0;j<=36;j++)v.push([String(j),String(j)]);return v;})()},
+  'f-height':    {list:(function(){var v=[];for(var i=60;i<=80;i++)v.push([String(i),Math.floor(i/12)+"' "+(i%12)+'" ('+i+' in)']);return v;})()},
+  'f-ss':        {min:80,  max:135,  step:2.5,   openHigh:true},
+  'f-bs':        {min:120, max:200,  step:2.5,   openHigh:true},
+  'f-la':        {min:6,   max:20,   step:1, openLow:true, openHigh:true},
+  'f-sr':        {min:1500,max:4500, step:250, openLow:true, openHigh:true},
+  'f-dl':        {min:8,   max:20,   step:0.5, openLow:true, openHigh:true},
+  'f-aa':        {min:-6,  max:6,    step:0.5, signed:true, openLow:true, openHigh:true},
+  'f-cp':        {min:-8,  max:8,    step:0.5, signed:true, openLow:true, openHigh:true},
+  'f-curloft':   {min:7.5, max:12,   step:0.5},
+  'bio-swayGap':     {min:-12, max:0,  step:0.5, signed:true, openLow:true},
+  'bio-chestLift':   {min:-4,  max:4,  step:0.5, signed:true, openLow:true, openHigh:true},
+  'bio-leadElbow':   {min:130, max:180,step:2,   openLow:true},
+  'bio-clubHandGap': {min:-6,  max:6,  step:0.5, signed:true, openLow:true, openHigh:true},
+  'bio-pelvisSway':  {min:0,   max:10, step:0.5, openHigh:true},
+};
+
+function rangeOptions(cfg) {
+  if(cfg.list) return cfg.list;
+  var out = [], n = Math.round((cfg.max-cfg.min)/cfg.step);
+  var dec = (String(cfg.step).split('.')[1]||'').length;
+  for(var i=0;i<=n;i++){
+    var v = +(cfg.min + i*cfg.step).toFixed(dec);
+    var txt = v.toFixed(dec);
+    if(cfg.signed && v>0) txt = '+'+txt;
+    if(v<0) txt = '−'+Math.abs(v).toFixed(dec);
+    if(i===0 && cfg.openLow) txt += ' or less';
+    if(i===n && cfg.openHigh) txt += ' or more';
+    out.push([String(v), txt]);
+  }
+  return out;
+}
+
+function makeRangeSelect(id) {
+  var sel = document.createElement('select');
+  sel.id = id;
+  var blank = document.createElement('option'); blank.value=''; blank.textContent='—'; sel.appendChild(blank);
+  rangeOptions(INPUT_RANGES[id]).forEach(function(o){
+    var opt = document.createElement('option'); opt.value=o[0]; opt.textContent=o[1]; sel.appendChild(opt);
+  });
+  return sel;
+}
+
+function updateSmash() {
+  var ss=parseFloat((document.getElementById('f-ss')||{}).value), bs=parseFloat((document.getElementById('f-bs')||{}).value);
+  var out=document.getElementById('f-smash-calc');
+  if(out) out.textContent = (ss>0&&bs>0) ? (bs/ss).toFixed(2) : '—';
+}
+
 function makeChipGroup(field, options) {
   var g = el('div','chip-group');
   options.forEach(function(val) {
@@ -475,8 +532,8 @@ function renderFitting() {
   var nameInput = makeInput('f-name','text','Full name');
   sec1.appendChild(makeField('Player name', nameInput));
   var row1 = el('div','field-row');
-  row1.appendChild(makeField('Handicap',    makeInput('f-hdcp','number','12')));
-  row1.appendChild(makeField('Height (in)', makeInput('f-height','number','72')));
+  row1.appendChild(makeField('Handicap',    makeRangeSelect('f-hdcp')));
+  row1.appendChild(makeField('Height', makeRangeSelect('f-height')));
   sec1.appendChild(row1);
   // Ball select
   var ballSel = document.createElement('select');
@@ -542,7 +599,7 @@ function renderFitting() {
     hdr.appendChild(el('span','bio-card-name',f.label));
     hdr.appendChild(el('span','bio-card-unit',f.unit));
     card.appendChild(hdr);
-    card.appendChild(makeInput('bio-'+f.id,'number','—','0.1'));
+    card.appendChild(makeRangeSelect('bio-'+f.id));
     bioGrid.appendChild(card);
   });
   bioWrap.appendChild(bioGrid);
@@ -556,7 +613,7 @@ function renderFitting() {
   var lmGrid = el('div','lm-grid');
   [{id:'f-ss',label:'Swing Speed',unit:'mph',ph:'95',step:null},
    {id:'f-bs',label:'Ball Speed',unit:'mph',ph:'140',step:null},
-   {id:'f-smash',label:'Smash Factor',unit:'ratio',ph:'1.47',step:'0.01'},
+   {id:'f-smash',label:'Smash Factor',unit:'ball speed ÷ swing speed · auto',calc:true},
    {id:'f-la',label:'Launch Angle',unit:'degrees',ph:'12.5',step:'0.1'},
    {id:'f-sr',label:'Spin Rate',unit:'rpm',ph:'2400',step:null},
    {id:'f-dl',label:'Dynamic Loft',unit:'degrees',ph:'15.2',step:'0.1'},
@@ -565,7 +622,8 @@ function renderFitting() {
   ].forEach(function(f){
     var card = el('div','lm-card');
     card.appendChild(el('label',null,f.label));
-    card.appendChild(makeInput(f.id,'number',f.ph,f.step));
+    if(f.calc) { var c=el('div','lm-calc','—'); c.id='f-smash-calc'; card.appendChild(c); }
+    else { var sel=makeRangeSelect(f.id); if(f.id==='f-ss'||f.id==='f-bs') sel.addEventListener('change',updateSmash); card.appendChild(sel); }
     card.appendChild(el('div','lm-unit',f.unit));
     lmGrid.appendChild(card);
   });
@@ -603,7 +661,9 @@ function renderFitting() {
   var curLoftLbl = el('label',null,'Current Loft');
   curLoftLbl.style.cssText = 'font-size:12px;color:var(--text3);white-space:nowrap';
   curLoftWrap.appendChild(curLoftLbl);
-  curLoftWrap.appendChild(makeInput('f-curloft','number','9.0','0.25'));
+  var curLoftSel = makeRangeSelect('f-curloft');
+  curLoftSel.style.cssText = 'background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:6px 10px;color:var(--text);font-size:13px;font-family:var(--font)';
+  curLoftWrap.appendChild(curLoftSel);
   var curLoftUnit = el('div',null,'degrees');
   curLoftUnit.style.cssText = 'font-size:11px;color:var(--text3);white-space:nowrap';
   curLoftWrap.appendChild(curLoftUnit);
@@ -655,6 +715,7 @@ function restoreFields() {
   });
   var ball = document.getElementById('f-ball');
   if(ball && fittingState['f-ball']) ball.value = fittingState['f-ball'];
+  updateSmash();
 }
 
 function saveFittingState() {
@@ -682,7 +743,8 @@ function getFittingData() {
     curHead: g('f-curhead')==='__other__' ? (g('f-curhead-other')||'') : (g('f-curhead')||''),
     curLoft: parseFloat(g('f-curloft'))||null,
   };
-  bioFields.forEach(function(f){ d[f.id] = parseFloat(g('bio-'+f.id))||null; });
+  bioFields.forEach(function(f){ var v=g('bio-'+f.id); d[f.id] = (v===''||isNaN(parseFloat(v))) ? null : parseFloat(v); }); // keep genuine 0 readings
+  d.smash = (d.ss>0 && d.bs>0) ? Math.round(d.bs/d.ss*100)/100 : 0;
   d.shotShape = axisToShape(d.spinAxis);
   return d;
 }
