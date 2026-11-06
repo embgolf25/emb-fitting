@@ -737,7 +737,7 @@ function getFittingData() {
     ball:g('f-ball')||'',
     ss:parseFloat(g('f-ss'))||0, bs:parseFloat(g('f-bs'))||0,
     la:parseFloat(g('f-la'))||0, sr:parseFloat(g('f-sr'))||0,
-    aa:parseFloat(g('f-aa'))||0, cp:parseFloat(g('f-cp'))||0,
+    aa:(g('f-aa')===''?null:parseFloat(g('f-aa'))), cp:parseFloat(g('f-cp'))||0,
     smash:parseFloat(g('f-smash'))||0, dl:parseFloat(g('f-dl'))||0,
     notes:g('f-notes'),
     curHead: g('f-curhead')==='__other__' ? (g('f-curhead-other')||'') : (g('f-curhead')||''),
@@ -925,6 +925,15 @@ function buildRecommendations(d) {
     if(ballSpinVal>=4) { ballCGSignal='forward'; loftAdjustment=-0.5; }
     else if(ballSpinVal<=2) { ballCGSignal='back'; loftAdjustment=+0.5; }
   }
+  // Optimal launch/spin for this ball speed + AoA (computed before the notes that describe it)
+  var optimalData = null, spinGap = null, launchGap = null;
+  if(d.bs>0 && d.aa!==null && d.aa!==undefined && !isNaN(d.aa)) {
+    optimalData = getOptimalLaunchSpin(d.bs, d.aa);
+    if(optimalData) {
+      if(d.sr>0) spinGap = Math.round(d.sr - optimalData.spin);
+      if(d.la>0) launchGap = Math.round((d.la - optimalData.launch)*10)/10;
+    }
+  }
   var launchGapNote = null;
   if(launchGap!==null) {
     if(launchGap <= -1.5) launchGapNote = 'Launching '+Math.abs(launchGap)+'° below optimal for this speed/AoA — more static or dynamic loft would help.';
@@ -938,14 +947,6 @@ function buildRecommendations(d) {
     else spinGapNote = 'Spin rate is close to optimal for this speed/AoA.';
   }
 
-  var optimalData = null, spinGap = null, launchGap = null;
-  if(d.bs>0 && d.aa!==0) {
-    optimalData = getOptimalLaunchSpin(d.bs, d.aa);
-    if(optimalData) {
-      if(d.sr>0) spinGap = Math.round(d.sr - optimalData.spin);
-      if(d.la!==0) launchGap = Math.round((d.la - optimalData.launch)*10)/10;
-    }
-  }
 
   // ── HEAD SCORING ── numeric 1-5 ratings (spin_val, launch_val, cg_depth, cg_bias, forgiveness_val);
   // falls back to the text fields for heads entered before ratings existed.
@@ -966,11 +967,20 @@ function buildRecommendations(d) {
   if(headBias==='draw-bias') headReasons.push('draw-bias signals');
   var tLaunch = null;
   if(launchGap!==null) { if(launchGap<=-1.5) { tLaunch=4; headReasons.push('launching low'); } else if(launchGap>=1.5) { tLaunch=2; headReasons.push('launching high'); } }
-  var forgWeight = d.ss>=105 ? 0.2 : 0.4;
+  // Fast swingers: a spin/launch deficit is a loft fix first, not a jump to max-launch,
+  // max-MOI heads (built for slower speeds). Cap the head targets and penalise max-MOI heads.
+  var fastSwing = d.ss>=105;
+  if(fastSwing && (tSpin>3.5 || (tLaunch!==null && tLaunch>3.5))) {
+    tSpin = Math.min(tSpin, 3.5); if(tLaunch!==null) tLaunch = Math.min(tLaunch, 3.5);
+    tDepth = Math.max(1, Math.min(5, 2*tSpin-3));
+    headReasons.push('at '+d.ss+' mph add loft before moving to a max-launch head');
+  }
+  var forgWeight = fastSwing ? 0.2 : 0.4;
   heads.forEach(function(h){
     var n = headNums(h);
     var sc = 2.0*Math.abs(n.spin-tSpin) + 1.0*Math.abs(n.depth-tDepth) + 2.0*Math.abs(n.bias-tBias) + forgWeight*(5-n.forg);
     if(tLaunch!==null) sc += 1.0*Math.abs(n.launch-tLaunch);
+    if(fastSwing && n.forg>=5) sc += 1.0;
     h._score = Math.round(sc*10)/10;
   });
   heads.sort(function(a,b){ return a._score-b._score; });
@@ -1194,7 +1204,7 @@ function renderResults() {
 async function saveSession(d, recs, insight) {
   var row = {
     player_name:d.name||null,handicap:d.hdcp||null,height:d.height||null,swing_speed:d.ss||null,ball_speed:d.bs||null,
-    launch_angle:d.la||null,spin_rate:d.sr||null,attack_angle:d.aa||null,club_path:d.cp||null,
+    launch_angle:d.la||null,spin_rate:d.sr||null,attack_angle:(d.aa!=null?d.aa:null),club_path:d.cp||null,
     smash_factor:d.smash||null,dynamic_loft:d.dl||null,
     sway_gap:d.swayGap,chest_lift:d.chestLift,lead_elbow:d.leadElbow,
     club_hand_gap:d.clubHandGap,pelvis_sway:d.pelvisSway,
@@ -1268,7 +1278,7 @@ async function loadSession(id) {
   var d = {
     name:session.player_name||'',hdcp:session.handicap||'',height:session.height||'',
     ss:session.swing_speed||0,bs:session.ball_speed||0,la:session.launch_angle||0,sr:session.spin_rate||0,
-    aa:session.attack_angle||0,cp:session.club_path||0,smash:session.smash_factor||0,dl:session.dynamic_loft||0,
+    aa:(session.attack_angle!=null?parseFloat(session.attack_angle):null),cp:session.club_path||0,smash:session.smash_factor||0,dl:session.dynamic_loft||0,
     notes:session.notes||'',ball:'',grip:session.grip||'',post:session.post||'',shotShape:'',
     leadGrip:session.lead_grip||'',spinAxis:session.spin_axis!=null?parseFloat(session.spin_axis):null,
     swayGap:session.sway_gap,chestLift:session.chest_lift,leadElbow:session.lead_elbow,
