@@ -1,0 +1,12 @@
+{
+  "note": "Placeholder biomechanics rules and correlations removed from Supabase on 2026-11-06. None were derived from the research data: thresholds never fired (sway gap > 1.5 when tour values are -9.8 to -4.6) or fired for everyone (pelvis sway > 2 when tour values are 3.1 to 7.9; lead elbow > 20 when the site measures 148-168 degrees).",
+  "rules": [
+    {"id":"b812fe5d-0e1b-4451-8835-5931af3efd0c","club":"driver","type":"biomechanics","condition":"pelvis_sway > 2.5","recommendation":"Draw-bias head. Check path correlation.","notes":"Excessive pelvis sway tends to correlate with over-the-top delivery and cut path.","test_tip":"Confirm club path data. If path is out-to-in draw-bias head may help.","priority":"medium","created_at":"2026-06-16T01:43:35.860766"},
+    {"id":"baf84433-a1f6-4798-ae2d-1003b3cbe67c","club":"driver","type":"biomechanics","condition":"chest_lift > 1.5","recommendation":"Higher launch shaft. Check dynamic loft.","notes":"Chest lift into impact often reduces dynamic loft.","test_tip":"Check dynamic loft on launch monitor. Target 2-3° above attack angle.","priority":"medium","created_at":"2026-06-16T01:43:35.860766"}
+  ],
+  "bio_correlations": [
+    {"id":"dadbfb62-9db8-497d-9c14-9fdc0fae89ee","bio_var":"swayGap","range":"> 1.5","shaft_profile":"Lighter shaft weight (50–60g range)","head_profile":"Higher forgiveness, back CG","notes":"Large sway gap correlates with inconsistent strike pattern.","created_at":"2026-06-16T01:43:35.956195"},
+    {"id":"7664ca39-d4d6-4ed2-8b2f-01cde9b495fb","bio_var":"leadElbow","range":"> 20","shaft_profile":"Softer tip profile, mid-to-high launch","head_profile":"Neutral to back CG","notes":"Lead elbow bend at impact tends to reduce dynamic loft.","created_at":"2026-06-16T01:43:35.956195"},
+    {"id":"a01b3437-bf37-4031-baf3-39caa7c15bf9","bio_var":"pelvisSway","range":"> 2","shaft_profile":"Mid kick point, stable butt section","head_profile":"Draw-bias consideration if path confirms","notes":"Pelvis sway often correlates with path issues.","created_at":"2026-06-16T01:43:35.956195"}
+  ]
+}

@@ -229,9 +229,9 @@ const bioFields = [
 
 const GRIP_POST_PROFILES = {
   'On Top|Center':  {weight:67.5,tip:4.50,mid:4.00,handle:4.25,loft:9.75, n:5, notes:'Rory, Koepka, Berger, Oosthuizen pattern. Stiff tip and handle, moderate weight.'},
-  'On Top|Front':   {weight:76.1,tip:3.75,mid:3.67,handle:3.33,loft:8.94, n:4, notes:'Scottie, Burns, Finau, Lowry pattern. Heaviest shaft weight of any combination.'},
+  'On Top|Front':   {weight:76.1,tip:3.75,mid:3.67,handle:3.33,loft:8.94, n:4, notes:'Scottie, Burns, Finau, Lowry pattern. Heaviest shaft weight of any combination. All faders.'},
   'On Top|Rear':    {weight:66.3,tip:5.00,mid:4.00,handle:5.00,loft:8.83, n:3, notes:'Spieth, Koepka, Woodland pattern. Maximum tip AND handle stiffness.'},
-  'Under|Center':   {weight:68.4,tip:3.86,mid:4.00,handle:3.60,loft:9.56, n:8, notes:'Most common tour combination. Colin M, Xander, JT, Rahm, Cantlay, DJ, Adam Scott, Conners. Softer handle.'},
+  'Under|Center':   {weight:68.4,tip:3.86,mid:4.00,handle:3.60,loft:9.56, n:8, notes:'Most common tour combination. Colin M, Xander, JT, Rahm, Cantlay, DJ, Adam Scott, Conners.'},
   'Under|Front':    {weight:68.0,tip:2.00,mid:4.00,handle:3.00,loft:9.00, n:1, notes:'Hatton pattern. Softest tip of any combination. Firm mid, medium handle.'},
   'Under|Rear':     {weight:69.5,tip:4.75,mid:3.50,handle:4.00,loft:10.50,n:4, notes:'Keegan, Harris English, Min Woo Lee, Niemann pattern. Stiff tip despite under grip.'},
   'Side On|Front':  {weight:74.0,tip:4.00,mid:2.00,handle:2.00,loft:9.25, n:2, notes:'Hideki, Wyndham Clark pattern. Heavier shaft but very active mid and handle.'},
@@ -765,16 +765,19 @@ function buildRecommendations(d) {
       sportsboxSignals.push({var:'Club Hand Gap',value:d.clubHandGap+'"',signal:'Within norm for grip type',implication:'No adjustment'});
     }
   }
-  var pelvisPostAvg = d.post==='Front'?5.4:d.post==='Center'?5.0:d.post==='Rear'?4.5:null;
+  var pelvisPostAvg = d.post==='Front'?5.3:d.post==='Center'?5.3:d.post==='Rear'?4.5:null; // tour avgs, 10.27 data
   var pelvisHeadSignal = null;
   if(d.pelvisSway!==null && pelvisPostAvg!==null) {
     var pdev = d.pelvisSway - pelvisPostAvg;
     if(pdev > 1) pelvisHeadSignal = 'draw-bias';
     else if(pdev < -1) pelvisHeadSignal = 'neutral';
   }
+  // Tour data (10.27): 23 of 24 fade-biased players use a neutral head, so an intentional
+  // fade does NOT trigger draw-bias. Only swing signals can push toward draw-bias.
   var headBias = 'neutral';
-  if(d.shotShape==='Fade'||d.shotShape==='Both') headBias='draw-bias';
-  else if(d.shotShape==='Draw') headBias='neutral';
+  var headBiasNote = null;
+  if(d.shotShape==='Fade') headBiasNote = 'Tour faders play neutral heads (23 of 24). If the fade is unwanted, test a draw-bias head.';
+  if(d.shotShape==='Fade'||d.shotShape==='Draw'||d.shotShape==='Both') headBias='neutral';
   else {
     var allSigs = [elbowHeadSignal,pelvisHeadSignal].filter(Boolean);
     var drawCount = allSigs.filter(function(s){return s==='draw-bias';}).length;
@@ -861,21 +864,26 @@ function buildRecommendations(d) {
   heads=[...varied,...remainder2];
 
   var gripSignals = buildGripSignals(d);
-  return {heads:heads.slice(0,3),shafts:topShafts,matchedRules:matchedRules,bioMatches:bioMatches,gripSignals:gripSignals,sportsboxSignals:sportsboxSignals,headBias:headBias,swayBand:swayBand,validFlexes:validFlexes,profile:profile,profileKey:profileKey,targetWeight:targetWeight,targetTip:targetTip,targetMid:targetMid,targetHandle:targetHandle,targetLoft:targetLoft,targetTorque:targetTorque,ballData:ballData,ballSpinVal:ballSpinVal,ballCGSignal:ballCGSignal,loftAdjustment:loftAdjustment,optimalData:optimalData,spinGap:spinGap,launchGap:launchGap,spinGapNote:spinGapNote,launchGapNote:launchGapNote,curHead:d.curHead||'',curLoft:d.curLoft||null};
+  return {heads:heads.slice(0,3),shafts:topShafts,matchedRules:matchedRules,bioMatches:bioMatches,gripSignals:gripSignals,sportsboxSignals:sportsboxSignals,headBias:headBias,headBiasNote:headBiasNote,swayBand:swayBand,validFlexes:validFlexes,profile:profile,profileKey:profileKey,targetWeight:targetWeight,targetTip:targetTip,targetMid:targetMid,targetHandle:targetHandle,targetLoft:targetLoft,targetTorque:targetTorque,ballData:ballData,ballSpinVal:ballSpinVal,ballCGSignal:ballCGSignal,loftAdjustment:loftAdjustment,optimalData:optimalData,spinGap:spinGap,launchGap:launchGap,spinGapNote:spinGapNote,launchGapNote:launchGapNote,curHead:d.curHead||'',curLoft:d.curLoft||null};
 }
 
 function buildGripSignals(d) {
+  // Averages from the 10.27 Profiles & Equipment Research workbook (Player Master tab)
   var signals = [], grip=d.grip, post=d.post;
   if(!grip) return signals;
-  if(grip==='On Top')  signals.push({signal:'Profile 1/2/3 (On Top)',recommendation:'Heavier shaft (avg 71g). Stiff tip (4.33 avg) and stiff handle (4.27 avg).'});
-  if(grip==='Under')   signals.push({signal:'Profile 7/8/9 (Under)',recommendation:'Lighter shaft (avg 69g). Softer tip (3.86 avg) and handle (3.75 avg).'});
-  if(grip==='Side On') signals.push({signal:'Profile 4/5/6 (Side On)',recommendation:'Heavier shaft (avg 71g) but softer mid section (3.75 avg).'});
-  if(grip==='On Top'&&post==='Front') signals.push({signal:'Profile 1',recommendation:'Heaviest shaft profile (avg 78g). All tour players in this category are faders.'});
+  if(grip==='On Top')  signals.push({signal:'Profile 1/2/3 (On Top)',recommendation:'Firm profile: avg 70g, tip 4.2, handle 4.1, 9.0° loft. Faders outnumber drawers 11 to 2.'});
+  if(grip==='Under')   signals.push({signal:'Profile 7/8/9 (Under)',recommendation:'Slightly lighter (avg 68g) with a softer tip (3.75). Carries more loft than On Top (9.8° vs 9.0°).'});
+  if(grip==='Side On') signals.push({signal:'Profile 4/5/6 (Side On)',recommendation:'Avg 71g with the softest handle of the three grips (3.5). Every Side On player in the data plays a tip-stiff iron.'});
+  if(post==='Rear')    signals.push({signal:'Rear post',recommendation:'Firmest driver shafts: tip 4.9 and handle 4.1 vs 3.5 and 3.0 for front post. Early sign (7 players).'});
+  if(post==='Front')   signals.push({signal:'Front post',recommendation:'Heaviest driver shafts (avg 74g vs 68g center post) with softer handles. Early sign (7 players).'});
+  if(grip==='On Top'&&post==='Front') signals.push({signal:'Profile 1',recommendation:'Heaviest combination (avg 76g). All four tour players here are faders.'});
   if(grip==='On Top'&&post==='Rear')  signals.push({signal:'Profile 3',recommendation:'Maximum tip AND handle stiffness (5.0 avg both).'});
-  if(grip==='Under'&&post==='Front')  signals.push({signal:'Profile 7',recommendation:'Softest tip of any combination (2.0 avg). Hatton pattern.'});
-  if(grip==='Under'&&post==='Center') signals.push({signal:'Profile 8',recommendation:'Softest handle section (3.25 avg). Most common tour combination.'});
-  if(grip==='Under'&&d.shotShape==='Fade') signals.push({signal:'Profile 7/8/9 fader',recommendation:'Uncommon — verify path and face data. May need draw-bias head.'});
-  if(grip==='On Top'&&d.shotShape==='Draw') signals.push({signal:'Profile 1/2/3 drawer',recommendation:'Strong in-to-out path likely. Shaft stability important.'});
+  if(grip==='Under'&&post==='Front')  signals.push({signal:'Profile 7',recommendation:'Softest tip of any combination (2.0). Hatton pattern — one player, treat as a hunch.'});
+  if(grip==='Under'&&post==='Center') signals.push({signal:'Profile 8',recommendation:'Most common tour combination (8 players). Handle 3.6, tip 3.9.'});
+  if(grip==='Under'&&d.shotShape==='Fade') signals.push({signal:'Profile 7/8/9 fader',recommendation:'Common on tour — 7 of 11 Under-grip players fade it. No head adjustment needed for an intended fade.'});
+  if(grip==='On Top'&&d.shotShape==='Draw') signals.push({signal:'Profile 1/2/3 drawer',recommendation:'Uncommon on tour (2 of 13 On Top players). Strong in-to-out path likely; shaft stability important.'});
+  if(d.shotShape==='Fade') signals.push({signal:'Fade flight',recommendation:'If confirmed on the launch monitor (spin axis above +3°), 15 of 17 tour faders play tip-stiff iron shafts (88% vs 56%). A stated fade alone is a weaker signal (11 of 18).'});
+  if(d.shotShape==='Draw') signals.push({signal:'Draw flight',recommendation:'Tour drawers lean butt-stiff in the driver (3 of 7 vs about a quarter of the field). Early sign.'});
   return signals;
 }
 
@@ -954,7 +962,7 @@ function renderResults() {
     recs.sportsboxSignals.forEach(function(s){ analysisHTML += '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;font-weight:600;color:var(--cyan3)">'+s.var+'</span><span style="font-size:11px;font-family:monospace;color:var(--cyan2)">'+s.value+'</span></div><div style="font-size:11px;color:var(--text);font-weight:500;margin-bottom:2px">'+s.signal+'</div><div style="font-size:11px;color:var(--text3);line-height:1.5">'+s.implication+'</div></div>'; });
     analysisHTML += '</div>';
     var biasColor = recs.headBias==='draw-bias'?'var(--cyan)':'var(--teal2)';
-    analysisHTML += '<div style="background:var(--bg3);border:1px solid var(--border);border-left:3px solid '+biasColor+';border-radius:var(--radius);padding:10px 16px;margin-bottom:20px;font-size:12px"><strong style="color:'+biasColor+'">'+(recs.headBias==='draw-bias'?'Draw-bias head recommended':'Neutral head recommended')+'</strong> — corrective fit</div>';
+    analysisHTML += '<div style="background:var(--bg3);border:1px solid var(--border);border-left:3px solid '+biasColor+';border-radius:var(--radius);padding:10px 16px;margin-bottom:20px;font-size:12px"><strong style="color:'+biasColor+'">'+(recs.headBias==='draw-bias'?'Draw-bias head recommended':'Neutral head recommended')+'</strong>'+(recs.headBiasNote?' — '+recs.headBiasNote:'')+'</div>';
   }
   if(recs.targetWeight!==null) {
     analysisHTML += '<div style="background:var(--bg3);border:1px solid var(--cyan3);border-radius:var(--radius);padding:12px 16px;margin-bottom:14px">';
