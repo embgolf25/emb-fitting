@@ -395,11 +395,22 @@ async function loadAll() {
     equipmentDB.drivers = (results[2].data||[]).filter(function(x){return x.type==='driver';});
     equipmentDB.shafts  = (results[2].data||[]).filter(function(x){return x.type==='shaft';});
     sessionsList     = results[3].data || [];
+    var failed = results.filter(function(r){ return r.error; });
+    if(failed.length) {
+      // Database answered with errors (e.g. Supabase project paused) — don't pretend we're connected
+      setDBStatus(false);
+      console.error('Supabase error:', failed[0].error);
+      toast('Database unavailable — data not loaded. Check that the Supabase project is active.','error');
+      showPage(currentPage);
+      return;
+    }
     setDBStatus(true);
     if(rulesDB.length===0) await seedDefaults();
     showPage(currentPage);
   } catch(err) {
     setDBStatus(false);
+    toast('Database unavailable — data not loaded. Check that the Supabase project is active.','error');
+    showPage(currentPage);
   }
 }
 
