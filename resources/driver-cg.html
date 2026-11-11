@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Driver Head CG Explorer | EMB Golf</title>
+<meta name="description" content="Interactive 3D map of approximate center of gravity placement across current driver heads, for club fitters comparing models.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;--bg2:#f8fbf9;--bg3:#f0f7f2;--bg4:#e4f1e8;
+  --border:#e1ece5;--border2:#cfe2d6;
+  --text:#17261d;--text2:#4b6556;--text3:#7f978a;
+  --cyan:#4cb87a;--cyan2:#23794a;--cyan3:#2f8f58;--teal:#6cc993;
+  --amber-bg:#fdf3dc;--amber-border:#ecd08f;--amber-text:#6b4a06;
+  --red:#d64550;
+  --radius:10px;--radius2:14px;
+  --font:'Inter',system-ui,sans-serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.55;min-height:100vh}
+a{color:var(--cyan2)}
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+.logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--cyan) 0%,var(--teal) 100%);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;color:#0f2a1a;letter-spacing:-0.5px}
+.logo-text{font-size:16px;font-weight:700;letter-spacing:0.02em;color:var(--text)}
+.logo-sub{font-size:10px;color:var(--text3);letter-spacing:0.15em;text-transform:uppercase;margin-top:1px}
+.top-links{display:flex;gap:4px}
+.top-links a{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--radius);font-size:13px;font-weight:500;color:var(--text2);text-decoration:none}
+.top-links a:hover{background:var(--bg3);color:var(--text)}
+.wrap{max-width:1040px;margin:0 auto;padding:28px 28px 56px}
+.eyebrow{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--cyan3);font-weight:700;margin-bottom:8px}
+h1{font-size:26px;font-weight:700;letter-spacing:-0.01em;margin-bottom:8px}
+h2{font-size:17px;font-weight:700;margin-bottom:6px}
+.lede{color:var(--text2);max-width:720px;margin-bottom:16px}
+.approx{display:flex;gap:10px;align-items:flex-start;background:var(--amber-bg);border:1px solid var(--amber-border);color:var(--amber-text);border-radius:var(--radius);padding:12px 14px;margin-bottom:20px;font-size:13px}
+.approx i{font-size:18px;margin-top:1px;flex-shrink:0}
+.approx strong{font-weight:700}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.bar .spacer{flex:1}
+.btn{font-family:var(--font);font-size:12px;font-weight:500;color:var(--text2);background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;min-height:36px;cursor:pointer}
+.btn:hover{background:var(--bg3);color:var(--text)}
+.btn.on{background:var(--bg4);color:var(--cyan2);border-color:var(--cyan)}
+.pill{font-family:var(--font);font-size:12px;font-weight:600;background:transparent;border:1.5px solid;border-radius:999px;padding:7px 14px;min-height:36px;cursor:pointer}
+.pill.off{opacity:.3}
+.status{font-size:11px;font-weight:500;padding:5px 10px;border-radius:20px;border:1px solid var(--border2);color:var(--text3);white-space:nowrap}
+.status.live{color:var(--cyan2);border-color:rgba(76,184,122,.35);background:rgba(76,184,122,.08)}
+.status.snap{color:var(--amber-text);border-color:var(--amber-border);background:var(--amber-bg)}
+.shell-ctl{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2)}
+.shell-ctl input{width:150px;accent-color:var(--cyan3)}
+#stage{position:relative;width:100%;height:min(62vh,560px);min-height:380px;border-radius:var(--radius2);background:var(--bg3);border:1px solid var(--border);overflow:hidden;cursor:grab;touch-action:none}
+#stage canvas{display:block}
+.stage-msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--text2)}
+.hint{position:absolute;left:12px;bottom:10px;font-size:11px;color:var(--text3);pointer-events:none}
+.zones{display:flex;flex-wrap:wrap;gap:16px;margin:12px 0 28px}
+.zone{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text2)}
+.zone span{width:16px;height:11px;border-radius:3px;display:inline-block}
+.panel{border:1px solid var(--border);border-radius:var(--radius2);padding:20px;margin-bottom:20px;background:var(--bg)}
+.panel p.sub{color:var(--text2);font-size:13px;margin-bottom:14px}
+.brand-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.brand-name{width:92px;font-size:12px;font-weight:600;flex-shrink:0}
+.chip{font-family:var(--font);font-size:12px;font-weight:500;color:var(--text2);background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:7px 12px;min-height:36px;cursor:pointer}
+.chip:hover{background:var(--bg3)}
+.chip.sel{color:#fff;border-color:transparent}
+.msg{font-size:13px;color:var(--red);margin:6px 0 0;min-height:18px}
+.cmp{display:grid;gap:0;margin-top:14px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.cmp>div{padding:11px 14px;border-bottom:1px solid var(--border);font-size:13px;min-width:0}
+.cmp .rowlabel{background:var(--bg2);color:var(--text2);font-weight:600;font-size:12px}
+.cmp .rowlabel small{display:block;font-weight:400;color:var(--text3);font-size:11px}
+.cmp .head{font-weight:700;font-size:14px;background:var(--bg2)}
+.cmp .head small{display:block;font-weight:500;font-size:11px}
+.cmp .last{border-bottom:none}
+.segs{display:flex;gap:3px;margin-top:6px}
+.segs i{width:22px;height:6px;border-radius:3px;background:var(--bg4);display:block}
+.empty{color:var(--text3);font-size:13px;padding:14px 0 2px}
+.read{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.read div{font-size:13px;color:var(--text2)}
+.read strong{display:block;color:var(--text);font-size:13px;margin-bottom:3px}
+.foot{font-size:12px;color:var(--text3);margin-top:22px}
+@media(max-width:640px){.header{padding:0 16px}.wrap{padding:20px 16px 48px}.top-links a span{display:none}.cmp>div{padding:9px 10px}.brand-name{width:100%}}
+</style>
+</head>
+<body>
+<header class="header">
+  <a class="logo" href="../">
+    <div class="logo-mark">EMB</div>
+    <div>
+      <div class="logo-text">EMB Golf</div>
+      <div class="logo-sub">Fitter Resources</div>
+    </div>
+  </a>
+  <nav class="top-links">
+    <a href="../"><i class="ti ti-layout-grid"></i><span>Hub</span></a>
+    <a href="../driver/"><i class="ti ti-adjustments-horizontal"></i><span>Driver fitting</span></a>
+  </nav>
+</header>
+
+<main class="wrap">
+  <div class="eyebrow">Resources · Drivers</div>
+  <h1>Driver head CG explorer</h1>
+  <p class="lede">See where each driver head carries its center of gravity, then put two or three side by side. Drag to spin the head, pinch or scroll to zoom, and tap a dot to add it to the comparison.</p>
+
+  <div class="approx" role="note">
+    <i class="ti ti-info-circle" aria-hidden="true"></i>
+    <div><strong>Approximate positions.</strong> Manufacturers don't publish exact CG coordinates. Each dot is placed from EMB Golf's 1 to 5 ratings for CG depth and heel-toe bias, so use it to compare heads against each other, not as a measurement.</div>
+  </div>
+
+  <div class="bar">
+    <div id="pills" class="bar" style="margin:0"></div>
+    <div class="spacer"></div>
+    <span class="status" id="status">Loading heads</span>
+  </div>
+  <div class="bar" id="views">
+    <button class="btn" data-v="34">3/4 view</button>
+    <button class="btn" data-v="addr">Address</button>
+    <button class="btn" data-v="top">Top</button>
+    <button class="btn" data-v="face">Face on</button>
+    <button class="btn" data-v="heel">Heel side</button>
+    <button class="btn" data-v="toe">Toe side</button>
+    <button class="btn" data-v="sole">Sole</button>
+    <button class="btn" id="spin">Pause spin</button>
+    <button class="btn" id="lbls">Hide labels</button>
+    <div class="spacer"></div>
+    <label class="shell-ctl">X-ray <input type="range" id="op" min="10" max="100" step="1" value="35" aria-label="Head shell opacity"> Solid</label>
+  </div>
+
+  <div id="stage"><div class="hint">Approximate CG positions · EMB Golf</div></div>
+
+  <div class="zones">
+    <div class="zone"><span style="background:#b4dcf5"></span>Forward: low spin</div>
+    <div class="zone"><span style="background:#a0e1c3"></span>Mid: balanced</div>
+    <div class="zone"><span style="background:#fad28c"></span>Deep: high MOI</div>
+    <div class="zone"><span style="background:#f0b4d2"></span>Deep and heel: draw bias</div>
+  </div>
+
+  <section class="panel">
+    <h2>Compare heads</h2>
+    <p class="sub">Pick up to three. The other heads fade out in the 3D view.</p>
+    <div id="chips"></div>
+    <p class="msg" id="msg" role="status"></p>
+    <div id="cmp"></div>
+  </section>
+
+  <section class="panel">
+    <h2>How to read this</h2>
+    <div class="read">
+      <div><strong>Face to back</strong>CG depth, rated 1 (forward) to 5 (back). The numbers on the sole mark each rating. Forward heads spin less and launch lower. Deep heads launch higher and are more stable on mishits.</div>
+      <div><strong>Heel to toe</strong>Shot-shape bias. CG toward the heel helps the face close, which favors a draw. Toward the toe favors a fade.</div>
+      <div><strong>Height above the sole</strong>Low, mid or high, taken from each head's CG label. Lower CG generally means less spin.</div>
+      <div><strong>Grouped dots</strong>Heads with the same ratings sit in a small ring. The spacing inside a ring is only there so you can see each one.</div>
+    </div>
+  </section>
+
+  <p class="foot" id="foot">Ratings come from the EMB Fitting equipment database. Head shape shown is a generic 460cc right-handed profile, not any one model.</p>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+// ─── STATE (declared first) ──────────────────────────────────────────────────
+var heads = [], objs = [], selected = [], activeBrands = {}, showLabels = true, dataLive = false;
+var renderer = null, scene = null, camera = null, controls = null, has3D = false;
+var shellF = null, shellB = null, shellBack = null, hoselMat = null;
+
+var SUPABASE_URL = 'https://dfsuklaobtdpfkorqluq.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmc3VrbGFvYnRkcGZrb3JxbHVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0ODA5MTcsImV4cCI6MjA5NzA1NjkxN30.Z9MtgZr0asFMXdnMx65OCQn1tNCeRfaJnz6U0Qy1gEw';
+var MAX_COMPARE = 3;
+var BRAND_COLORS = {'TaylorMade':'#D85A30','Callaway':'#185FA5','Ping':'#1D9E75','Titleist':'#534AB7','Cobra':'#BA7517'};
+var EXTRA_COLORS = ['#993556','#3B6D11','#5F5E5A','#0F6E56','#A32D2D'];
+
+// Snapshot of the equipment table (drivers) taken 2026-11-11. Used only if the live database can't be reached.
+var SNAPSHOT = [
+{name:'Callaway Quantum Max',spin:'mid',launch:'mid-high',cg:'back',forgiveness:'high',spin_val:3,launch_val:4,cg_depth:4,cg_bias:3,forgiveness_val:4,notes:'Tri-Force face. Neutral flight, fast and consistent.'},
+{name:'Callaway Quantum Max D',spin:'mid',launch:'mid',cg:'heel-back',forgiveness:'high',spin_val:3,launch_val:3,cg_depth:4,cg_bias:5,forgiveness_val:4,notes:'Draw-bias. Most draw-biased Callaway in history.'},
+{name:'Callaway Quantum Max Fast',spin:'mid-high',launch:'high',cg:'back-high',forgiveness:'max',spin_val:4,launch_val:5,cg_depth:5,cg_bias:3,forgiveness_val:5,notes:'Lightweight build for slower swingers.'},
+{name:'Callaway Quantum Triple Diamond',spin:'low',launch:'low',cg:'forward-low',forgiveness:'mid-low',spin_val:2,launch_val:1,cg_depth:1,cg_bias:3,forgiveness_val:2,notes:'Tour compact. Low spin, workability.'},
+{name:'Cobra OPTM',spin:'mid',launch:'mid',cg:'neutral',forgiveness:'high',spin_val:3,launch_val:3,cg_depth:3,cg_bias:3,forgiveness_val:4,notes:'New POI forgiveness story. Balanced weighting, consistent.'},
+{name:'Cobra OPTM LS',spin:'low',launch:'low-mid',cg:'forward-low',forgiveness:'mid',spin_val:2,launch_val:2,cg_depth:1,cg_bias:3,forgiveness_val:3,notes:'Low spin, compact, workability.'},
+{name:'Cobra OPTM Max D',spin:'mid',launch:'mid',cg:'heel-back',forgiveness:'high',spin_val:3,launch_val:3,cg_depth:4,cg_bias:5,forgiveness_val:4,notes:'Draw-bias, largest profile in OPTM family.'},
+{name:'Cobra OPTM Max K',spin:'mid-high',launch:'high',cg:'back-high',forgiveness:'max',spin_val:4,launch_val:5,cg_depth:5,cg_bias:3,forgiveness_val:5,notes:'Max forgiveness, 3 moveable sole weights.'},
+{name:'Ping G440 K',spin:'mid',launch:'mid',cg:'neutral',forgiveness:'high',spin_val:3,launch_val:3,cg_depth:3,cg_bias:3,forgiveness_val:4,notes:'New for 2026. Turbulators + moveable weight port.'},
+{name:'Ping G440 LST',spin:'low',launch:'low',cg:'forward-low',forgiveness:'mid',spin_val:2,launch_val:1,cg_depth:1,cg_bias:3,forgiveness_val:3,notes:'Tour low spin. Most used driver at 2026 Masters.'},
+{name:'Ping G440 Max',spin:'mid',launch:'mid-high',cg:'back-high',forgiveness:'max',spin_val:3,launch_val:4,cg_depth:5,cg_bias:3,forgiveness_val:5,notes:'Highest MOI in Ping lineup. Moveable weight for draw/fade.'},
+{name:'TaylorMade Qi4D',spin:'mid',launch:'mid',cg:'neutral',forgiveness:'high',spin_val:3,launch_val:3,cg_depth:3,cg_bias:3,forgiveness_val:4,notes:'Best all-around 2026. Consistent across face, new TSS weighting.'},
+{name:'TaylorMade Qi4D LS',spin:'low',launch:'low-mid',cg:'forward-low',forgiveness:'mid',spin_val:2,launch_val:2,cg_depth:1,cg_bias:3,forgiveness_val:3,notes:'Low spin monster. Carbon face, compact shape, workability.'},
+{name:'TaylorMade Qi4D Max',spin:'mid-high',launch:'high',cg:'back-high',forgiveness:'max',spin_val:4,launch_val:5,cg_depth:5,cg_bias:3,forgiveness_val:5,notes:'Max forgiveness, new Speed Pocket for low-face strikes.'},
+{name:'Titleist GT2',spin:'mid-high',launch:'high',cg:'back',forgiveness:'high',spin_val:4,launch_val:5,cg_depth:4,cg_bias:3,forgiveness_val:4,notes:'Deep CG, high launch, stability on miss. Deepest CG in GT line.'},
+{name:'Titleist GT3',spin:'mid',launch:'mid',cg:'neutral',forgiveness:'mid',spin_val:3,launch_val:3,cg_depth:3,cg_bias:3,forgiveness_val:3,notes:'Adjustable CG track (5 positions). Speed-tuned, workability.'},
+{name:'Titleist GT4',spin:'low',launch:'low',cg:'forward-low',forgiveness:'mid-low',spin_val:2,launch_val:1,cg_depth:1,cg_bias:3,forgiveness_val:2,notes:'430cc compact. Dual spin control. Most spin reduction in GT line.'}
+];
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function el(tag, cls, text){ var e=document.createElement(tag); if(cls) e.className=cls; if(text!==undefined) e.textContent=text; return e; }
+function clamp15(n){ n=Number(n); if(!isFinite(n)) return null; return Math.min(5,Math.max(1,n)); }
+function brandOf(name){ return String(name||'').trim().split(/\s+/)[0] || 'Other'; }
+function modelOf(name){ var p=String(name||'').trim().split(/\s+/); p.shift(); return p.join(' ') || String(name||''); }
+function colorOf(brand){
+  if(!BRAND_COLORS[brand]){ BRAND_COLORS[brand]=EXTRA_COLORS[Object.keys(BRAND_COLORS).length % EXTRA_COLORS.length]; }
+  return BRAND_COLORS[brand];
+}
+function heightLevel(cg){ var s=String(cg||'').toLowerCase(); if(s.indexOf('low')>-1) return 0; if(s.indexOf('high')>-1) return 2; return 1; }
+var HEIGHT_NAMES = ['Low','Mid','High'];
+var BIAS_NAMES = {1:'Fade bias',2:'Slight fade',3:'Neutral',4:'Slight draw',5:'Draw bias'};
+function titleCase(s){ s=String(s||''); return s ? s.charAt(0).toUpperCase()+s.slice(1) : 'Not rated'; }
+
+// ─── DATA ────────────────────────────────────────────────────────────────────
+function normalize(rows){
+  var out=[];
+  rows.forEach(function(r){
+    var d=clamp15(r.cg_depth), b=clamp15(r.cg_bias);
+    if(d===null||b===null||!r.name) return;
+    var brand=brandOf(r.name);
+    out.push({name:r.name,brand:brand,model:modelOf(r.name),color:colorOf(brand),
+      spin:r.spin,launch:r.launch,cg:r.cg,forgiveness:r.forgiveness,
+      spin_val:clamp15(r.spin_val),launch_val:clamp15(r.launch_val),forgiveness_val:clamp15(r.forgiveness_val),
+      depth:d,bias:b,level:heightLevel(r.cg),notes:r.notes||''});
+  });
+  out.sort(function(a,b){ return a.name.localeCompare(b.name); });
+  return out;
+}
+function loadHeads(){
+  var url=SUPABASE_URL+'/rest/v1/equipment?type=eq.driver&select=name,spin,launch,cg,forgiveness,spin_val,launch_val,cg_depth,cg_bias,forgiveness_val,notes&order=name';
+  var ctl=('AbortController' in window)?new AbortController():null;
+  var timer=setTimeout(function(){ if(ctl) ctl.abort(); },7000);
+  return fetch(url,{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY},signal:ctl?ctl.signal:undefined})
+    .then(function(r){ clearTimeout(timer); if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .then(function(rows){ var n=normalize(rows||[]); if(!n.length) throw new Error('No rated driver heads'); return {heads:n,live:true}; })
+    .catch(function(){ clearTimeout(timer); return {heads:normalize(SNAPSHOT),live:false}; });
+}
+function setStatus(){
+  var s=document.getElementById('status');
+  if(dataLive){ s.textContent=heads.length+' heads · live data'; s.className='status live'; }
+  else { s.textContent=heads.length+' heads · saved snapshot'; s.className='status snap'; }
+}
+
+// ─── 3D SCENE ────────────────────────────────────────────────────────────────
+var OX=-2.25, YO=-1.25, ZO=0.1;
+function W(u,v,y){ return new THREE.Vector3(OX+u,YO+y,v+ZO); }
+function cl(x){ return Math.min(1,Math.max(0,x)); }
+function sst(a,b,x){ var t=cl((x-a)/(b-a)); return t*t*(3-2*t); }
+function mix(a,b,t){ return a+(b-a)*t; }
+function Hc(u){ return 2.6-0.95*Math.pow(cl((u-1.0)/3.5),1.4)-0.25*Math.pow(cl((1.0-u)/1.9),2); }
+function Hs(u){ return 0.45*Math.pow(cl((u-1.5)/3),1.6)+0.06*Math.pow(cl((1.2-u)/1.6),2); }
+function yR(u){ return 1.3-0.12*sst(0.5,4.5,u); }
+// The face is a lofted, slightly bulged plane cut into the body; smax rounds the edge where they meet.
+function faceU(v,y){ return 0.176*(y-1.25)+v*v/24+(y-1.25)*(y-1.25)/26; }
+function smax(a,b,k){ return 0.5*(a+b+Math.sqrt((a-b)*(a-b)+k*k)); }
+var NT=2.4, NB=2.8, EDGE=0.14;
+function uOf(depth){ return 0.85+(depth-1)*0.55; }
+function vOf(bias){ return (bias-3)*0.5; }
+function hOf(level){ return [0.5,0.74,0.98][level]; }
+var CEN={x:2.0,y:-0.1}, N=260, M=120, outline=[], prm=[];
+
+function soleY(u,v){
+  var a=Math.atan2(v-CEN.y,u-CEN.x), bi=0, bd=9;
+  for(var i=0;i<N;i++){ var d=Math.abs(prm[i].a-a); if(d>Math.PI) d=2*Math.PI-d; if(d<bd){bd=d;bi=i;} }
+  var q=prm[bi], rho=Math.min(0.98,Math.hypot(u-CEN.x,v-CEN.y)/q.R), t=Math.pow(1-Math.pow(rho,NB),1/NB);
+  return q.yr-(q.yr-Hs(u))*t;
+}
+function sup(al,n){ var c=Math.max(0,Math.cos(al)), s=Math.max(0,Math.sin(al)), d=Math.pow(Math.pow(c,n)+Math.pow(s,n),1/n); return [c/d,s/d]; }
+
+function makeLabel(text,color,size,bare){
+  var c=document.createElement('canvas'), x=c.getContext('2d'), fs=44;
+  x.font='600 '+fs+'px Inter, system-ui, sans-serif';
+  var w=Math.ceil(x.measureText(text).width)+28; c.width=w; c.height=64;
+  x.font='600 '+fs+'px Inter, system-ui, sans-serif'; x.fillStyle=bare?'rgba(255,255,255,0)':'rgba(255,255,255,0.93)';
+  if(x.roundRect){ x.beginPath(); x.roundRect(0,6,w,52,10); x.fill(); } else x.fillRect(0,6,w,52);
+  x.fillStyle=color; x.textBaseline='middle'; x.fillText(text,14,33);
+  var t=new THREE.CanvasTexture(c); t.minFilter=THREE.LinearFilter;
+  var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:t,depthTest:false,transparent:true}));
+  sp.scale.set(size*w/64,size,1); sp.renderOrder=10; return sp;
+}
+
+function buildScene(){
+  var stage=document.getElementById('stage');
+  try{
+    if(!window.THREE || !THREE.OrbitControls) throw new Error('3D library missing');
+    renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+  }catch(e){
+    stage.appendChild(el('div','stage-msg','The 3D view could not start in this browser. The comparison below still works.'));
+    return;
+  }
+  has3D=true;
+  renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+  stage.insertBefore(renderer.domElement,stage.firstChild);
+  scene=new THREE.Scene();
+  camera=new THREE.PerspectiveCamera(34,1,0.1,100);
+  controls=new THREE.OrbitControls(camera,renderer.domElement);
+  controls.enableDamping=true; controls.autoRotate=true; controls.autoRotateSpeed=1.0; controls.minDistance=5; controls.maxDistance=30; controls.enablePan=false;
+  scene.add(new THREE.AmbientLight(0xffffff,0.45));
+  var keyL=new THREE.DirectionalLight(0xffffff,0.7); keyL.position.set(-4,8,-3); scene.add(keyL);
+  var fillL=new THREE.DirectionalLight(0xffffff,0.3); fillL.position.set(5,3,6); scene.add(fillL);
+  try{
+    var ec=document.createElement('canvas'); ec.width=1024; ec.height=512; var ex=ec.getContext('2d');
+    var eg=ex.createLinearGradient(0,0,0,512); eg.addColorStop(0,'#ffffff'); eg.addColorStop(0.28,'#c9ced6'); eg.addColorStop(0.5,'#5d636d'); eg.addColorStop(0.56,'#2a2c31'); eg.addColorStop(1,'#16171a');
+    ex.fillStyle=eg; ex.fillRect(0,0,1024,512); ex.fillStyle='#ffffff';
+    [[120,150,70,150],[430,130,50,170],[700,160,90,130]].forEach(function(r){ ex.fillRect(r[0],r[1],r[2],r[3]); });
+    var et=new THREE.CanvasTexture(ec); et.mapping=THREE.EquirectangularReflectionMapping;
+    var pm=new THREE.PMREMGenerator(renderer); scene.environment=pm.fromEquirectangular(et).texture; pm.dispose();
+  }catch(e){}
+
+  // Head shell
+  var ctrl=[[-0.85,0],[-0.55,1.1],[0,1.8],[0.7,2.14],[1.5,2.33],[2.4,2.25],[3.3,1.8],[4.05,1.05],[4.45,0],[4.3,-1.0],[3.7,-1.9],[2.8,-2.42],[1.8,-2.58],[0.8,-2.45],[0,-2.1],[-0.6,-1.25]];
+  var curve=new THREE.CatmullRomCurve3(ctrl.map(function(p){ return new THREE.Vector3(p[0],p[1],0); }),true,'centripetal');
+  outline=curve.getSpacedPoints(N).slice(0,N);
+  prm=outline.map(function(P){ return {yr:yR(P.x),R:Math.hypot(P.x-CEN.x,P.y-CEN.y),a:Math.atan2(P.y-CEN.y,P.x-CEN.x)}; });
+  var Hm=M/2, pos=[], col=[], idx=[], i, j, k;
+  var cCrown=[0.16,0.17,0.2], cSole=[0.34,0.35,0.38], cFace=[0.54,0.55,0.57];
+  for(i=0;i<N;i++){ var P=outline[i], q=prm[i];
+    for(j=0;j<=M;j++){
+      var isTop=j>=Hm, rt=isTop?sup((j/Hm-1)*Math.PI/2,NT):sup((1-j/Hm)*Math.PI/2,NB);
+      var r=rt[0], t=rt[1], pu=CEN.x+r*(P.x-CEN.x), pv=CEN.y+r*(P.y-CEN.y);
+      var y=isTop?q.yr+(Hc(pu)-q.yr)*t:q.yr-(q.yr-Hs(pu))*t;
+      var fu=faceU(pv,y), su0=smax(pu,fu,EDGE);
+      var p=W(su0,pv,y); pos.push(p.x,p.y,p.z);
+      var m=sst(-0.1,0.1,isTop?t:-t), f=1-sst(0.015,0.06,su0-fu);
+      for(k=0;k<3;k++) col.push(mix(mix(cSole[k],cCrown[k],m),cFace[k],f));
+    }}
+  for(i=0;i<N;i++){ var i2=(i+1)%N; for(j=0;j<M;j++){ var a=i*(M+1)+j, b=i2*(M+1)+j; idx.push(a,b,a+1,b,b+1,a+1); } }
+  var geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+  geo.setAttribute('color',new THREE.Float32BufferAttribute(col,3));
+  geo.setIndex(idx); geo.computeVertexNormals();
+  var nrm=geo.attributes.normal;
+  [[0,1],[M,M-1]].forEach(function(pr){ var x=0,y2=0,z=0,ii; for(ii=0;ii<N;ii++){ var kk=ii*(M+1)+pr[1]; x+=nrm.getX(kk); y2+=nrm.getY(kk); z+=nrm.getZ(kk); } var l=Math.hypot(x,y2,z)||1; for(ii=0;ii<N;ii++) nrm.setXYZ(ii*(M+1)+pr[0],x/l,y2/l,z/l); });
+  shellF=new THREE.MeshPhysicalMaterial({vertexColors:true,roughness:0.25,metalness:0.8,clearcoat:0.6,clearcoatRoughness:0.08,transparent:true,opacity:0.35,depthWrite:false,side:THREE.FrontSide,envMapIntensity:2.4});
+  shellB=shellF.clone(); shellB.side=THREE.BackSide;
+  shellBack=new THREE.Mesh(geo,shellB); shellBack.renderOrder=1; scene.add(shellBack);
+  var shellFront=new THREE.Mesh(geo,shellF); shellFront.renderOrder=3; scene.add(shellFront);
+
+  // Zone map on the inside of the sole
+  var zc=document.createElement('canvas'); zc.width=980; zc.height=1080; var zx=zc.getContext('2d');
+  var U=function(u){ return (u+0.2)*200; }, V=function(v){ return (v+2.8)*200; };
+  var uA=(uOf(2)+uOf(3))/2, uB=(uOf(3)+uOf(4))/2;
+  zx.fillStyle='#b4dcf5'; zx.fillRect(0,0,U(uA),1080);
+  zx.fillStyle='#a0e1c3'; zx.fillRect(U(uA),0,U(uB)-U(uA),1080);
+  zx.fillStyle='#fad28c'; zx.fillRect(U(uB),0,980,1080);
+  zx.fillStyle='#f0b4d2'; zx.fillRect(U(uB),V(0.25),980,1080);
+  zx.strokeStyle='rgba(0,0,0,0.13)'; zx.lineWidth=2; zx.setLineDash([10,12]);
+  for(k=1;k<=5;k++){ zx.beginPath(); zx.moveTo(U(uOf(k)),V(-1.5)); zx.lineTo(U(uOf(k)),V(1.5)); zx.stroke(); }
+  zx.setLineDash([]);
+  zx.textAlign='center'; zx.textBaseline='middle';
+  zx.save(); zx.translate(U(2.1),V(1.72)); zx.rotate(-0.1); zx.font='700 64px Inter, system-ui, sans-serif'; zx.fillStyle='rgba(0,0,0,0.1)'; zx.fillText('EMB GOLF',0,0); zx.restore();
+  var ztex=new THREE.CanvasTexture(zc); ztex.anisotropy=renderer.capabilities.getMaxAnisotropy();
+  var K=16, zp=[], zu=[], zi=[];
+  for(i=0;i<N;i++){ var P2=outline[i], q2=prm[i];
+    for(k=0;k<=K;k++){ var r2=0.9*k/K, t2=Math.pow(1-Math.pow(r2,NB),1/NB), pu2=CEN.x+r2*(P2.x-CEN.x), pv2=CEN.y+r2*(P2.y-CEN.y), y3=q2.yr-(q2.yr-Hs(pu2))*t2+0.03, su=smax(pu2,faceU(pv2,y3)+0.05,EDGE), p2=W(su,pv2,y3);
+      zp.push(p2.x,p2.y,p2.z); zu.push((su+0.2)/4.9,1-(pv2+2.8)/5.4); } }
+  for(i=0;i<N;i++){ var i3=(i+1)%N; for(k=0;k<K;k++){ var a2=i*(K+1)+k, b2=i3*(K+1)+k; zi.push(a2,b2,a2+1,b2,b2+1,a2+1); } }
+  var zgeo=new THREE.BufferGeometry();
+  zgeo.setAttribute('position',new THREE.Float32BufferAttribute(zp,3));
+  zgeo.setAttribute('uv',new THREE.Float32BufferAttribute(zu,2)); zgeo.setIndex(zi);
+  var zmesh=new THREE.Mesh(zgeo,new THREE.MeshBasicMaterial({map:ztex,transparent:true,opacity:0.88,side:THREE.DoubleSide,depthWrite:false}));
+  zmesh.renderOrder=2; scene.add(zmesh);
+  // Depth rating numerals along the toe edge of the map (sprites, so they read upright from any angle)
+  for(k=1;k<=5;k++){ var num=makeLabel(String(k),'#4b6556',0.2,true); num.position.copy(W(uOf(k),-1.72,soleY(uOf(k),-1.72)+0.1)); num.renderOrder=9; scene.add(num); }
+
+  // Hosel, ferrule, shaft stub
+  var lie=58*Math.PI/180, dir=new THREE.Vector3(0,Math.sin(lie),Math.cos(lie)).normalize(), hb=W(0.58,1.87,1.15);
+  var hq=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),dir);
+  hoselMat=new THREE.MeshPhysicalMaterial({color:0x3a3d44,roughness:0.25,metalness:0.8,clearcoat:0.6,clearcoatRoughness:0.08,transparent:true,opacity:0.35,depthWrite:false,side:THREE.DoubleSide,envMapIntensity:2.4});
+  var v2=function(x,y){ return new THREE.Vector2(x,y); };
+  var hosel=new THREE.Mesh(new THREE.LatheGeometry(new THREE.SplineCurve([v2(0.36,0),v2(0.31,0.3),v2(0.27,0.7),v2(0.255,1.1),v2(0.25,1.75)]).getPoints(20),40),hoselMat);
+  hosel.quaternion.copy(hq); hosel.position.copy(hb); hosel.renderOrder=4; scene.add(hosel);
+  var ferrule=new THREE.Mesh(new THREE.CylinderGeometry(0.19,0.25,0.3,32),new THREE.MeshStandardMaterial({color:0x0e0e10,roughness:0.3,metalness:0.4}));
+  ferrule.quaternion.copy(hq); ferrule.position.copy(hb.clone().add(dir.clone().multiplyScalar(1.9))); scene.add(ferrule);
+  var shaft=new THREE.Mesh(new THREE.CylinderGeometry(0.195,0.18,1.3,28),new THREE.MeshStandardMaterial({color:0x1c1d21,roughness:0.28,metalness:0.6}));
+  shaft.quaternion.copy(hq); shaft.position.copy(hb.clone().add(dir.clone().multiplyScalar(2.7))); scene.add(shaft);
+
+  // Soft ground shadow
+  var gc=document.createElement('canvas'); gc.width=gc.height=128; var gx=gc.getContext('2d');
+  var rg=gx.createRadialGradient(64,64,4,64,64,64); rg.addColorStop(0,'rgba(0,0,0,0.26)'); rg.addColorStop(1,'rgba(0,0,0,0)'); gx.fillStyle=rg; gx.fillRect(0,0,128,128);
+  var ground=new THREE.Mesh(new THREE.PlaneGeometry(8.5,7.5),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(gc),transparent:true,depthWrite:false}));
+  ground.rotation.x=-Math.PI/2; ground.position.set(0.1,YO-0.05,0); ground.renderOrder=0; scene.add(ground);
+
+  // Orientation labels sit just below the head so they never cover the CG dots
+  [['Face',W(-0.75,0,-0.32)],['Toe',W(1.9,-2.95,-0.32)],['Heel',W(2.6,2.75,-0.32)],['Back',W(4.95,-0.1,-0.32)]].forEach(function(o){ var l=makeLabel(o[0],'#4b6556',0.27); l.position.copy(o[1]); scene.add(l); });
+
+  function resize(){ var w=stage.clientWidth, h=stage.clientHeight; if(!w||!h) return; renderer.setSize(w,h); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+  if('ResizeObserver' in window) new ResizeObserver(resize).observe(stage); else window.addEventListener('resize',resize);
+  resize();
+  setView('34'); setShell(35);
+  var camUp=new THREE.Vector3();
+  (function loop(){
+    requestAnimationFrame(loop); controls.update();
+    // Stack each group's labels along the camera's up direction so they stay readable from any angle
+    camUp.set(0,1,0).applyQuaternion(camera.quaternion);
+    for(var n=0;n<objs.length;n++){ var o=objs[n]; o.lbl.position.copy(o.c).addScaledVector(camUp,0.3+o.i*0.185*(o.step||1)); }
+    renderer.render(scene,camera);
+  })();
+
+  // Tap a dot to add it to the comparison
+  var ray=new THREE.Raycaster(), mouse=new THREE.Vector2(), down=null;
+  renderer.domElement.addEventListener('pointerdown',function(e){ down=[e.clientX,e.clientY]; stage.style.cursor='grabbing'; });
+  renderer.domElement.addEventListener('pointerup',function(e){
+    stage.style.cursor='grab';
+    if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>6) return;
+    var rc=renderer.domElement.getBoundingClientRect();
+    mouse.set(((e.clientX-rc.left)/rc.width)*2-1,-((e.clientY-rc.top)/rc.height)*2+1);
+    ray.setFromCamera(mouse,camera);
+    var hits=ray.intersectObjects(objs.filter(function(o){ return o.g.visible; }).map(function(o){ return o.hit; }));
+    if(hits.length) toggleSelect(hits[0].object.userData.name);
+  });
+}
+
+var VIEWS={'34':[-6.4,3.8,-6.2],addr:[0.4,9.2,4.0],top:[0,10.5,0.01],face:[-10,0.3,0],heel:[0,0.4,10],toe:[0,0.4,-10],sole:[0,-10.5,0.01]};
+function setView(k){
+  if(!has3D) return;
+  var p=VIEWS[k], f=Math.max(1,1.2/(camera.aspect||1)); // pull back on narrow (phone) screens so the whole head fits
+  camera.position.set(p[0]*f,p[1]*f,p[2]*f); controls.target.set(0,0.15,0); controls.update();
+}
+function setShell(v){
+  if(!has3D) return;
+  var o=v/100, solid=v>=97;
+  [shellF,hoselMat].forEach(function(m){ m.transparent=!solid; m.depthWrite=solid; m.opacity=solid?1:o; m.envMapIntensity=solid?1.4:Math.min(2.8,1/o); m.needsUpdate=true; });
+  shellB.opacity=o*0.7; shellB.envMapIntensity=shellF.envMapIntensity; shellBack.visible=!solid;
+}
+
+function buildDots(){
+  if(!has3D) return;
+  objs.forEach(function(o){ scene.remove(o.g); }); objs=[];
+  var groups={};
+  heads.forEach(function(h){ var key=h.depth+'|'+h.bias+'|'+h.level; (groups[key]=groups[key]||[]).push(h); });
+  var dotGeo=new THREE.SphereGeometry(0.095,28,18), hitGeo=new THREE.SphereGeometry(0.17,10,8);
+  Object.keys(groups).forEach(function(key){
+    var list=groups[key], n=list.length, rad=n>1?0.1+0.035*n:0;
+    list.forEach(function(h,i){
+      var ang=2*Math.PI*i/n+Math.PI/4, u=uOf(h.depth)+rad*Math.cos(ang), v=vOf(h.bias)+rad*Math.sin(ang), y=hOf(h.level);
+      var p=W(u,v,y), fy=YO+soleY(u,v)+0.045, g=new THREE.Group();
+      var mat=new THREE.MeshStandardMaterial({color:h.color,emissive:h.color,emissiveIntensity:0.45,roughness:0.5,metalness:0,transparent:true,opacity:1});
+      var dot=new THREE.Mesh(dotGeo,mat); dot.position.copy(p); g.add(dot);
+      var hit=new THREE.Mesh(hitGeo,new THREE.MeshBasicMaterial({visible:false})); hit.position.copy(p); hit.userData={name:h.name}; g.add(hit);
+      var ln=new THREE.Line(new THREE.BufferGeometry().setFromPoints([p.clone(),new THREE.Vector3(p.x,fy,p.z)]),new THREE.LineDashedMaterial({color:h.color,dashSize:0.06,gapSize:0.05,transparent:true,opacity:0.8}));
+      ln.computeLineDistances(); ln.renderOrder=2; g.add(ln);
+      var foot=new THREE.Mesh(new THREE.CircleGeometry(0.06,20),new THREE.MeshBasicMaterial({color:h.color,transparent:true,opacity:0.7,side:THREE.DoubleSide,depthWrite:false}));
+      foot.rotation.x=-Math.PI/2; foot.position.set(p.x,fy,p.z); foot.renderOrder=2; g.add(foot);
+      var c=W(uOf(h.depth),vOf(h.bias),y), lbl=makeLabel(h.model,h.color,0.175);
+      lbl.position.set(c.x,c.y+0.3+i*0.185,c.z); g.add(lbl);
+      scene.add(g); objs.push({h:h,g:g,dot:dot,hit:hit,ln:ln,foot:foot,lbl:lbl,mat:mat,c:c,i:i,lw:lbl.scale.x,lh:lbl.scale.y,step:1});
+    });
+  });
+  refresh3D();
+}
+function refresh3D(){
+  if(!has3D) return;
+  var any=selected.length>0;
+  objs.forEach(function(o){
+    var isSel=selected.indexOf(o.h.name)>-1, dim=any&&!isSel;
+    o.g.visible=!!activeBrands[o.h.brand]||isSel;
+    o.mat.opacity=dim?0.16:1; o.mat.emissiveIntensity=dim?0.1:0.45; o.mat.depthWrite=!dim;
+    o.dot.scale.setScalar(isSel?1.55:1);
+    o.ln.visible=!dim; o.foot.visible=!dim; o.lbl.visible=showLabels&&!dim;
+    var ls=isSel?1.5:1; o.lbl.scale.set(o.lw*ls,o.lh*ls,1); o.step=isSel?1.5:1;
+  });
+}
+
+// ─── CONTROLS ────────────────────────────────────────────────────────────────
+function buildPills(){
+  var box=document.getElementById('pills'); box.innerHTML='';
+  var seen=[]; heads.forEach(function(h){ if(seen.indexOf(h.brand)<0) seen.push(h.brand); });
+  seen.forEach(function(b){
+    if(activeBrands[b]===undefined) activeBrands[b]=true;
+    var btn=el('button','pill'+(activeBrands[b]?'':' off'),b); btn.style.borderColor=colorOf(b); btn.style.color=colorOf(b);
+    btn.setAttribute('aria-pressed',activeBrands[b]?'true':'false');
+    btn.addEventListener('click',function(){ activeBrands[b]=!activeBrands[b]; btn.classList.toggle('off',!activeBrands[b]); btn.setAttribute('aria-pressed',activeBrands[b]?'true':'false'); refresh3D(); });
+    box.appendChild(btn);
+  });
+}
+function bindControls(){
+  Array.prototype.forEach.call(document.querySelectorAll('#views [data-v]'),function(b){ b.addEventListener('click',function(){ setView(b.getAttribute('data-v')); }); });
+  var spinBtn=document.getElementById('spin');
+  spinBtn.addEventListener('click',function(){ if(!has3D) return; controls.autoRotate=!controls.autoRotate; spinBtn.textContent=controls.autoRotate?'Pause spin':'Resume spin'; });
+  var lb=document.getElementById('lbls');
+  lb.addEventListener('click',function(){ showLabels=!showLabels; lb.textContent=showLabels?'Hide labels':'Show labels'; refresh3D(); });
+  var op=document.getElementById('op');
+  op.addEventListener('input',function(){ setShell(Number(op.value)); });
+}
+
+// ─── COMPARE ─────────────────────────────────────────────────────────────────
+function toggleSelect(name){
+  var msg=document.getElementById('msg'); msg.textContent='';
+  var i=selected.indexOf(name);
+  if(i>-1) selected.splice(i,1);
+  else if(selected.length>=MAX_COMPARE){ msg.textContent='Compare up to three heads. Remove one to add another.'; return; }
+  else selected.push(name);
+  if(has3D && selected.length){ controls.autoRotate=false; document.getElementById('spin').textContent='Resume spin'; }
+  buildChips(); buildCompare(); refresh3D();
+}
+function buildChips(){
+  var box=document.getElementById('chips'); box.innerHTML='';
+  var brands=[]; heads.forEach(function(h){ if(brands.indexOf(h.brand)<0) brands.push(h.brand); });
+  brands.forEach(function(b){
+    var row=el('div','brand-row'); var nm=el('div','brand-name',b); nm.style.color=colorOf(b); row.appendChild(nm);
+    heads.filter(function(h){ return h.brand===b; }).forEach(function(h){
+      var on=selected.indexOf(h.name)>-1, chip=el('button','chip'+(on?' sel':''),h.model);
+      if(on) chip.style.background=h.color;
+      chip.setAttribute('aria-pressed',on?'true':'false');
+      chip.addEventListener('click',function(){ toggleSelect(h.name); });
+      row.appendChild(chip);
+    });
+    box.appendChild(row);
+  });
+  if(selected.length){ var clr=el('button','btn','Clear comparison'); clr.addEventListener('click',function(){ selected=[]; document.getElementById('msg').textContent=''; buildChips(); buildCompare(); refresh3D(); }); box.appendChild(clr); }
+}
+function ratingCell(text,val,color,last){
+  var c=el('div',last?'last':''); c.appendChild(el('div','',text));
+  if(val!==null){ var s=el('div','segs'); s.setAttribute('aria-label',val+' out of 5'); for(var i=1;i<=5;i++){ var seg=el('i'); if(i<=Math.round(val)) seg.style.background=color; s.appendChild(seg); } c.appendChild(s); }
+  return c;
+}
+function buildCompare(){
+  var box=document.getElementById('cmp'); box.innerHTML='';
+  var list=selected.map(function(n){ return heads.filter(function(h){ return h.name===n; })[0]; }).filter(Boolean);
+  if(!list.length){ box.appendChild(el('div','empty','No heads selected yet. Tap a model above, or a dot in the 3D view.')); return; }
+  var grid=el('div','cmp'); grid.style.gridTemplateColumns='minmax(96px,150px) repeat('+list.length+',minmax(0,1fr))';
+  grid.appendChild(el('div','rowlabel',''));
+  list.forEach(function(h){ var hd=el('div','head',h.model); var sm=el('small','',h.brand); sm.style.color=h.color; hd.insertBefore(sm,hd.firstChild); grid.appendChild(hd); });
+  var rows=[
+    ['Spin','1 lowest, 5 highest',function(h){ return [titleCase(h.spin),h.spin_val]; }],
+    ['Launch','1 lowest, 5 highest',function(h){ return [titleCase(h.launch),h.launch_val]; }],
+    ['CG location','Depth: 1 forward, 5 back',function(h){ return [titleCase(h.cg),h.depth]; }],
+    ['Heel-toe bias','1 fade, 3 neutral, 5 draw',function(h){ return [BIAS_NAMES[Math.round(h.bias)],h.bias]; }],
+    ['CG height','From the CG label',function(h){ return [HEIGHT_NAMES[h.level],null]; }],
+    ['Forgiveness','1 least, 5 most',function(h){ return [titleCase(h.forgiveness),h.forgiveness_val]; }]
+  ];
+  rows.forEach(function(r){
+    var lab=el('div','rowlabel',r[0]); lab.appendChild(el('small','',r[1])); grid.appendChild(lab);
+    list.forEach(function(h){ var v=r[2](h); grid.appendChild(ratingCell(v[0],v[1],h.color,false)); });
+  });
+  var nl=el('div','rowlabel last','Notes'); grid.appendChild(nl);
+  list.forEach(function(h){ grid.appendChild(el('div','last',h.notes||'No notes yet')); });
+  box.appendChild(grid);
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+bindControls();
+buildScene();
+loadHeads().then(function(res){
+  heads=res.heads; dataLive=res.live;
+  setStatus(); buildPills(); buildChips(); buildCompare(); buildDots();
+  if(!dataLive) document.getElementById('foot').textContent='The live equipment database could not be reached, so this page is showing a snapshot saved on November 11, 2026. Head shape shown is a generic 460cc right-handed profile, not any one model.';
+});
+</script>
+</body>
+</html>
