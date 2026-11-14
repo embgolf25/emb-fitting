@@ -50,9 +50,14 @@ h2{font-size:17px;font-weight:700;margin-bottom:4px}
 .recs{border-top:1px solid var(--border);margin-top:16px;padding-top:16px}
 .recs-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:2px}
 .recs-head h2{margin-bottom:0}
+.guide{border:1px solid var(--cyan);background:var(--bg3);border-radius:var(--radius);padding:16px 18px;margin-bottom:16px}
+.guide-label{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--cyan3);font-weight:700}
+.guide-text{font-size:22px;font-weight:700;letter-spacing:-0.01em;line-height:1.25;margin-top:3px}
+.guide-sub{font-size:13px;color:var(--text2);margin-top:5px}
+.list-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px}
 .rec-list{list-style:none;display:flex;flex-direction:column;gap:10px}
 .rec{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--border2);border-radius:var(--radius);padding:14px 16px;background:var(--bg2)}
-.rec.top{border-color:var(--cyan);background:var(--bg3)}
+.rec.top{border-color:var(--cyan)}
 .rec-rank{width:28px;height:28px;border-radius:50%;background:var(--bg4);color:var(--cyan2);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .rec.top .rec-rank{background:var(--cyan2);color:#fff}
 .rec-body{flex:1;min-width:0}
@@ -61,8 +66,6 @@ h2{font-size:17px;font-weight:700;margin-bottom:4px}
 .rec-meta b{color:var(--text);font-weight:600}
 .rec-count{text-align:right;flex-shrink:0;font-size:13px;font-weight:700;white-space:nowrap}
 .rec-count small{display:block;font-weight:400;color:var(--text3);font-size:12px}
-.rec-set{margin-top:12px;font-size:13px;color:var(--text2)}
-.rec-set b{color:var(--text);font-weight:600}
 details.analysis>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:12px;border:1px solid var(--border);border-radius:var(--radius2);padding:14px 20px;background:var(--bg2);margin-bottom:20px}
 details.analysis>summary::-webkit-details-marker{display:none}
 details.analysis>summary:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
@@ -108,7 +111,7 @@ tr.total td{font-weight:600;background:var(--bg2)}
 .empty{color:var(--text2);font-size:13px;padding:6px 0}
 .foot{font-size:12px;color:var(--text3);border-top:1px solid var(--border);padding-top:18px}
 @media(max-width:640px){
-  .header{padding:0 16px}.wrap{padding:20px 16px 48px}h1{font-size:23px}
+  .header{padding:0 16px}.wrap{padding:20px 16px 48px}h1{font-size:23px}.guide-text{font-size:19px}
   .top-links span{display:none}.ctl-name{width:100%}.panel{padding:16px}
   .rec{flex-wrap:wrap}.rec-count{text-align:left;width:100%;padding-left:42px}.rec-count small{display:inline;margin-left:6px}.sum-sub{display:none}
 }
@@ -132,7 +135,7 @@ tr.total td{font-weight:600;background:var(--bg2)}
 <main class="wrap">
   <div class="eyebrow">Fitting tools</div>
   <h1>Iron fitting</h1>
-  <p class="lede">Set the player's grip, post and lead-hand grip. The shaft and head combinations tour players with the same traits play appear underneath, most played first.</p>
+  <p class="lede">Set the player's grip, post and lead-hand grip. A general guideline for shaft profile, head type and long irons appears underneath, drawn from tour players with the same traits.</p>
   <section class="panel">
     <h2>Player</h2>
     <p class="sub">Leave a trait on Any if you haven't assessed it.</p>
@@ -142,8 +145,13 @@ tr.total td{font-weight:600;background:var(--bg2)}
     <div class="recs" aria-live="polite">
       <div class="recs-head"><h2>Recommendations</h2><div class="tags" id="rec-tags"></div></div>
       <p class="sub" id="rec-basis"></p>
+      <div class="guide">
+        <div class="guide-label">General guideline</div>
+        <div class="guide-text" id="guide-text"></div>
+        <div class="guide-sub" id="guide-sub"></div>
+      </div>
+      <div class="list-label">Shaft and head pairings these players use, most played first</div>
       <ol class="rec-list" id="recs"></ol>
-      <div class="rec-set" id="rec-set"></div>
     </div>
   </section>
 
@@ -338,14 +346,6 @@ function recBasis() {
   }
   return null;
 }
-function topNames(list, key, max) {
-  var counts = {};
-  list.forEach(function (pl) { if (pl[key]) counts[pl[key]] = (counts[pl[key]] || 0) + 1; });
-  return Object.keys(counts)
-    .sort(function (a, b) { return counts[b] - counts[a] || a.localeCompare(b); })
-    .slice(0, max)
-    .map(function (name) { return counts[name] > 1 ? name + ' (' + counts[name] + ')' : name; });
-}
 function metaLine(label, text) {
   var d = el('div', 'rec-meta');
   d.appendChild(el('b', null, label + ': '));
@@ -355,24 +355,25 @@ function metaLine(label, text) {
 function renderRecs() {
   var b = recBasis();
   var total = b.list.length;
+  var people = matching(b.filter).length;
   var isField = activeKeys(b.filter).length === 0;
 
   var tags = document.getElementById('rec-tags');
   clear(tags);
   if (!isField) {
-    var s = sizeLabel(total);
-    tags.appendChild(el('span', 'tag ' + s.cls, s.text + ' · ' + plural(total, 'player')));
+    var s = sizeLabel(people);
+    tags.appendChild(el('span', 'tag ' + s.cls, s.text + ' · ' + plural(people, 'player')));
   }
 
   var basis = document.getElementById('rec-basis');
   if (isField && activeKeys(state).length === 0) {
-    basis.textContent = 'Showing all ' + total + ' players with a shaft and head recorded. Pick a grip or post to narrow it down.';
+    basis.textContent = 'Showing all ' + people + ' players. Pick a grip or post to narrow it down.';
   } else if (isField) {
-    basis.textContent = 'Fewer than ' + MIN_GROUP + ' players match these traits, so this shows all ' + total + ' players.';
+    basis.textContent = 'Fewer than ' + MIN_GROUP + ' players match these traits, so this shows all ' + people + ' players.';
   } else if (b.narrowed) {
-    basis.textContent = 'Fewer than ' + MIN_GROUP + ' players match everything selected, so this uses the ' + total + ' with ' + describe(b.filter) + '.';
+    basis.textContent = 'Fewer than ' + MIN_GROUP + ' players match everything selected, so this uses the ' + people + ' with ' + describe(b.filter) + '.';
   } else {
-    basis.textContent = 'What the ' + total + ' tour players with ' + describe(b.filter) + ' play, most played first.';
+    basis.textContent = 'Drawn from the ' + people + ' tour players with ' + describe(b.filter) + '.';
   }
 
   var groups = {};
@@ -396,8 +397,6 @@ function renderRecs() {
     li.appendChild(el('div', 'rec-rank', String(i + 1)));
     var body = el('div', 'rec-body');
     body.appendChild(el('div', 'rec-title', parts[0] + ' shaft + ' + parts[1].toLowerCase() + ' head'));
-    body.appendChild(metaLine('Shafts', topNames(list, 'sh', 3).join(', ')));
-    body.appendChild(metaLine('Heads', topNames(list, 'hd', 3).join(', ')));
     var names = list.map(function (pl) { return pl.n; });
     var shown = names.slice(0, 4).join(', ') + (names.length > 4 ? ' and ' + (names.length - 4) + ' more' : '');
     body.appendChild(metaLine('Played by', shown));
@@ -408,24 +407,30 @@ function renderRecs() {
     box.appendChild(li);
   });
 
-  var setLine = document.getElementById('rec-set');
-  clear(setLine);
-  var ct = tally(b.list, 'cb');
-  if (ct.n) {
-    var yes = ct.counts.Yes || 0, no = ct.counts.No || 0;
-    setLine.appendChild(el('b', null, 'Long irons: '));
-    var text;
-    if (yes > no) {
-      var nums = b.list.filter(function (pl) { return pl.cb === 'Yes' && pl.cn; }).map(function (pl) { return pl.cn; });
-      var avg = nums.length ? nums.reduce(function (a, c) { return a + c; }, 0) / nums.length : 0;
-      text = yes + ' of ' + ct.n + ' swap in a different long-iron model' + (avg ? ', ' + avg.toFixed(1) + ' clubs on average.' : '.');
-    } else if (no > yes) {
-      text = no + ' of ' + ct.n + ' play one model through the set.';
-    } else {
-      text = 'split evenly, ' + yes + ' with a long-iron combo and ' + no + ' with one model through the set.';
-    }
-    setLine.appendChild(document.createTextNode(text));
+  // General guideline: what most matching players do on each spec, taken one spec at a time.
+  var group = matching(b.filter);
+  function lean(key, values) {
+    var tl = tally(group, key), best = 0, tops = [];
+    values.forEach(function (v) { best = Math.max(best, tl.counts[v] || 0); });
+    values.forEach(function (v) { if (best && (tl.counts[v] || 0) === best) tops.push(v); });
+    return { tops: tops, count: best, n: tl.n };
   }
+  var shaft = lean('sp', ['Tip-stiff', 'Mid-stiff', 'Butt-stiff']);
+  var head = lean('ht', ['Blade', 'Cavity Back']);
+  var combo = lean('cb', ['Yes', 'No']);
+  var comboText = combo.tops.length !== 1 ? 'combo optional' : combo.tops[0] === 'Yes' ? 'combo recommended' : 'one model through the set';
+  var headText = head.tops.map(function (v) { return v.toLowerCase(); }).join(' or ');
+  document.getElementById('guide-text').textContent = shaft.tops.join(' or ') + ' + ' + headText + ', ' + comboText;
+
+  function note(label, l) {
+    return label + ': ' + (l.tops.length > 1 ? 'tied at ' : '') + l.count + ' of ' + l.n;
+  }
+  var comboLabel = combo.tops.length !== 1 ? 'Long-iron combo' : combo.tops[0] === 'Yes' ? 'Long-iron combo' : 'One model';
+  document.getElementById('guide-sub').textContent = [
+    note(shaft.tops.join(' / '), shaft),
+    note(head.tops.map(function (v) { return v === 'Cavity Back' ? 'Cavity back' : v; }).join(' / '), head),
+    note(comboLabel, combo)
+  ].join('  ·  ');
 }
 
 // ---- render: starting point tiles ----
