@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iron Fitting | EMB Fitting</title>
+<meta name="description" content="Iron shaft profile, head type and set makeup starting points from EMB Golf's tour grip and post research.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;--bg2:#f8fbf9;--bg3:#f0f7f2;--bg4:#e4f1e8;
+  --border:#e1ece5;--border2:#cfe2d6;
+  --text:#17261d;--text2:#4b6556;--text3:#7f978a;
+  --cyan:#4cb87a;--cyan2:#23794a;--cyan3:#2f8f58;--teal:#6cc993;
+  --amber-bg:#fdf3dc;--amber-border:#ecd08f;--amber-text:#6b4a06;
+  --orange-bg:#fde5d0;--orange-border:#f0b78a;--orange-text:#7a3a0a;
+  --radius:10px;--radius2:14px;
+  --font:'Inter',system-ui,sans-serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.55;min-height:100vh}
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+.logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--cyan) 0%,var(--teal) 100%);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;color:#0f2a1a;letter-spacing:-0.5px}
+.logo-text{font-size:16px;font-weight:700;letter-spacing:0.02em;color:var(--text)}
+.logo-sub{font-size:10px;color:var(--text3);letter-spacing:0.15em;text-transform:uppercase;margin-top:1px}
+.top-links{display:flex;gap:4px}
+.top-links a{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--radius);font-size:13px;font-weight:500;color:var(--text2);text-decoration:none}
+.top-links a:hover{background:var(--bg3);color:var(--text)}
+.wrap{max-width:1040px;margin:0 auto;padding:28px 28px 56px}
+.eyebrow{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--cyan3);font-weight:700;margin-bottom:8px}
+h1{font-size:26px;font-weight:700;letter-spacing:-0.01em;margin-bottom:8px}
+h2{font-size:17px;font-weight:700;margin-bottom:4px}
+.lede{color:var(--text2);max-width:720px;margin-bottom:16px}
+.notice{display:flex;gap:10px;align-items:flex-start;background:var(--amber-bg);border:1px solid var(--amber-border);color:var(--amber-text);border-radius:var(--radius);padding:12px 14px;margin-bottom:20px;font-size:13px}
+.notice i{font-size:18px;margin-top:1px;flex-shrink:0}
+.panel{border:1px solid var(--border);border-radius:var(--radius2);padding:20px;margin-bottom:20px;background:var(--bg)}
+.panel .sub{color:var(--text2);font-size:13px;margin-bottom:14px}
+.ctl-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.ctl-name{width:118px;font-size:12px;font-weight:600;flex-shrink:0}
+.ctl-name small{display:block;font-weight:400;color:var(--text3);font-size:11px}
+.chip{font-family:var(--font);font-size:13px;font-weight:500;color:var(--text2);background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:8px 14px;min-height:38px;cursor:pointer}
+.chip:hover{background:var(--bg3)}
+.chip:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.chip.sel{background:var(--cyan2);color:#fff;border-color:var(--cyan2)}
+.profile{display:inline-flex;align-items:center;gap:8px;margin-top:6px;font-size:13px;color:var(--text2)}
+.profile b{background:var(--bg4);color:var(--cyan2);border-radius:6px;padding:2px 8px;font-size:12px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.tile{border:1px solid var(--border2);border-radius:var(--radius);padding:16px;background:var(--bg2);display:flex;flex-direction:column;gap:6px}
+.tile-label{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text3);font-weight:700}
+.tile-pick{font-size:21px;font-weight:700;letter-spacing:-0.01em;line-height:1.2}
+.tile-stat{font-size:13px;color:var(--text)}
+.tile-field{font-size:12px;color:var(--text2)}
+.tile-basis{font-size:12px;color:var(--text3);margin-top:2px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tag{font-size:11px;font-weight:600;border-radius:20px;padding:3px 9px;border:1px solid var(--border2);color:var(--text2);background:var(--bg)}
+.tag.big{background:var(--orange-bg);border-color:var(--orange-border);color:var(--orange-text)}
+.tag.look{background:var(--amber-bg);border-color:var(--amber-border);color:var(--amber-text)}
+.tag.solid{background:var(--bg4);border-color:var(--cyan);color:var(--cyan2)}
+.scroll{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius)}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:760px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);white-space:nowrap}
+th{background:var(--bg2);font-size:11px;font-weight:600;color:var(--text2);letter-spacing:0.04em;text-transform:uppercase}
+tr:last-child td{border-bottom:none}
+td.num{font-variant-numeric:tabular-nums}
+td.big{background:var(--orange-bg);color:var(--orange-text);font-weight:600}
+td.look{background:var(--amber-bg);color:var(--amber-text);font-weight:600}
+tr.few td{color:var(--text3);font-style:italic}
+tr.group td{background:var(--bg3);font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--cyan3);padding:6px 12px}
+tr.on td:first-child{font-weight:700;box-shadow:inset 3px 0 0 var(--cyan2)}
+tr.total td{font-weight:600;background:var(--bg2)}
+.key{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;font-size:12px;color:var(--text2)}
+.key span{display:inline-flex;align-items:center;gap:6px}
+.key i{width:14px;height:10px;border-radius:3px;display:inline-block;border:1px solid}
+.key .k-big{background:var(--orange-bg);border-color:var(--orange-border)}
+.key .k-look{background:var(--amber-bg);border-color:var(--amber-border)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.cols h3{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px}
+.rank{list-style:none}
+.rank li{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px}
+.rank li:last-child{border-bottom:none}
+.rank span{color:var(--text3);font-variant-numeric:tabular-nums;flex-shrink:0}
+.empty{color:var(--text2);font-size:13px;padding:6px 0}
+.foot{font-size:12px;color:var(--text3);border-top:1px solid var(--border);padding-top:18px}
+@media(max-width:640px){
+  .header{padding:0 16px}.wrap{padding:20px 16px 48px}h1{font-size:23px}
+  .top-links span{display:none}.ctl-name{width:100%}.panel{padding:16px}
+}
+</style>
+</head>
+<body>
+<header class="header">
+  <a class="logo" href="../">
+    <div class="logo-mark">EMB</div>
+    <div>
+      <div class="logo-text">EMB Fitting</div>
+      <div class="logo-sub">Iron Fitting</div>
+    </div>
+  </a>
+  <nav class="top-links">
+    <a href="../"><i class="ti ti-layout-grid" aria-hidden="true"></i><span>Hub</span></a>
+    <a href="../driver/"><i class="ti ti-adjustments-horizontal" aria-hidden="true"></i><span>Driver fitting</span></a>
+  </nav>
+</header>
+
+<main class="wrap">
+  <div class="eyebrow">Fitting tools</div>
+  <h1>Iron fitting</h1>
+  <p class="lede">Set the player's grip, post and lead-hand grip to see what tour players with the same traits play, and where they differ from the rest of the field.</p>
+  <div class="notice"><i class="ti ti-info-circle" aria-hidden="true"></i><div id="notice"></div></div>
+
+  <section class="panel">
+    <h2>Player</h2>
+    <p class="sub">Leave a trait on Any if you haven't assessed it.</p>
+    <div id="controls"></div>
+    <div class="profile" id="profile"></div>
+  </section>
+
+  <section class="panel">
+    <h2>Starting point</h2>
+    <p class="sub">What most matching tour players play. Test from here.</p>
+    <div class="tiles" id="tiles"></div>
+  </section>
+
+  <section class="panel">
+    <h2>How each trait splits</h2>
+    <p class="sub">Each row is compared with every player who has that trait recorded.</p>
+    <div class="scroll"><table id="traits"></table></div>
+    <div class="key">
+      <span><i class="k-big"></i>Big difference: 25+ points above the field</span>
+      <span><i class="k-look"></i>Worth a look: 15+ points</span>
+      <span>Grey italic: fewer than 3 players</span>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2 id="players-title">Matching players</h2>
+    <p class="sub" id="players-sub"></p>
+    <div class="cols" id="ranks"></div>
+    <div class="scroll" id="players-wrap" style="margin-top:16px"><table id="players"></table></div>
+  </section>
+
+  <p class="foot">EMB Golf Academy · Tour research workbook dated October 27, 2026</p>
+</main>
+
+<script>
+// ---- state (declared first) ----
+var state = { g: null, p: null, lg: null };
+
+// ---- research data: Irons tab, with Lead Grip joined from the Driver tab ----
+var PLAYERS = [{"n":"Rory McIlroy","g":"On Top","p":"Center","lg":"Neutral","ss":"Both","sh":"Project X Rifle","sp":"Butt-stiff","fx":"7","hd":"Rors Proto","ht":"Blade","cb":"Yes","cm":"P760","cn":1},{"n":"Scottie Scheffler","g":"On Top","p":"Front","lg":"Neutral","ss":"Fade","sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"P7-TW","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Ludvig Aberg","g":"On Top","p":"Rear","lg":"Strong","ss":"Draw","sh":"KBS Tour","sp":"Mid-stiff","fx":"X-Stiff","hd":"Titleist T100","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Collin Morikawa","g":"Under","p":"Center","lg":"Weak","ss":"Fade","sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"P730","ht":"Blade","cb":"Yes","cm":"P7CB","cn":3},{"n":"Xander Schauffele","g":"Under","p":"Center","lg":"Weak","ss":"Draw","sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Callaway Apex TCB","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Keegan Bradley","g":"Under","p":"Rear","lg":"Strong","ss":"Draw","sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"ZX7","ht":"Cavity Back","cb":"Yes","cm":"ZX5","cn":3},{"n":"Hideki Matsuyama","g":"Side On","p":"Front","lg":null,"ss":"Draw","sh":"Dynamic Gold Tour Issue S400","sp":"Tip-stiff","fx":"Stiff","hd":"Srixon Z-Forged II","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Billy Horschel","g":"Side On","p":"Center","lg":null,"ss":"Fade","sh":"Dynamic Gold 120 X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Titleist 620 MB","ht":"Blade","cb":"Yes","cm":"T100","cn":2},{"n":"Sam Burns","g":"On Top","p":"Front","lg":null,"ss":"Fade","sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"Apex MB '26","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Tyrrell Hatton","g":"Under","p":"Front","lg":"Strong","ss":"Fade","sh":"Nippon Modus3 Tour 120","sp":"Butt-stiff","fx":"X-Stiff","hd":"Ping Blueprint S","ht":"Cavity Back","cb":"Yes","cm":"i230","cn":4},{"n":"Wyndham Clark","g":"Side On","p":"Front","lg":null,"ss":"Fade","sh":"Dynamic Gold X7","sp":"Tip-stiff","fx":"X-Stiff","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Justin Thomas","g":"Under","p":"Center","lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"621.JT","ht":"Blade","cb":"Yes","cm":"T100/T250","cn":2},{"n":"Jordan Spieth","g":"On Top","p":"Rear","lg":null,"ss":null,"sh":"Project X Rifle 125","sp":"Butt-stiff","fx":"6.5","hd":"Titleist T100","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Tommy Fleetwood","g":"Under","p":null,"lg":"Strong","ss":"Draw","sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"P7-TW","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Adam Scott","g":"Under","p":"Center","lg":null,"ss":"Draw","sh":"Project X LZ 125","sp":"Butt-stiff","fx":"6.5","hd":"681.AS","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Tony Finau","g":"On Top","p":"Front","lg":null,"ss":"Fade","sh":"KBS $-Taper 130","sp":"Tip-stiff","fx":"X-Stiff","hd":"Blueprint T","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Jon Rahm","g":"Under","p":"Center","lg":"Weak","ss":"Fade","sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"Callaway Apex TCB","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Patrick Cantlay","g":"Under","p":"Center","lg":null,"ss":null,"sh":"Dynamic Gold 120 X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"718 AP2","ht":"Cavity Back","cb":"Yes","cm":"ZX5 II","cn":1},{"n":"Thomas Detry","g":"On Top","p":null,"lg":null,"ss":"Fade","sh":"Project X 125","sp":"Butt-stiff","fx":"6.5","hd":"Apex MB","ht":"Blade","cb":"Yes","cm":"Apex Pro","cn":1},{"n":"Brooks Koepka","g":"On Top","p":"Center","lg":null,"ss":"Both","sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"ZX7 II","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Max Homa","g":"Side On","p":"Rear","lg":null,"ss":"Fade","sh":"KBS $-Taper 130","sp":"Tip-stiff","fx":"X-Stiff","hd":"Cobra King MB","ht":"Blade","cb":"Yes","cm":null,"cn":2},{"n":"Justin Rose","g":"Side On","p":"Center","lg":null,"ss":"Draw","sh":"C-Taper 125","sp":"Tip-stiff","fx":"S+","hd":"Miura MC-502","ht":"Blade","cb":"Yes","cm":null,"cn":2},{"n":"Dustin Johnson","g":"Under","p":"Center","lg":null,"ss":"Fade","sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"DJ Proto","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Gary Woodland","g":"On Top","p":"Rear","lg":null,"ss":"Fade","sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Cobra King MB","ht":"Blade","cb":"Yes","cm":"Cobra King Tour","cn":2},{"n":"Daniel Berger","g":"On Top","p":"Center","lg":null,"ss":null,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"Ping Blueprint S","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Louis Oosthuizen","g":"On Top","p":"Center","lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"iBlade","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Corey Conners","g":"Under","p":"Center","lg":null,"ss":null,"sh":"Project X 120","sp":"Butt-stiff","fx":"6","hd":"Blueprint T","ht":"Blade","cb":"Yes","cm":"i230","cn":2},{"n":"Harris English","g":"Under","p":"Rear","lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Blueprint T","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Cam Young","g":"On Top","p":"Center","lg":null,"ss":"Draw","sh":"Dynamic Gold X7","sp":"Tip-stiff","fx":"X-Stiff","hd":"620.CY","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Luke Clanton","g":"On Top","p":null,"lg":null,"ss":"Fade","sh":"Nippon Modus3 Tour 130","sp":"Mid-stiff","fx":"X-Stiff","hd":"TaylorMade P7MB","ht":"Blade","cb":"Yes","cm":"P770","cn":3},{"n":"Karl Vilips","g":"On Top","p":null,"lg":null,"ss":"Fade","sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"TaylorMade P7CB","ht":"Cavity Back","cb":"Yes","cm":"P770","cn":2},{"n":"Akshay Bhatia","g":"Under","p":null,"lg":"Strong","ss":"Fade","sh":"KBS $-Taper 125","sp":"Tip-stiff","fx":"S+","hd":"Callaway Apex TCB","ht":"Cavity Back","cb":"Yes","cm":"Apex UT","cn":1},{"n":"Chris Gotterup","g":"On Top","p":null,"lg":"Strong","ss":"Fade","sh":"KBS C-Taper 130","sp":"Tip-stiff","fx":"X-Stiff","hd":"Tour B 220 MB","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Matt Fitzpatrick","g":"On Top","p":null,"lg":null,"ss":null,"sh":"KBS Tour","sp":"Mid-stiff","fx":null,"hd":"Ping S55","ht":"Cavity Back","cb":"Yes","cm":"Ping i210","cn":2},{"n":"J.J. Spaun","g":"On Top","p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Srixon ZXi7","ht":"Cavity Back","cb":"Yes","cm":"Srixon ZXi5, ZX Utility","cn":2},{"n":"Viktor Hovland","g":null,"p":null,"lg":null,"ss":null,"sh":"KBS Tour-V 120","sp":"Mid-stiff","fx":"X-Stiff","hd":"Ping i210","ht":"Cavity Back","cb":"Yes","cm":"Ping iDi utility","cn":1},{"n":"Ben Griffin","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Mizuno Pro S-3","ht":null,"cb":"No","cm":null,"cn":null},{"n":"Kristoffer Reitan","g":null,"p":null,"lg":null,"ss":null,"sh":"KBS Tour","sp":"Mid-stiff","fx":"X-Stiff","hd":"Ping Blueprint S","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Kurt Kitayama","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"TaylorMade P7MB","ht":"Blade","cb":"Yes","cm":"TaylorMade P7CB, Titleist T250","cn":2},{"n":"Bud Cauley","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold S300","sp":"Tip-stiff","fx":"Stiff","hd":"Titleist 620 MB","ht":"Blade","cb":"Yes","cm":"Titleist T250, U505","cn":2},{"n":"Alex Smalley","g":null,"p":null,"lg":null,"ss":null,"sh":"Nippon Modus3 Tour 130","sp":"Mid-stiff","fx":"X-Stiff","hd":"Ping Blueprint S","ht":"Cavity Back","cb":"Yes","cm":"Ping i240","cn":2},{"n":"Rickie Fowler","g":null,"p":null,"lg":null,"ss":null,"sh":"Aerotech SteelFiber i125cw","sp":null,"fx":null,"hd":"Cobra 3DP RF Prototype","ht":null,"cb":"No","cm":null,"cn":null},{"n":"Maverick McNealy","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"TaylorMade P7CB","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Eugenio Chacarra","g":null,"p":null,"lg":null,"ss":null,"sh":"Project X LZ 125","sp":"Butt-stiff","fx":"X-Stiff","hd":"TaylorMade P7MC","ht":"Cavity Back","cb":"Yes","cm":"TaylorMade P770","cn":2},{"n":"Lucas Herbert","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Miura MB 101","ht":"Blade","cb":"Yes","cm":"Miura TC-202, Srixon ZXi7, ZXi5","cn":4},{"n":"Matt Wallace","g":null,"p":null,"lg":null,"ss":null,"sh":"Nippon Modus3 Tour 120","sp":"Butt-stiff","fx":"X-Stiff","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"Yes","cm":"Titleist T250, Ping iDi","cn":3},{"n":"Jackson Koivun","g":null,"p":null,"lg":null,"ss":null,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"Titleist 620 MB","ht":"Blade","cb":"Yes","cm":"Titleist T100, T250","cn":2},{"n":"Casey Jarvis","g":null,"p":null,"lg":null,"ss":null,"sh":null,"sp":null,"fx":null,"hd":"TaylorMade P7MB","ht":"Blade","cb":"Yes","cm":"TaylorMade P770","cn":1},{"n":"Keith Mitchell","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Mizuno Pro S-1","ht":null,"cb":"Yes","cm":"Mizuno Pro 225","cn":1},{"n":"John Keefer","g":null,"p":null,"lg":null,"ss":null,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"Yes","cm":"Titleist T100, T250","cn":3},{"n":"Austin Smotherman","g":null,"p":null,"lg":null,"ss":null,"sh":"KBS Tour 125","sp":"Mid-stiff","fx":"S+","hd":"Titleist T100","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Nicolas Echavarria","g":null,"p":null,"lg":null,"ss":null,"sh":"Nippon Modus3 Tour 125","sp":null,"fx":"X-Stiff","hd":"Srixon ZXi7","ht":"Cavity Back","cb":"Yes","cm":"Srixon ZXi5","cn":2},{"n":"Jordan Smith","g":null,"p":null,"lg":null,"ss":null,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"7","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"Yes","cm":"Titleist T100","cn":1},{"n":"Michael Kim","g":null,"p":null,"lg":null,"ss":null,"sh":"Nippon Modus3 Tour 120","sp":"Butt-stiff","fx":"Stiff","hd":"Titleist T100","ht":"Cavity Back","cb":"Yes","cm":"Titleist T250","cn":1},{"n":"Samuel Stevens","g":null,"p":null,"lg":null,"ss":null,"sh":"Project X LZ 125","sp":"Butt-stiff","fx":"6.5","hd":"Ping Blueprint S","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Harry Hall","g":null,"p":null,"lg":null,"ss":null,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"7","hd":"Titleist 620 MB","ht":"Blade","cb":"Yes","cm":"Titleist 620 CB, T250","cn":3},{"n":"Ryo Hisatsune","g":null,"p":null,"lg":null,"ss":null,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"TaylorMade P7MC","ht":"Cavity Back","cb":"Yes","cm":"TaylorMade P7CB","cn":1},{"n":"Rasmus Neergaard-Petersen","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Ping Blueprint S","ht":"Cavity Back","cb":"Yes","cm":"Ping i240, Ping iDi","cn":2},{"n":"Jason Day","g":null,"p":null,"lg":null,"ss":null,"sh":"KBS TGI Tour 110","sp":null,"fx":null,"hd":"Avoda Prototype V3","ht":null,"cb":"No","cm":null,"cn":null},{"n":"Steven Fisk","g":null,"p":null,"lg":null,"ss":null,"sh":"KBS C-Taper 130","sp":"Tip-stiff","fx":"X-Stiff","hd":"Mizuno MP-20","ht":null,"cb":"Yes","cm":"Mizuno Pro 243, Pro 245","cn":2},{"n":"David Puig","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Matt McCarty","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue Mid X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Ping Blueprint","ht":null,"cb":"No","cm":null,"cn":null},{"n":"Eric Cole","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue Mid X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"PXG 0317 ST","ht":"Cavity Back","cb":"Yes","cm":"PXG 0311 Gen8","cn":1},{"n":"Sami Valimaki","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue Mid X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Ping Blueprint S","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Benjamin James","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100 120","sp":"Tip-stiff","fx":"X-Stiff","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"Yes","cm":"Titleist T100, U500","cn":2},{"n":"Ricky Castillo","g":null,"p":null,"lg":null,"ss":null,"sh":null,"sp":null,"fx":null,"hd":"Titleist 620 CB","ht":"Cavity Back","cb":"Yes","cm":"Titleist T350","cn":1},{"n":"Andrew Novak","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Srixon Z-Forged II","ht":"Blade","cb":"Yes","cm":"Srixon ZX7 MkII","cn":3},{"n":"Nick Taylor","g":null,"p":null,"lg":null,"ss":null,"sh":null,"sp":null,"fx":null,"hd":"Titleist T100","ht":"Cavity Back","cb":"Yes","cm":"Titleist T250","cn":1},{"n":"Jacob Skov Olesen","g":null,"p":null,"lg":null,"ss":null,"sh":null,"sp":null,"fx":null,"hd":"Titleist T100","ht":"Cavity Back","cb":"Yes","cm":"Titleist T150","cn":2},{"n":"Sandy Scott","g":null,"p":null,"lg":null,"ss":null,"sh":"AMT Tour White X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"TaylorMade P760","ht":null,"cb":"Yes","cm":"TaylorMade P790","cn":1},{"n":"Ben Kohles","g":null,"p":null,"lg":null,"ss":null,"sh":"Project X","sp":"Butt-stiff","fx":"6","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"Yes","cm":"Titleist T250","cn":2},{"n":"McClure Meissner","g":null,"p":null,"lg":null,"ss":null,"sh":"Nippon Modus3 Tour 125","sp":null,"fx":"X-Stiff","hd":"Titleist T100","ht":"Cavity Back","cb":"Yes","cm":"Titleist blade","cn":1},{"n":"Matti Schmid","g":null,"p":null,"lg":null,"ss":null,"sh":"Project X LS 130","sp":"Butt-stiff","fx":"7","hd":"Cobra 3DP MB","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Max Greyserman","g":null,"p":null,"lg":null,"ss":null,"sh":"Nippon Modus3 Tour 130","sp":"Mid-stiff","fx":"X-Stiff","hd":"Callaway Apex TCB","ht":"Cavity Back","cb":"Yes","cm":"Callaway Apex Pro","cn":1},{"n":"Jackson Suber","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Titleist T100","ht":"Cavity Back","cb":"Yes","cm":"Titleist T250","cn":1},{"n":"Jayden Schaper","g":null,"p":null,"lg":null,"ss":null,"sh":null,"sp":null,"fx":null,"hd":"TaylorMade P7MB","ht":"Blade","cb":"Yes","cm":"TaylorMade P7MC","cn":3},{"n":"Beau Hossler","g":null,"p":null,"lg":null,"ss":null,"sh":"Project X","sp":"Butt-stiff","fx":"6","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"Yes","cm":"Titleist T100, T200","cn":3},{"n":"Doug Ghim","g":null,"p":null,"lg":null,"ss":null,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"Titleist T100","ht":"Cavity Back","cb":"Yes","cm":"Titleist T250","cn":1}];
+
+// ---- thresholds, taken from the workbook's Notes tab ----
+var MIN_GROUP = 3;      // min players per group
+var BIG = 0.25;         // cross-tab "big difference", points above the field
+var LOOK = 0.15;        // cross-tab "worth a look"
+var SOLID_N = 8;        // "Fairly solid"
+var EARLY_N = 5;        // "Early sign"
+
+var TRAITS = [
+  { key: 'g', name: 'Grip', note: 'Trail hand', values: ['On Top', 'Side On', 'Under'] },
+  { key: 'p', name: 'Post', note: '', values: ['Front', 'Center', 'Rear'] },
+  { key: 'lg', name: 'Lead-hand grip', note: '', values: ['Strong', 'Neutral', 'Weak'] }
+];
+var PROFILE = {
+  'On Top|Front': 'P1', 'On Top|Center': 'P2', 'On Top|Rear': 'P3',
+  'Side On|Front': 'P4', 'Side On|Center': 'P5', 'Side On|Rear': 'P6',
+  'Under|Front': 'P7', 'Under|Center': 'P8', 'Under|Rear': 'P9'
+};
+var OUTCOMES = [
+  { key: 'sp', label: 'Shaft profile', values: ['Tip-stiff', 'Mid-stiff', 'Butt-stiff'], names: {} },
+  { key: 'ht', label: 'Head type', values: ['Blade', 'Cavity Back'], names: { 'Cavity Back': 'Cavity back' } },
+  { key: 'cb', label: 'Long irons', values: ['Yes', 'No'], names: { 'Yes': 'Long-iron combo', 'No': 'One model through the set' } }
+];
+
+// ---- helpers ----
+function el(tag, cls, text) {
+  var n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text !== undefined && text !== null) n.textContent = text;
+  return n;
+}
+function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
+function pct(x) { return Math.round(x * 100) + '%'; }
+function plural(n, word) { return n + ' ' + word + (n === 1 ? '' : 's'); }
+
+function activeKeys(f) {
+  return ['g', 'p', 'lg'].filter(function (k) { return f[k]; });
+}
+function matching(f) {
+  var keys = activeKeys(f);
+  return PLAYERS.filter(function (pl) {
+    return keys.every(function (k) { return pl[k] === f[k]; });
+  });
+}
+// The field for a group: every player with the same traits recorded.
+function field(f) {
+  var keys = activeKeys(f);
+  return PLAYERS.filter(function (pl) {
+    return keys.every(function (k) { return pl[k]; });
+  });
+}
+function tally(list, key) {
+  var counts = {}, n = 0;
+  list.forEach(function (pl) {
+    if (pl[key]) { counts[pl[key]] = (counts[pl[key]] || 0) + 1; n++; }
+  });
+  return { n: n, counts: counts };
+}
+function share(t, value) { return t.n ? (t.counts[value] || 0) / t.n : 0; }
+function describe(f) {
+  var parts = [];
+  if (f.g) parts.push(f.g + ' grip');
+  if (f.p) parts.push(f.p + ' post');
+  if (f.lg) parts.push(f.lg + ' lead hand');
+  return parts.length ? parts.join(' + ') : 'All players';
+}
+function sizeLabel(n) {
+  if (n >= SOLID_N) return { text: 'Fairly solid', cls: 'solid' };
+  if (n >= EARLY_N) return { text: 'Early sign', cls: '' };
+  return { text: 'Very early', cls: '' };
+}
+function gapClass(diff) {
+  if (diff >= BIG) return 'big';
+  if (diff >= LOOK) return 'look';
+  return '';
+}
+
+// Narrowest group with enough players for this outcome. Drops the least-recorded
+// trait first (lead-hand grip, then post), ending at all players.
+function basisFor(outcomeKey) {
+  var tries = [
+    { g: state.g, p: state.p, lg: state.lg },
+    { g: state.g, p: state.p, lg: null },
+    { g: state.g, p: null, lg: null },
+    { g: null, p: null, lg: null }
+  ];
+  var seen = {};
+  for (var i = 0; i < tries.length; i++) {
+    var f = tries[i], id = describe(f);
+    if (seen[id]) continue;
+    seen[id] = true;
+    var t = tally(matching(f), outcomeKey);
+    if (t.n >= MIN_GROUP || activeKeys(f).length === 0) {
+      return { filter: f, tally: t, narrowed: i > 0 && activeKeys(f).length < activeKeys(state).length };
+    }
+  }
+  return null;
+}
+
+// ---- render: controls ----
+function renderControls() {
+  var box = document.getElementById('controls');
+  clear(box);
+  TRAITS.forEach(function (trait) {
+    var row = el('div', 'ctl-row');
+    row.setAttribute('role', 'group');
+    row.setAttribute('aria-label', trait.name);
+    var name = el('div', 'ctl-name', trait.name);
+    var recorded = PLAYERS.filter(function (pl) { return pl[trait.key]; }).length;
+    name.appendChild(el('small', null, recorded + ' players recorded'));
+    row.appendChild(name);
+    [null].concat(trait.values).forEach(function (value) {
+      var on = state[trait.key] === value;
+      var b = el('button', 'chip' + (on ? ' sel' : ''), value || 'Any');
+      b.type = 'button';
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.addEventListener('click', function () {
+        state[trait.key] = value;
+        render();
+      });
+      row.appendChild(b);
+    });
+    box.appendChild(row);
+  });
+
+  var prof = document.getElementById('profile');
+  clear(prof);
+  if (state.g && state.p) {
+    prof.appendChild(el('b', null, PROFILE[state.g + '|' + state.p]));
+    prof.appendChild(el('span', null, state.g + ' / ' + state.p + (state.lg ? ' · ' + state.lg + ' lead hand' : '')));
+  }
+}
+
+// ---- render: starting point tiles ----
+function renderTiles() {
+  var box = document.getElementById('tiles');
+  clear(box);
+  OUTCOMES.forEach(function (o) {
+    var b = basisFor(o.key);
+    var t = b.tally;
+    var tile = el('div', 'tile');
+    tile.appendChild(el('div', 'tile-label', o.label));
+
+    var ranked = o.values.slice().sort(function (a, c) { return (t.counts[c] || 0) - (t.counts[a] || 0); });
+    var top = ranked[0];
+    var tied = ranked.length > 1 && (t.counts[ranked[1]] || 0) === (t.counts[top] || 0);
+    var isField = activeKeys(b.filter).length === 0;
+
+    if (tied) {
+      tile.appendChild(el('div', 'tile-pick', 'No clear lean'));
+      tile.appendChild(el('div', 'tile-stat', o.values.map(function (v) {
+        return (t.counts[v] || 0) + ' ' + (o.names[v] || v).toLowerCase();
+      }).join(', ') + ' of ' + plural(t.n, 'player')));
+    } else {
+      tile.appendChild(el('div', 'tile-pick', o.names[top] || top));
+      tile.appendChild(el('div', 'tile-stat', (t.counts[top] || 0) + ' of ' + plural(t.n, 'player') + ' (' + pct(share(t, top)) + ')'));
+      if (!isField) {
+        var ft = tally(field(b.filter), o.key);
+        tile.appendChild(el('div', 'tile-field', 'Field: ' + pct(share(ft, top)) + ' of ' + plural(ft.n, 'player')));
+      }
+    }
+    if (o.key === 'cb' && !tied && top === 'Yes') {
+      var nums = matching(b.filter).filter(function (pl) { return pl.cn; }).map(function (pl) { return pl.cn; });
+      if (nums.length) {
+        var avg = nums.reduce(function (a, c) { return a + c; }, 0) / nums.length;
+        tile.appendChild(el('div', 'tile-field', 'Average ' + avg.toFixed(1) + ' combo clubs in the bag'));
+      }
+    }
+
+    var tags = el('div', 'tags');
+    if (!isField && !tied) {
+      var diff = share(t, top) - share(tally(field(b.filter), o.key), top);
+      var gc = gapClass(diff);
+      tags.appendChild(el('span', 'tag ' + gc, gc === 'big' ? 'Big difference' : gc === 'look' ? 'Worth a look' : 'In line with the field'));
+    }
+    if (!isField) {
+      var s = sizeLabel(t.n);
+      tags.appendChild(el('span', 'tag ' + s.cls, s.text + ' · ' + plural(t.n, 'player')));
+    }
+    if (tags.firstChild) tile.appendChild(tags);
+
+    var basis = 'Based on: ' + describe(b.filter);
+    if (b.narrowed) basis = 'Fewer than ' + MIN_GROUP + ' players match everything selected. ' + basis;
+    tile.appendChild(el('div', 'tile-basis', basis));
+    box.appendChild(tile);
+  });
+}
+
+// ---- render: trait table ----
+function traitRow(label, f, opts) {
+  var list = matching(f);
+  var fieldList = field(f);
+  var tr = el('tr', opts.cls || '');
+  tr.appendChild(el('td', null, label));
+  tr.appendChild(el('td', 'num', String(list.length)));
+  var few = list.length < MIN_GROUP;
+  if (few) tr.className += ' few';
+  OUTCOMES.forEach(function (o) {
+    var t = tally(list, o.key), ft = tally(fieldList, o.key);
+    o.values.forEach(function (v) {
+      var td = el('td', 'num');
+      if (!t.n) {
+        td.textContent = '–';
+      } else {
+        td.textContent = (t.counts[v] || 0) + ' of ' + t.n + ' · ' + pct(share(t, v));
+        if (!opts.total && t.n >= MIN_GROUP) {
+          var gc = gapClass(share(t, v) - share(ft, v));
+          if (gc) td.className += ' ' + gc;
+        }
+      }
+      tr.appendChild(td);
+    });
+  });
+  return tr;
+}
+function renderTraits() {
+  var table = document.getElementById('traits');
+  clear(table);
+  var thead = el('thead'), hr = el('tr');
+  ['Group', 'Players', 'Tip-stiff', 'Mid-stiff', 'Butt-stiff', 'Blade', 'Cavity back', 'Long-iron combo', 'One model'].forEach(function (h) {
+    var th = el('th', null, h);
+    th.scope = 'col';
+    hr.appendChild(th);
+  });
+  thead.appendChild(hr);
+  table.appendChild(thead);
+  var tb = el('tbody');
+
+  if (activeKeys(state).length > 1) {
+    var g0 = el('tr', 'group'), c0 = el('td', null, 'This player');
+    c0.colSpan = 9; g0.appendChild(c0); tb.appendChild(g0);
+    tb.appendChild(traitRow(describe(state), state, { cls: 'on' }));
+  }
+  TRAITS.forEach(function (trait) {
+    var g = el('tr', 'group'), c = el('td', null, trait.name);
+    c.colSpan = 9; g.appendChild(c); tb.appendChild(g);
+    trait.values.forEach(function (v) {
+      var f = { g: null, p: null, lg: null };
+      f[trait.key] = v;
+      tb.appendChild(traitRow(v, f, { cls: state[trait.key] === v ? 'on' : '' }));
+    });
+  });
+  tb.appendChild(traitRow('All players', { g: null, p: null, lg: null }, { cls: 'total', total: true }));
+  table.appendChild(tb);
+}
+
+// ---- render: matching players ----
+function rankList(title, list, key) {
+  var counts = {};
+  list.forEach(function (pl) { if (pl[key]) counts[pl[key]] = (counts[pl[key]] || 0) + 1; });
+  var rows = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a] || a.localeCompare(b); }).slice(0, 5);
+  var box = el('div');
+  box.appendChild(el('h3', null, title));
+  if (!rows.length) { box.appendChild(el('div', 'empty', 'None recorded.')); return box; }
+  var ul = el('ul', 'rank');
+  rows.forEach(function (name) {
+    var li = el('li');
+    li.appendChild(document.createTextNode(name));
+    li.appendChild(el('span', null, String(counts[name])));
+    ul.appendChild(li);
+  });
+  box.appendChild(ul);
+  return box;
+}
+function renderPlayers() {
+  var list = matching(state);
+  var any = activeKeys(state).length === 0;
+  document.getElementById('players-title').textContent = any ? 'All players' : 'Matching players';
+  document.getElementById('players-sub').textContent = any
+    ? plural(list.length, 'player') + ' in the research.'
+    : plural(list.length, 'player') + ' with ' + describe(state) + '.';
+
+  var ranks = document.getElementById('ranks');
+  clear(ranks);
+  var wrap = document.getElementById('players-wrap');
+  var table = document.getElementById('players');
+  clear(table);
+  if (!list.length) {
+    wrap.style.display = 'none';
+    ranks.appendChild(el('div', 'empty', 'No player in the research has all of these traits recorded yet. The starting point above uses the closest group with enough players.'));
+    return;
+  }
+  wrap.style.display = '';
+  ranks.appendChild(rankList('Most played shafts', list, 'sh'));
+  ranks.appendChild(rankList('Most played heads', list, 'hd'));
+
+  var thead = el('thead'), hr = el('tr');
+  ['Player', 'Grip', 'Post', 'Lead hand', 'Shaft', 'Profile', 'Flex', 'Head', 'Type', 'Long-iron combo'].forEach(function (h) {
+    var th = el('th', null, h);
+    th.scope = 'col';
+    hr.appendChild(th);
+  });
+  thead.appendChild(hr);
+  table.appendChild(thead);
+  var tb = el('tbody');
+  list.forEach(function (pl) {
+    var tr = el('tr');
+    var combo = pl.cb === 'Yes' ? (pl.cm || 'Yes') + (pl.cn ? ' (' + pl.cn + ')' : '') : pl.cb === 'No' ? 'No' : null;
+    [pl.n, pl.g, pl.p, pl.lg, pl.sh, pl.sp, pl.fx, pl.hd, pl.ht, combo].forEach(function (v) {
+      tr.appendChild(el('td', null, v || '–'));
+    });
+    tb.appendChild(tr);
+  });
+  table.appendChild(tb);
+}
+
+function renderNotice() {
+  function count(k) { return PLAYERS.filter(function (pl) { return pl[k]; }).length; }
+  document.getElementById('notice').textContent =
+    'Built from EMB tour research on ' + PLAYERS.length + ' players. Grip is recorded for ' + count('g') +
+    ', post for ' + count('p') + ' and lead-hand grip for ' + count('lg') +
+    ', so some groups are small. Every result shows how many players are behind it.';
+}
+
+function render() {
+  renderControls();
+  renderTiles();
+  renderTraits();
+  renderPlayers();
+}
+
+renderNotice();
+render();
+</script>
+</body>
+</html>
