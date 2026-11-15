@@ -397,7 +397,7 @@ async function loadAll() {
       db.from('rules').select('*').order('created_at'),
       db.from('bio_correlations').select('*').order('created_at'),
       db.from('equipment').select('*').order('created_at'),
-      db.from('sessions').select('*').order('created_at',{ascending:false}),
+      db.from('sessions').select('*').eq('club','driver').order('created_at',{ascending:false}),
     ]);
     rulesDB          = results[0].data || [];
     bioCorrelations  = results[1].data || [];
@@ -1220,7 +1220,7 @@ async function saveSession(d, recs, insight) {
   var result = await db.from('sessions').insert(row);
   if(!result.error) {
     toast('Session saved');
-    var fresh = await db.from('sessions').select('*').order('created_at',{ascending:false});
+    var fresh = await db.from('sessions').select('*').eq('club','driver').order('created_at',{ascending:false});
     sessionsList = fresh.data || [];
   } else { toast('Could not save session','error'); }
 }
