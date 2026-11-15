@@ -4,85 +4,235 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Iron Fitting | EMB Fitting</title>
-<meta name="description" content="Iron shaft profile, head type and set makeup starting points from EMB Golf's tour grip and post research.">
+<meta name="description" content="Iron shaft profile, head type and set makeup recommendations from EMB Golf's tour grip, post and biomechanics research.">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#ffffff;--bg2:#f8fbf9;--bg3:#f0f7f2;--bg4:#e4f1e8;
   --border:#e1ece5;--border2:#cfe2d6;
   --text:#17261d;--text2:#4b6556;--text3:#7f978a;
-  --cyan:#4cb87a;--cyan2:#23794a;--cyan3:#2f8f58;--teal:#6cc993;
-  --amber-bg:#fdf3dc;--amber-border:#ecd08f;--amber-text:#6b4a06;
-  --orange-bg:#fde5d0;--orange-border:#f0b78a;--orange-text:#7a3a0a;
+  --cyan:#4cb87a;--cyan2:#23794a;--cyan3:#2f8f58;--cyan4:#e3f4ea;
+  --teal:#6cc993;--teal2:#2f8f58;--teal3:#d3eedd;
+  --red:#d64550;
   --radius:10px;--radius2:14px;
   --font:'Inter',system-ui,sans-serif;
 }
-body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.55;min-height:100vh}
-.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100}
-.logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
-.logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--cyan) 0%,var(--teal) 100%);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;color:#0f2a1a;letter-spacing:-0.5px}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;min-height:100vh}
+.app{display:flex;flex-direction:column;min-height:100vh}
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:60px;flex-shrink:0;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--cyan) 0%,var(--teal) 100%);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;color:#0f2a1a;letter-spacing:-0.5px;box-shadow:0 0 16px rgba(76,184,122,0.3)}
 .logo-text{font-size:16px;font-weight:700;letter-spacing:0.02em;color:var(--text)}
 .logo-sub{font-size:10px;color:var(--text3);letter-spacing:0.15em;text-transform:uppercase;margin-top:1px}
-.top-links{display:flex;gap:4px}
-.top-links a{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--radius);font-size:13px;font-weight:500;color:var(--text2);text-decoration:none}
-.top-links a:hover{background:var(--bg3);color:var(--text)}
-.wrap{max-width:1040px;margin:0 auto;padding:28px 28px 56px}
-.eyebrow{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--cyan3);font-weight:700;margin-bottom:8px}
-h1{font-size:26px;font-weight:700;letter-spacing:-0.01em;margin-bottom:8px}
-h2{font-size:17px;font-weight:700;margin-bottom:4px}
-.lede{color:var(--text2);max-width:720px;margin-bottom:16px}
-.notice{display:flex;gap:10px;align-items:flex-start;background:var(--amber-bg);border:1px solid var(--amber-border);color:var(--amber-text);border-radius:var(--radius);padding:12px 14px;margin-bottom:20px;font-size:13px}
-.notice i{font-size:18px;margin-top:1px;flex-shrink:0}
-.panel{border:1px solid var(--border);border-radius:var(--radius2);padding:20px;margin-bottom:20px;background:var(--bg)}
-.panel .sub{color:var(--text2);font-size:13px;margin-bottom:14px}
-.ctl-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
-.ctl-name{width:118px;font-size:12px;font-weight:600;flex-shrink:0}
-.ctl-name small{display:block;font-weight:400;color:var(--text3);font-size:11px}
-.chip{font-family:var(--font);font-size:13px;font-weight:500;color:var(--text2);background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:8px 14px;min-height:38px;cursor:pointer}
-.chip:hover{background:var(--bg3)}
-.chip:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
-.chip.sel{background:var(--cyan2);color:#fff;border-color:var(--cyan2)}
-.profile{display:inline-flex;align-items:center;gap:8px;margin-top:6px;font-size:13px;color:var(--text2)}
-.profile b{background:var(--bg4);color:var(--cyan2);border-radius:6px;padding:2px 8px;font-size:12px}
-.recs{border-top:1px solid var(--border);margin-top:16px;padding-top:16px}
-.recs-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:2px}
-.recs-head h2{margin-bottom:0}
-.rec-list{list-style:none;display:flex;flex-direction:column;gap:10px}
-.rec{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--border2);border-radius:var(--radius);padding:14px 16px;background:var(--bg2)}
-.rec.top{border-color:var(--cyan);background:var(--bg3)}
-.rec-rank{width:28px;height:28px;border-radius:50%;background:var(--bg4);color:var(--cyan2);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.rec.top .rec-rank{background:var(--cyan2);color:#fff}
-.rec-body{flex:1;min-width:0}
-.rec-title{font-size:16px;font-weight:700;line-height:1.3}
-.rec-meta{font-size:13px;color:var(--text2);margin-top:3px}
-.rec-meta b{color:var(--text);font-weight:600}
-.rec-count{text-align:right;flex-shrink:0;font-size:13px;font-weight:700;white-space:nowrap}
-.rec-count small{display:block;font-weight:400;color:var(--text3);font-size:12px}
-.rec-set{margin-top:12px;font-size:13px;color:var(--text2)}
-.rec-set b{color:var(--text);font-weight:600}
-details.analysis>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:12px;border:1px solid var(--border);border-radius:var(--radius2);padding:14px 20px;background:var(--bg2);margin-bottom:20px}
-details.analysis>summary::-webkit-details-marker{display:none}
-details.analysis>summary:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
-details.analysis>summary::before{content:'';width:8px;height:8px;border-right:2px solid var(--cyan2);border-bottom:2px solid var(--cyan2);transform:rotate(-45deg);transition:transform .15s;flex-shrink:0}
-details.analysis[open]>summary::before{transform:rotate(45deg)}
-.sum-title{font-size:15px;font-weight:700}
-.sum-sub{font-size:13px;color:var(--text2)}
-.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
-.tile{border:1px solid var(--border2);border-radius:var(--radius);padding:16px;background:var(--bg2);display:flex;flex-direction:column;gap:6px}
-.tile-label{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text3);font-weight:700}
-.tile-pick{font-size:21px;font-weight:700;letter-spacing:-0.01em;line-height:1.2}
-.tile-stat{font-size:13px;color:var(--text)}
-.tile-field{font-size:12px;color:var(--text2)}
-.tile-basis{font-size:12px;color:var(--text3);margin-top:2px}
-.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-.tag{font-size:11px;font-weight:600;border-radius:20px;padding:3px 9px;border:1px solid var(--border2);color:var(--text2);background:var(--bg)}
-.tag.big{background:var(--orange-bg);border-color:var(--orange-border);color:var(--orange-text)}
-.tag.look{background:var(--amber-bg);border-color:var(--amber-border);color:var(--amber-text)}
-.tag.solid{background:var(--bg4);border-color:var(--cyan);color:var(--cyan2)}
-.scroll{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius)}
+.nav{display:flex;gap:2px}
+.nav-btn{background:transparent;border:none;padding:8px 16px;color:var(--text3);font-size:13px;cursor:pointer;border-radius:var(--radius);font-family:var(--font);transition:all 0.15s;font-weight:500}
+.nav-btn:hover{color:var(--text);background:var(--bg3)}
+.nav-btn.active{color:var(--cyan);background:var(--bg3);box-shadow:inset 0 -2px 0 var(--cyan)}
+.nav-btn i{margin-right:6px;font-size:14px;vertical-align:-2px}
+.hub-link{display:inline-flex;align-items:center;gap:6px;margin-right:14px;padding:7px 12px;border:1px solid var(--border2);border-radius:var(--radius);font-size:12px;font-weight:600;color:var(--text2);text-decoration:none;background:var(--bg);transition:all 0.15s}
+.hub-link:hover{color:var(--cyan2);border-color:var(--cyan);background:var(--bg3)}
+.hub-link i{font-size:15px}
+.session-badge{font-size:11px;color:var(--text3);letter-spacing:0.05em;text-transform:uppercase}
+.db-status{font-size:11px;padding:4px 10px;border-radius:20px;margin-left:10px;font-weight:500}
+.db-status.connected{background:rgba(76,184,122,0.1);color:var(--cyan);border:1px solid rgba(76,184,122,0.2)}
+.db-status.error{background:rgba(214,69,80,0.1);color:var(--red);border:1px solid rgba(214,69,80,0.2)}
+.main{flex:1;overflow-y:auto;}
+.sidebar{background:transparent;padding:0 28px;}
+.content{padding:0 28px 40px;}
+.sidebar-label{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--cyan3);margin-bottom:12px;font-weight:700;display:flex;align-items:center;gap:8px}
+.sidebar-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border2),transparent)}
+.sidebar-section{margin-bottom:28px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:500}
+.field input,.field select{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 12px;color:var(--text);font-size:14px;font-family:var(--font);transition:all 0.15s}
+.field input:focus,.field select:focus{outline:none;border-color:var(--cyan3);background:var(--bg4);box-shadow:0 0 0 3px rgba(76,184,122,0.06)}
+.field select option{background:var(--bg3)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bio-section-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.bio-section-title span{background:linear-gradient(135deg,var(--cyan),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.bio-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px}
+.bio-card{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius2);padding:16px 18px;transition:border 0.15s;position:relative;overflow:hidden}
+.bio-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--teal));opacity:0.4}
+.bio-card:focus-within{border-color:var(--cyan3);box-shadow:0 0 0 3px rgba(76,184,122,0.06)}
+.bio-card:focus-within::before{opacity:1}
+.bio-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.bio-card-name{font-size:12px;font-weight:600;color:var(--text2);line-height:1.4;flex:1}
+.bio-card-unit{font-size:10px;color:var(--cyan3);text-transform:uppercase;letter-spacing:0.08em;background:rgba(76,184,122,0.08);padding:2px 7px;border-radius:4px;white-space:nowrap;margin-left:8px}
+.bio-card input{width:100%;background:transparent;border:none;border-bottom:2px solid var(--border2);color:var(--cyan2);font-size:22px;font-weight:700;padding:4px 0;font-family:var(--font);transition:border 0.15s;letter-spacing:-0.02em}
+.bio-card input:focus{outline:none;border-color:var(--cyan)}
+.bio-card input::placeholder{color:var(--text3);font-size:16px;font-weight:400}
+.lm-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:28px}
+.lm-card{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:14px 16px}
+.lm-card label{display:block;font-size:11px;color:var(--text3);margin-bottom:8px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em}
+.lm-card input{width:100%;background:transparent;border:none;border-bottom:1px solid var(--border2);color:var(--text);font-size:18px;font-weight:600;padding:2px 0;font-family:var(--font)}
+.lm-card input:focus{outline:none;border-color:var(--cyan3)}
+.lm-card input::placeholder{color:var(--border2);font-size:14px;font-weight:400}
+.bio-card select{width:100%;background:transparent;border:none;border-bottom:2px solid var(--border2);color:var(--cyan2);font-size:20px;font-weight:700;padding:4px 0;font-family:var(--font);cursor:pointer}
+.bio-card select:focus{outline:none;border-color:var(--cyan)}
+.lm-card select{width:100%;background:transparent;border:none;border-bottom:1px solid var(--border2);color:var(--text);font-size:17px;font-weight:600;padding:2px 0;font-family:var(--font);cursor:pointer}
+.lm-card select:focus{outline:none;border-color:var(--cyan3)}
+.lm-card .lm-calc{font-size:18px;font-weight:600;color:var(--text);padding:2px 0;border-bottom:1px dashed var(--border2)}
+.lm-card .lm-unit{font-size:10px;color:var(--text3);margin-top:4px}
+.chip-group{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.chip{background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:7px 16px;font-size:13px;cursor:pointer;color:var(--text2);font-family:var(--font);transition:all 0.15s;font-weight:500}
+.chip:hover{border-color:var(--cyan3);color:var(--text)}
+.chip.selected{background:rgba(76,184,122,0.1);border-color:var(--cyan3);color:var(--cyan);box-shadow:0 0 8px rgba(76,184,122,0.15)}
+.run-btn{width:100%;background:linear-gradient(135deg,var(--cyan) 0%,var(--teal) 100%);color:#0f2a1a;border:none;border-radius:var(--radius);padding:14px;font-size:14px;font-weight:800;cursor:pointer;letter-spacing:0.08em;text-transform:uppercase;font-family:var(--font);transition:all 0.2s;margin-top:8px;box-shadow:0 4px 20px rgba(76,184,122,0.25)}
+.run-btn:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(76,184,122,0.4)}
+.run-btn:active{transform:translateY(0)}
+.run-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none}
+.clear-btn{width:100%;background:transparent;border:1px solid var(--border2);color:var(--text3);border-radius:var(--radius);padding:9px;font-size:12px;cursor:pointer;font-family:var(--font);margin-top:8px;transition:all 0.15s}
+.clear-btn:hover{border-color:var(--red);color:var(--red)}
+.player-banner{background:linear-gradient(135deg,var(--bg3) 0%,var(--bg2) 100%);border:1px solid var(--border2);border-top:2px solid var(--cyan3);border-radius:var(--radius2);padding:24px 28px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center}
+.player-name{font-size:26px;font-weight:800;letter-spacing:-0.03em;margin-bottom:6px;background:linear-gradient(135deg,var(--text) 0%,var(--text2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.player-meta{font-size:13px;color:var(--text2)}
+.player-stats{display:flex;gap:28px}
+.stat-block{text-align:right}
+.stat-val{font-size:24px;font-weight:800;color:var(--cyan);line-height:1;letter-spacing:-0.02em}
+.stat-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px}
+.rules-strip{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:var(--radius);padding:14px 18px;margin-bottom:20px}
+.rules-strip-title{font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--cyan);margin-bottom:10px;font-weight:700}
+.rule-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--text2);margin-bottom:6px;line-height:1.6}
+.rule-item:last-child{margin-bottom:0}
+.rule-item i{color:var(--cyan);flex-shrink:0;margin-top:2px}
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;margin-top:4px}
+.zone-block{margin-bottom:36px}
+.zone-header{display:flex;align-items:center;gap:10px;margin-bottom:18px;padding-bottom:10px;border-bottom:2px solid var(--border2)}
+.zone-header i{font-size:18px;color:var(--cyan)}
+.zone-header-title{font-size:15px;font-weight:800;color:var(--text);letter-spacing:0.02em}
+.zone-header-sub{font-size:11px;color:var(--text3);margin-left:auto}
+.analysis-toggle-bar{display:flex;align-items:center;justify-content:space-between;cursor:pointer;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius2);padding:14px 18px;margin-bottom:0;transition:border 0.15s}
+.analysis-toggle-bar:hover{border-color:var(--cyan3)}
+.analysis-toggle-left{display:flex;align-items:center;gap:10px}
+.analysis-toggle-left i{font-size:16px;color:var(--cyan)}
+.analysis-toggle-title{font-size:13px;font-weight:700;color:var(--text)}
+.analysis-toggle-chevron{transition:transform 0.2s;color:var(--text3)}
+.analysis-toggle-chevron.open{transform:rotate(180deg)}
+.analysis-body{overflow:hidden;max-height:0;transition:max-height 0.25s ease}
+.analysis-body.open{max-height:3000px}
+.analysis-body-inner{padding-top:20px}
+.section-title{font-size:11px;text-transform:uppercase;letter-spacing:0.15em;color:var(--text3);font-weight:700;white-space:nowrap}
+.section-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border2),transparent)}
+.rec-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px}
+.rec-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);padding:20px;cursor:default;transition:border 0.15s}
+.rec-card.top-pick{border-color:var(--cyan3);background:linear-gradient(135deg,rgba(76,184,122,0.04) 0%,var(--bg2) 100%);box-shadow:0 0 24px rgba(76,184,122,0.06)}
+.rec-rank{font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--text3);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.rec-rank .cyan-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);flex-shrink:0;box-shadow:0 0 6px var(--cyan)}
+.rec-card.top-pick .rec-rank{color:var(--cyan)}
+.rec-name{font-size:15px;font-weight:700;margin-bottom:12px;line-height:1.3;color:var(--text)}
+.rec-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.tag{background:var(--bg4);border:1px solid var(--border2);border-radius:5px;padding:4px 9px;font-size:11px;color:var(--text2)}
+.tag.highlight{background:rgba(76,184,122,0.08);border-color:var(--cyan3);color:var(--cyan)}
+.rec-why{font-size:12px;color:var(--text2);line-height:1.7;border-top:1px solid var(--border);padding-top:12px}
+.rec-test{font-size:12px;color:var(--teal2);margin-top:10px;display:flex;align-items:flex-start;gap:6px;line-height:1.6}
+.confidence-bar{height:3px;background:var(--border2);border-radius:2px;margin-top:14px;overflow:hidden}
+.confidence-fill{height:3px;border-radius:2px;background:linear-gradient(90deg,var(--cyan3),var(--cyan2));box-shadow:0 0 6px var(--cyan)}
+.ai-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.ai-dot{width:8px;height:8px;border-radius:50%;background:var(--teal2);animation:pulse 2s infinite;box-shadow:0 0 8px var(--teal2)}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+.ai-title{font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--teal2);font-weight:700}
+.spinner{width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--cyan);border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block;vertical-align:-3px;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:14px;color:var(--text3)}
+.empty i{font-size:48px;color:var(--border2)}
+.empty-title{font-size:16px;font-weight:600;color:var(--text2)}
+.empty-sub{font-size:13px;text-align:center;max-width:300px;line-height:1.7;color:var(--text3)}
+.session-list-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:all 0.15s;display:flex;justify-content:space-between;align-items:center}
+.session-list-item:hover{border-color:var(--cyan3);background:var(--bg3)}
+.session-list-name{font-size:14px;font-weight:600;margin-bottom:4px}
+.session-list-meta{font-size:11px;color:var(--text3)}
+.admin-lock{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:16px}
+.admin-lock-title{font-size:18px;font-weight:700}
+.admin-lock-sub{font-size:13px;color:var(--text3)}
+.pw-row{display:flex;gap:10px}
+.pw-row input{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 16px;color:var(--text);font-size:14px;font-family:var(--font);width:220px}
+.pw-row input:focus{outline:none;border-color:var(--cyan3);box-shadow:0 0 0 3px rgba(76,184,122,0.06)}
+.pw-btn{background:linear-gradient(135deg,var(--cyan),var(--teal));color:#0f2a1a;border:none;border-radius:var(--radius);padding:10px 20px;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font)}
+.pw-err{font-size:12px;color:var(--red)}
+.admin-tabs{display:flex;gap:2px;margin-bottom:24px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.admin-tab{background:transparent;border:none;border-bottom:2px solid transparent;padding:10px 16px;color:var(--text3);font-size:13px;cursor:pointer;font-family:var(--font);margin-bottom:-1px;transition:all 0.15s;font-weight:500}
+.admin-tab.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+.admin-tab:hover{color:var(--text)}
+.admin-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);padding:20px;margin-bottom:14px}
+.admin-card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:5px}
+.admin-card-meta{font-size:12px;color:var(--text3);margin-bottom:10px;line-height:1.6}
+.admin-card-cond{font-size:11px;color:var(--cyan3);font-family:monospace;background:var(--bg4);padding:4px 10px;border-radius:5px;margin-bottom:10px;display:inline-block;border:1px solid var(--border2)}
+.admin-actions{display:flex;gap:8px;margin-top:12px}
+.btn-sm{background:transparent;border:1px solid var(--border2);border-radius:var(--radius);padding:5px 12px;font-size:11px;cursor:pointer;color:var(--text2);font-family:var(--font);transition:all 0.15s}
+.btn-sm:hover{border-color:var(--text2);color:var(--text)}
+.btn-sm.danger:hover{border-color:var(--red);color:var(--red)}
+.priority-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-left:8px}
+.priority-badge.high{background:rgba(214,69,80,0.12);color:#d64550;border:1px solid rgba(214,69,80,0.2)}
+.priority-badge.medium{background:rgba(255,180,0,0.12);color:#ffb400;border:1px solid rgba(255,180,0,0.2)}
+.priority-badge.low{background:rgba(76,184,122,0.12);color:var(--teal2);border:1px solid rgba(76,184,122,0.2)}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:500}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 12px;color:var(--text);font-size:13px;font-family:var(--font);transition:all 0.15s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--cyan3);box-shadow:0 0 0 3px rgba(76,184,122,0.06)}
+.form-group textarea{resize:vertical;line-height:1.6}
+.form-group select option{background:var(--bg3)}
+.form-hint{font-size:11px;color:var(--text3);margin-top:5px;line-height:1.6}
+.add-btn{background:linear-gradient(135deg,var(--cyan),var(--teal));color:#0f2a1a;border:none;border-radius:var(--radius);padding:11px 22px;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);transition:all 0.15s}
+.add-btn:hover{box-shadow:0 4px 16px rgba(76,184,122,0.3)}
+.add-btn:disabled{opacity:0.4;cursor:not-allowed}
+.success-msg{font-size:12px;color:var(--teal2);margin-top:10px}
+.error-msg{font-size:12px;color:var(--red);margin-top:10px}
+.equip-row{display:flex;align-items:flex-start;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
+.equip-row:last-child{border-bottom:none}
+.equip-name{font-size:13px;font-weight:600;margin-bottom:5px}
+.equip-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:5px}
+.equip-meta{font-size:11px;color:var(--text3)}
+.section-divider{display:flex;align-items:center;gap:10px;margin:20px 0 16px}
+.section-divider span{font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--text3);white-space:nowrap;font-weight:700}
+.section-divider::before,.section-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 18px;font-size:13px;color:var(--text);z-index:999;opacity:0;transition:opacity 0.3s;box-shadow:0 8px 32px rgba(23,38,29,0.12)}
+.toast.show{opacity:1}
+.toast.success{border-color:var(--teal2);color:var(--teal2)}
+.toast.error{border-color:var(--red);color:var(--red)}
+
+/* ── Iron fitting additions ── */
+:root{--amber-bg:#fdf3dc;--amber-border:#ecd08f;--amber-text:#6b4a06;--orange-bg:#fde5d0;--orange-border:#f0b78a;--orange-text:#7a3a0a}
+button.analysis-toggle-bar{width:100%;font-family:var(--font);text-align:left;color:var(--text)}
+button.analysis-toggle-bar:focus-visible,.chip:focus-visible,.nav-btn:focus-visible,.run-btn:focus-visible,.session-list-item:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.analysis-body.open{max-height:none}
+.profile-preview{margin-top:12px;margin-bottom:4px;min-height:22px;font-size:12px}
+.profile-num{color:var(--cyan2);font-weight:700}
+.profile-desc{color:var(--text3)}
+.section-note{font-size:13px;color:var(--text3);margin-bottom:20px;line-height:1.6;max-width:760px}
+.other-input,.notes-input{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 12px;color:var(--text);font-size:13px;font-family:var(--font);margin-bottom:14px}
+.notes-input{padding:12px 14px;resize:vertical;line-height:1.6;margin-top:12px}
+.summary{font-size:13px;color:var(--text2);line-height:2}
+.summary-key{color:var(--text3)}
+.summary-notes{font-size:12px;color:var(--text2);line-height:1.7}
+.player-band{font-size:12px;color:var(--cyan3);margin-top:3px}
+.guide{border:1px solid var(--cyan3);background:var(--bg3);border-radius:var(--radius2);padding:18px 20px;margin-bottom:24px}
+.guide-label{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--cyan3);font-weight:700}
+.guide-text{font-size:22px;font-weight:800;letter-spacing:-0.01em;line-height:1.25;margin-top:4px;color:var(--text)}
+.guide-sub{font-size:12px;color:var(--text2);margin-top:6px}
+.plain-note{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;max-width:760px}
+.plain-note.pad{padding:14px 16px;margin-bottom:0}
+.signal-name{color:var(--cyan2)}
+.sb-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
+.sb-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px}
+.sb-top{display:flex;justify-content:space-between;gap:10px;margin-bottom:3px}
+.sb-name{font-size:12px;font-weight:600;color:var(--text)}
+.sb-value{font-size:12px;font-weight:700;color:var(--cyan2)}
+.sb-signal{font-size:12px;color:var(--text2)}
+.sb-implication{font-size:11px;color:var(--text3);margin-top:2px}
+.support{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:24px}
+.support-block{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px}
+.support-title{font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px}
+.support-row{display:flex;align-items:center;gap:8px;font-size:12px;margin-bottom:6px}
+.support-name{width:120px;flex-shrink:0;color:var(--text2)}
+.support-track{flex:1;height:6px;background:var(--border2);border-radius:3px;overflow:hidden}
+.support-fill{height:6px;background:var(--text3);border-radius:3px}
+.support-fill.top{background:var(--cyan2)}
+.support-pct{width:36px;text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.scroll{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px}
 table{border-collapse:collapse;width:100%;font-size:13px;min-width:760px}
 th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);white-space:nowrap}
 th{background:var(--bg2);font-size:11px;font-weight:600;color:var(--text2);letter-spacing:0.04em;text-transform:uppercase}
@@ -92,533 +242,1167 @@ td.big{background:var(--orange-bg);color:var(--orange-text);font-weight:600}
 td.look{background:var(--amber-bg);color:var(--amber-text);font-weight:600}
 tr.few td{color:var(--text3);font-style:italic}
 tr.group td{background:var(--bg3);font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--cyan3);padding:6px 12px}
-tr.on td:first-child{font-weight:700;box-shadow:inset 3px 0 0 var(--cyan2)}
 tr.total td{font-weight:600;background:var(--bg2)}
-.key{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;font-size:12px;color:var(--text2)}
+.key{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:28px;font-size:12px;color:var(--text2)}
 .key span{display:inline-flex;align-items:center;gap:6px}
 .key i{width:14px;height:10px;border-radius:3px;display:inline-block;border:1px solid}
 .key .k-big{background:var(--orange-bg);border-color:var(--orange-border)}
 .key .k-look{background:var(--amber-bg);border-color:var(--amber-border)}
-.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
-.cols h3{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;margin-bottom:28px}
+.type-title{font-size:12px;font-weight:700;color:var(--text2);margin-bottom:8px}
 .rank{list-style:none}
 .rank li{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px}
 .rank li:last-child{border-bottom:none}
 .rank span{color:var(--text3);font-variant-numeric:tabular-nums;flex-shrink:0}
-.empty{color:var(--text2);font-size:13px;padding:6px 0}
-.foot{font-size:12px;color:var(--text3);border-top:1px solid var(--border);padding-top:18px}
-@media(max-width:640px){
-  .header{padding:0 16px}.wrap{padding:20px 16px 48px}h1{font-size:23px}
-  .top-links span{display:none}.ctl-name{width:100%}.panel{padding:16px}
-  .rec{flex-wrap:wrap}.rec-count{text-align:left;width:100%;padding-left:42px}.rec-count small{display:inline;margin-left:6px}.sum-sub{display:none}
+.map-pick{display:flex;align-items:center;gap:10px;margin-bottom:12px;font-size:12px;color:var(--text2)}
+.map-pick select{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:8px 12px;color:var(--text);font-size:13px;font-family:var(--font)}
+.page-head{margin-bottom:20px}
+.page-title{font-size:18px;font-weight:700;margin-bottom:4px}
+.page-sub{font-size:13px;color:var(--text3)}
+.session-list-rec{font-size:11px;color:var(--teal2);margin-top:3px}
+.pools{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:10px;align-items:start}
+.pool{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);padding:14px 16px}
+.pool-title{font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--text3);font-weight:700;margin-bottom:8px}
+.pool-list{list-style:none}
+.pool-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.pool-row:last-child{border-bottom:none}
+.pool-row.extra{display:none}
+.pool.open .pool-row.extra{display:flex}
+.pool-rank{width:18px;flex-shrink:0;font-size:12px;font-weight:700;color:var(--text3);line-height:1.5;font-variant-numeric:tabular-nums}
+.pool-row.top .pool-rank{color:var(--cyan2)}
+.pool-body{flex:1;min-width:0}
+.pool-name{font-size:13px;font-weight:600;color:var(--text);line-height:1.5}
+.pool-row.top .pool-name{font-weight:700}
+.pool-type{font-size:11px;font-weight:500;color:var(--text3);margin-left:8px}
+.pool-meta{font-size:11px;color:var(--text3);line-height:1.5}
+.pool-count{font-size:12px;font-weight:600;color:var(--text2);flex-shrink:0;line-height:1.6;font-variant-numeric:tabular-nums}
+.pool-note{font-size:13px;color:var(--text2);line-height:1.6}
+.pool-more{background:transparent;border:none;padding:8px 0 0;font-family:var(--font);font-size:12px;font-weight:600;color:var(--cyan2);cursor:pointer}
+.pool-more:hover{text-decoration:underline}
+.pool-more:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.pool-key{font-size:11px;color:var(--text3);margin-bottom:8px}
+@media(max-width:760px){
+  .header{height:auto;flex-wrap:wrap;padding:10px 16px;gap:8px}
+  .header-right{display:none}
+  .nav{width:100%;overflow-x:auto}
+  .nav-btn{padding:8px 10px;white-space:nowrap}
+  .sidebar{padding:0 16px}.content{padding:0 16px 40px}
+  .rec-grid,.bio-grid,.sb-grid{grid-template-columns:1fr}
+  .lm-grid{grid-template-columns:1fr 1fr}
+  .player-banner{flex-direction:column;align-items:flex-start;gap:14px;padding:18px 20px}
+  .guide-text{font-size:19px}
 }
 </style>
 </head>
 <body>
-<header class="header">
-  <a class="logo" href="../">
+<div class="app">
+<div class="header">
+  <div class="logo">
+    <a class="hub-link" href="../" title="Back to the fitting hub"><i class="ti ti-layout-grid" aria-hidden="true"></i>Hub</a>
     <div class="logo-mark">EMB</div>
     <div>
       <div class="logo-text">EMB Fitting</div>
       <div class="logo-sub">Iron Fitting</div>
     </div>
-  </a>
-  <nav class="top-links">
-    <a href="../"><i class="ti ti-layout-grid" aria-hidden="true"></i><span>Hub</span></a>
-    <a href="../driver/"><i class="ti ti-adjustments-horizontal" aria-hidden="true"></i><span>Driver fitting</span></a>
-  </nav>
-</header>
-
-<main class="wrap">
-  <div class="eyebrow">Fitting tools</div>
-  <h1>Iron fitting</h1>
-  <p class="lede">Set the player's grip, post and lead-hand grip. The shaft and head combinations tour players with the same traits play appear underneath, most played first.</p>
-  <section class="panel">
-    <h2>Player</h2>
-    <p class="sub">Leave a trait on Any if you haven't assessed it.</p>
-    <div id="controls"></div>
-    <div class="profile" id="profile"></div>
-
-    <div class="recs" aria-live="polite">
-      <div class="recs-head"><h2>Recommendations</h2><div class="tags" id="rec-tags"></div></div>
-      <p class="sub" id="rec-basis"></p>
-      <ol class="rec-list" id="recs"></ol>
-      <div class="rec-set" id="rec-set"></div>
-    </div>
-  </section>
-
-  <div class="notice"><i class="ti ti-info-circle" aria-hidden="true"></i><div id="notice"></div></div>
-
-  <details class="analysis">
-    <summary><span class="sum-title">Fitting analysis</span><span class="sum-sub">How each trait compares with the field, and every matching player</span></summary>
-
-    <section class="panel">
-      <h2>Compared with the field</h2>
-      <p class="sub">What most matching players play, one spec at a time.</p>
-      <div class="tiles" id="tiles"></div>
-    </section>
-
-    <section class="panel">
-      <h2>How each trait splits</h2>
-      <p class="sub">Each row is compared with every player who has that trait recorded.</p>
-      <div class="scroll"><table id="traits"></table></div>
-      <div class="key">
-        <span><i class="k-big"></i>Big difference: 25+ points above the field</span>
-        <span><i class="k-look"></i>Worth a look: 15+ points</span>
-        <span>Grey italic: fewer than 3 players</span>
-      </div>
-    </section>
-
-    <section class="panel">
-      <h2 id="players-title">Matching players</h2>
-      <p class="sub" id="players-sub"></p>
-      <div class="cols" id="ranks"></div>
-      <div class="scroll" id="players-wrap" style="margin-top:16px"><table id="players"></table></div>
-    </section>
-  </details>
-
-  <p class="foot">EMB Golf Academy · Tour research workbook dated October 27, 2026</p>
-</main>
-
+  </div>
+  <div class="nav" id="nav"></div>
+  <div class="header-right">
+    <span class="session-badge" id="session-label">No active session</span>
+    <span class="db-status" id="db-status">Connecting</span>
+  </div>
+</div>
+<div class="main">
+  <div class="sidebar" id="sidebar"></div>
+  <div class="content" id="content"></div>
+</div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
-// ---- state (declared first) ----
-var state = { g: null, p: null, lg: null };
+// ─── STATE (declared first) ──────────────────────────────────────────────────
+var fittingState = {grip:'',post:'',leadGrip:'',shotShape:''};
+var sessionsList = [];
+var currentSession = null, currentPage = 'fitting';
+var mapProfile = 'ALL';
 
-// ---- research data: Irons tab, with Lead Grip joined from the Driver tab ----
-var PLAYERS = [{"n":"Rory McIlroy","g":"On Top","p":"Center","lg":"Neutral","ss":"Both","sh":"Project X Rifle","sp":"Butt-stiff","fx":"7","hd":"Rors Proto","ht":"Blade","cb":"Yes","cm":"P760","cn":1},{"n":"Scottie Scheffler","g":"On Top","p":"Front","lg":"Neutral","ss":"Fade","sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"P7-TW","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Ludvig Aberg","g":"On Top","p":"Rear","lg":"Strong","ss":"Draw","sh":"KBS Tour","sp":"Mid-stiff","fx":"X-Stiff","hd":"Titleist T100","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Collin Morikawa","g":"Under","p":"Center","lg":"Weak","ss":"Fade","sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"P730","ht":"Blade","cb":"Yes","cm":"P7CB","cn":3},{"n":"Xander Schauffele","g":"Under","p":"Center","lg":"Weak","ss":"Draw","sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Callaway Apex TCB","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Keegan Bradley","g":"Under","p":"Rear","lg":"Strong","ss":"Draw","sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"ZX7","ht":"Cavity Back","cb":"Yes","cm":"ZX5","cn":3},{"n":"Hideki Matsuyama","g":"Side On","p":"Front","lg":null,"ss":"Draw","sh":"Dynamic Gold Tour Issue S400","sp":"Tip-stiff","fx":"Stiff","hd":"Srixon Z-Forged II","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Billy Horschel","g":"Side On","p":"Center","lg":null,"ss":"Fade","sh":"Dynamic Gold 120 X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Titleist 620 MB","ht":"Blade","cb":"Yes","cm":"T100","cn":2},{"n":"Sam Burns","g":"On Top","p":"Front","lg":null,"ss":"Fade","sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"Apex MB '26","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Tyrrell Hatton","g":"Under","p":"Front","lg":"Strong","ss":"Fade","sh":"Nippon Modus3 Tour 120","sp":"Butt-stiff","fx":"X-Stiff","hd":"Ping Blueprint S","ht":"Cavity Back","cb":"Yes","cm":"i230","cn":4},{"n":"Wyndham Clark","g":"Side On","p":"Front","lg":null,"ss":"Fade","sh":"Dynamic Gold X7","sp":"Tip-stiff","fx":"X-Stiff","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Justin Thomas","g":"Under","p":"Center","lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"621.JT","ht":"Blade","cb":"Yes","cm":"T100/T250","cn":2},{"n":"Jordan Spieth","g":"On Top","p":"Rear","lg":null,"ss":null,"sh":"Project X Rifle 125","sp":"Butt-stiff","fx":"6.5","hd":"Titleist T100","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Tommy Fleetwood","g":"Under","p":null,"lg":"Strong","ss":"Draw","sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"P7-TW","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Adam Scott","g":"Under","p":"Center","lg":null,"ss":"Draw","sh":"Project X LZ 125","sp":"Butt-stiff","fx":"6.5","hd":"681.AS","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Tony Finau","g":"On Top","p":"Front","lg":null,"ss":"Fade","sh":"KBS $-Taper 130","sp":"Tip-stiff","fx":"X-Stiff","hd":"Blueprint T","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Jon Rahm","g":"Under","p":"Center","lg":"Weak","ss":"Fade","sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"Callaway Apex TCB","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Patrick Cantlay","g":"Under","p":"Center","lg":null,"ss":null,"sh":"Dynamic Gold 120 X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"718 AP2","ht":"Cavity Back","cb":"Yes","cm":"ZX5 II","cn":1},{"n":"Thomas Detry","g":"On Top","p":null,"lg":null,"ss":"Fade","sh":"Project X 125","sp":"Butt-stiff","fx":"6.5","hd":"Apex MB","ht":"Blade","cb":"Yes","cm":"Apex Pro","cn":1},{"n":"Brooks Koepka","g":"On Top","p":"Center","lg":null,"ss":"Both","sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"ZX7 II","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Max Homa","g":"Side On","p":"Rear","lg":null,"ss":"Fade","sh":"KBS $-Taper 130","sp":"Tip-stiff","fx":"X-Stiff","hd":"Cobra King MB","ht":"Blade","cb":"Yes","cm":null,"cn":2},{"n":"Justin Rose","g":"Side On","p":"Center","lg":null,"ss":"Draw","sh":"C-Taper 125","sp":"Tip-stiff","fx":"S+","hd":"Miura MC-502","ht":"Blade","cb":"Yes","cm":null,"cn":2},{"n":"Dustin Johnson","g":"Under","p":"Center","lg":null,"ss":"Fade","sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"DJ Proto","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Gary Woodland","g":"On Top","p":"Rear","lg":null,"ss":"Fade","sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Cobra King MB","ht":"Blade","cb":"Yes","cm":"Cobra King Tour","cn":2},{"n":"Daniel Berger","g":"On Top","p":"Center","lg":null,"ss":null,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"Ping Blueprint S","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Louis Oosthuizen","g":"On Top","p":"Center","lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"iBlade","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Corey Conners","g":"Under","p":"Center","lg":null,"ss":null,"sh":"Project X 120","sp":"Butt-stiff","fx":"6","hd":"Blueprint T","ht":"Blade","cb":"Yes","cm":"i230","cn":2},{"n":"Harris English","g":"Under","p":"Rear","lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Blueprint T","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Cam Young","g":"On Top","p":"Center","lg":null,"ss":"Draw","sh":"Dynamic Gold X7","sp":"Tip-stiff","fx":"X-Stiff","hd":"620.CY","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Luke Clanton","g":"On Top","p":null,"lg":null,"ss":"Fade","sh":"Nippon Modus3 Tour 130","sp":"Mid-stiff","fx":"X-Stiff","hd":"TaylorMade P7MB","ht":"Blade","cb":"Yes","cm":"P770","cn":3},{"n":"Karl Vilips","g":"On Top","p":null,"lg":null,"ss":"Fade","sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"TaylorMade P7CB","ht":"Cavity Back","cb":"Yes","cm":"P770","cn":2},{"n":"Akshay Bhatia","g":"Under","p":null,"lg":"Strong","ss":"Fade","sh":"KBS $-Taper 125","sp":"Tip-stiff","fx":"S+","hd":"Callaway Apex TCB","ht":"Cavity Back","cb":"Yes","cm":"Apex UT","cn":1},{"n":"Chris Gotterup","g":"On Top","p":null,"lg":"Strong","ss":"Fade","sh":"KBS C-Taper 130","sp":"Tip-stiff","fx":"X-Stiff","hd":"Tour B 220 MB","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Matt Fitzpatrick","g":"On Top","p":null,"lg":null,"ss":null,"sh":"KBS Tour","sp":"Mid-stiff","fx":null,"hd":"Ping S55","ht":"Cavity Back","cb":"Yes","cm":"Ping i210","cn":2},{"n":"J.J. Spaun","g":"On Top","p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Srixon ZXi7","ht":"Cavity Back","cb":"Yes","cm":"Srixon ZXi5, ZX Utility","cn":2},{"n":"Viktor Hovland","g":null,"p":null,"lg":null,"ss":null,"sh":"KBS Tour-V 120","sp":"Mid-stiff","fx":"X-Stiff","hd":"Ping i210","ht":"Cavity Back","cb":"Yes","cm":"Ping iDi utility","cn":1},{"n":"Ben Griffin","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Mizuno Pro S-3","ht":null,"cb":"No","cm":null,"cn":null},{"n":"Kristoffer Reitan","g":null,"p":null,"lg":null,"ss":null,"sh":"KBS Tour","sp":"Mid-stiff","fx":"X-Stiff","hd":"Ping Blueprint S","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Kurt Kitayama","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"TaylorMade P7MB","ht":"Blade","cb":"Yes","cm":"TaylorMade P7CB, Titleist T250","cn":2},{"n":"Bud Cauley","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold S300","sp":"Tip-stiff","fx":"Stiff","hd":"Titleist 620 MB","ht":"Blade","cb":"Yes","cm":"Titleist T250, U505","cn":2},{"n":"Alex Smalley","g":null,"p":null,"lg":null,"ss":null,"sh":"Nippon Modus3 Tour 130","sp":"Mid-stiff","fx":"X-Stiff","hd":"Ping Blueprint S","ht":"Cavity Back","cb":"Yes","cm":"Ping i240","cn":2},{"n":"Rickie Fowler","g":null,"p":null,"lg":null,"ss":null,"sh":"Aerotech SteelFiber i125cw","sp":null,"fx":null,"hd":"Cobra 3DP RF Prototype","ht":null,"cb":"No","cm":null,"cn":null},{"n":"Maverick McNealy","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"TaylorMade P7CB","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Eugenio Chacarra","g":null,"p":null,"lg":null,"ss":null,"sh":"Project X LZ 125","sp":"Butt-stiff","fx":"X-Stiff","hd":"TaylorMade P7MC","ht":"Cavity Back","cb":"Yes","cm":"TaylorMade P770","cn":2},{"n":"Lucas Herbert","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Miura MB 101","ht":"Blade","cb":"Yes","cm":"Miura TC-202, Srixon ZXi7, ZXi5","cn":4},{"n":"Matt Wallace","g":null,"p":null,"lg":null,"ss":null,"sh":"Nippon Modus3 Tour 120","sp":"Butt-stiff","fx":"X-Stiff","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"Yes","cm":"Titleist T250, Ping iDi","cn":3},{"n":"Jackson Koivun","g":null,"p":null,"lg":null,"ss":null,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"Titleist 620 MB","ht":"Blade","cb":"Yes","cm":"Titleist T100, T250","cn":2},{"n":"Casey Jarvis","g":null,"p":null,"lg":null,"ss":null,"sh":null,"sp":null,"fx":null,"hd":"TaylorMade P7MB","ht":"Blade","cb":"Yes","cm":"TaylorMade P770","cn":1},{"n":"Keith Mitchell","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Mizuno Pro S-1","ht":null,"cb":"Yes","cm":"Mizuno Pro 225","cn":1},{"n":"John Keefer","g":null,"p":null,"lg":null,"ss":null,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"Yes","cm":"Titleist T100, T250","cn":3},{"n":"Austin Smotherman","g":null,"p":null,"lg":null,"ss":null,"sh":"KBS Tour 125","sp":"Mid-stiff","fx":"S+","hd":"Titleist T100","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Nicolas Echavarria","g":null,"p":null,"lg":null,"ss":null,"sh":"Nippon Modus3 Tour 125","sp":null,"fx":"X-Stiff","hd":"Srixon ZXi7","ht":"Cavity Back","cb":"Yes","cm":"Srixon ZXi5","cn":2},{"n":"Jordan Smith","g":null,"p":null,"lg":null,"ss":null,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"7","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"Yes","cm":"Titleist T100","cn":1},{"n":"Michael Kim","g":null,"p":null,"lg":null,"ss":null,"sh":"Nippon Modus3 Tour 120","sp":"Butt-stiff","fx":"Stiff","hd":"Titleist T100","ht":"Cavity Back","cb":"Yes","cm":"Titleist T250","cn":1},{"n":"Samuel Stevens","g":null,"p":null,"lg":null,"ss":null,"sh":"Project X LZ 125","sp":"Butt-stiff","fx":"6.5","hd":"Ping Blueprint S","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Harry Hall","g":null,"p":null,"lg":null,"ss":null,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"7","hd":"Titleist 620 MB","ht":"Blade","cb":"Yes","cm":"Titleist 620 CB, T250","cn":3},{"n":"Ryo Hisatsune","g":null,"p":null,"lg":null,"ss":null,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"TaylorMade P7MC","ht":"Cavity Back","cb":"Yes","cm":"TaylorMade P7CB","cn":1},{"n":"Rasmus Neergaard-Petersen","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Ping Blueprint S","ht":"Cavity Back","cb":"Yes","cm":"Ping i240, Ping iDi","cn":2},{"n":"Jason Day","g":null,"p":null,"lg":null,"ss":null,"sh":"KBS TGI Tour 110","sp":null,"fx":null,"hd":"Avoda Prototype V3","ht":null,"cb":"No","cm":null,"cn":null},{"n":"Steven Fisk","g":null,"p":null,"lg":null,"ss":null,"sh":"KBS C-Taper 130","sp":"Tip-stiff","fx":"X-Stiff","hd":"Mizuno MP-20","ht":null,"cb":"Yes","cm":"Mizuno Pro 243, Pro 245","cn":2},{"n":"David Puig","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Matt McCarty","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue Mid X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Ping Blueprint","ht":null,"cb":"No","cm":null,"cn":null},{"n":"Eric Cole","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue Mid X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"PXG 0317 ST","ht":"Cavity Back","cb":"Yes","cm":"PXG 0311 Gen8","cn":1},{"n":"Sami Valimaki","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue Mid X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Ping Blueprint S","ht":"Cavity Back","cb":"No","cm":null,"cn":null},{"n":"Benjamin James","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100 120","sp":"Tip-stiff","fx":"X-Stiff","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"Yes","cm":"Titleist T100, U500","cn":2},{"n":"Ricky Castillo","g":null,"p":null,"lg":null,"ss":null,"sh":null,"sp":null,"fx":null,"hd":"Titleist 620 CB","ht":"Cavity Back","cb":"Yes","cm":"Titleist T350","cn":1},{"n":"Andrew Novak","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Srixon Z-Forged II","ht":"Blade","cb":"Yes","cm":"Srixon ZX7 MkII","cn":3},{"n":"Nick Taylor","g":null,"p":null,"lg":null,"ss":null,"sh":null,"sp":null,"fx":null,"hd":"Titleist T100","ht":"Cavity Back","cb":"Yes","cm":"Titleist T250","cn":1},{"n":"Jacob Skov Olesen","g":null,"p":null,"lg":null,"ss":null,"sh":null,"sp":null,"fx":null,"hd":"Titleist T100","ht":"Cavity Back","cb":"Yes","cm":"Titleist T150","cn":2},{"n":"Sandy Scott","g":null,"p":null,"lg":null,"ss":null,"sh":"AMT Tour White X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"TaylorMade P760","ht":null,"cb":"Yes","cm":"TaylorMade P790","cn":1},{"n":"Ben Kohles","g":null,"p":null,"lg":null,"ss":null,"sh":"Project X","sp":"Butt-stiff","fx":"6","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"Yes","cm":"Titleist T250","cn":2},{"n":"McClure Meissner","g":null,"p":null,"lg":null,"ss":null,"sh":"Nippon Modus3 Tour 125","sp":null,"fx":"X-Stiff","hd":"Titleist T100","ht":"Cavity Back","cb":"Yes","cm":"Titleist blade","cn":1},{"n":"Matti Schmid","g":null,"p":null,"lg":null,"ss":null,"sh":"Project X LS 130","sp":"Butt-stiff","fx":"7","hd":"Cobra 3DP MB","ht":"Blade","cb":"No","cm":null,"cn":null},{"n":"Max Greyserman","g":null,"p":null,"lg":null,"ss":null,"sh":"Nippon Modus3 Tour 130","sp":"Mid-stiff","fx":"X-Stiff","hd":"Callaway Apex TCB","ht":"Cavity Back","cb":"Yes","cm":"Callaway Apex Pro","cn":1},{"n":"Jackson Suber","g":null,"p":null,"lg":null,"ss":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Titleist T100","ht":"Cavity Back","cb":"Yes","cm":"Titleist T250","cn":1},{"n":"Jayden Schaper","g":null,"p":null,"lg":null,"ss":null,"sh":null,"sp":null,"fx":null,"hd":"TaylorMade P7MB","ht":"Blade","cb":"Yes","cm":"TaylorMade P7MC","cn":3},{"n":"Beau Hossler","g":null,"p":null,"lg":null,"ss":null,"sh":"Project X","sp":"Butt-stiff","fx":"6","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"Yes","cm":"Titleist T100, T200","cn":3},{"n":"Doug Ghim","g":null,"p":null,"lg":null,"ss":null,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"Titleist T100","ht":"Cavity Back","cb":"Yes","cm":"Titleist T250","cn":1}];
+// ─── DATABASE ────────────────────────────────────────────────────────────────
+var SUPABASE_URL = 'https://dfsuklaobtdpfkorqluq.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmc3VrbGFvYnRkcGZrb3JxbHVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0ODA5MTcsImV4cCI6MjA5NzA1NjkxN30.Z9MtgZr0asFMXdnMx65OCQn1tNCeRfaJnz6U0Qy1gEw';
+var db = null;
+try { if(window.supabase) db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch(e) { db = null; }
+var CLUB = 'irons';   // sessions.club value for this tool
 
-// ---- thresholds, taken from the workbook's Notes tab ----
-var MIN_GROUP = 3;      // min players per group
-var BIG = 0.25;         // cross-tab "big difference", points above the field
-var LOOK = 0.15;        // cross-tab "worth a look"
-var SOLID_N = 8;        // "Fairly solid"
-var EARLY_N = 5;        // "Early sign"
+// ─── RESEARCH DATA: Irons tab, with Lead Grip joined from the Driver tab ─────
+var PLAYERS = [{"n":"Rory McIlroy","g":"On Top","p":"Center","lg":"Neutral","ss":"Both","sw":-4.5,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"7","hd":"Rors Proto","ht":"Blade","cb":"Yes","cm":"P760","cms":["TaylorMade P760"],"cn":1},{"n":"Scottie Scheffler","g":"On Top","p":"Front","lg":"Neutral","ss":"Fade","sw":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"P7-TW","ht":"Blade","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Ludvig Aberg","g":"On Top","p":"Rear","lg":"Strong","ss":"Draw","sw":null,"sh":"KBS Tour","sp":"Mid-stiff","fx":"X-Stiff","hd":"Titleist T100","ht":"Cavity Back","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Collin Morikawa","g":"Under","p":"Center","lg":"Weak","ss":"Fade","sw":-7.4,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"P730","ht":"Blade","cb":"Yes","cm":"P7CB","cms":["TaylorMade P7CB"],"cn":3},{"n":"Xander Schauffele","g":"Under","p":"Center","lg":"Weak","ss":"Draw","sw":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Callaway Apex TCB","ht":"Cavity Back","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Keegan Bradley","g":"Under","p":"Rear","lg":"Strong","ss":"Draw","sw":-5.3,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"ZX7","ht":"Cavity Back","cb":"Yes","cm":"ZX5","cms":["ZX5"],"cn":3},{"n":"Hideki Matsuyama","g":"Side On","p":"Front","lg":null,"ss":"Draw","sw":-7.4,"sh":"Dynamic Gold Tour Issue S400","sp":"Tip-stiff","fx":"Stiff","hd":"Srixon Z-Forged II","ht":"Blade","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Billy Horschel","g":"Side On","p":"Center","lg":null,"ss":"Fade","sw":null,"sh":"Dynamic Gold 120 X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Titleist 620 MB","ht":"Blade","cb":"Yes","cm":"T100","cms":["Titleist T100"],"cn":2},{"n":"Sam Burns","g":"On Top","p":"Front","lg":null,"ss":"Fade","sw":-4.3,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"Apex MB '26","ht":"Blade","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Tyrrell Hatton","g":"Under","p":"Front","lg":"Strong","ss":"Fade","sw":null,"sh":"Nippon Modus3 Tour 120","sp":"Butt-stiff","fx":"X-Stiff","hd":"Ping Blueprint S","ht":"Cavity Back","cb":"Yes","cm":"i230","cms":["i230"],"cn":4},{"n":"Wyndham Clark","g":"Side On","p":"Front","lg":null,"ss":"Fade","sw":null,"sh":"Dynamic Gold X7","sp":"Tip-stiff","fx":"X-Stiff","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Justin Thomas","g":"Under","p":"Center","lg":null,"ss":null,"sw":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"621.JT","ht":"Blade","cb":"Yes","cm":"T100/T250","cms":["Titleist T100","Titleist T250"],"cn":2},{"n":"Jordan Spieth","g":"On Top","p":"Rear","lg":null,"ss":null,"sw":null,"sh":"Project X Rifle 125","sp":"Butt-stiff","fx":"6.5","hd":"Titleist T100","ht":"Cavity Back","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Tommy Fleetwood","g":"Under","p":null,"lg":"Strong","ss":"Draw","sw":-4.6,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"P7-TW","ht":"Blade","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Adam Scott","g":"Under","p":"Center","lg":null,"ss":"Draw","sw":null,"sh":"Project X LZ 125","sp":"Butt-stiff","fx":"6.5","hd":"681.AS","ht":"Blade","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Tony Finau","g":"On Top","p":"Front","lg":null,"ss":"Fade","sw":null,"sh":"KBS $-Taper 130","sp":"Tip-stiff","fx":"X-Stiff","hd":"Blueprint T","ht":"Blade","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Jon Rahm","g":"Under","p":"Center","lg":"Weak","ss":"Fade","sw":-6.5,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"Callaway Apex TCB","ht":"Cavity Back","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Patrick Cantlay","g":"Under","p":"Center","lg":null,"ss":null,"sw":null,"sh":"Dynamic Gold 120 X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"718 AP2","ht":"Cavity Back","cb":"Yes","cm":"ZX5 II","cms":["ZX5 II"],"cn":1},{"n":"Thomas Detry","g":"On Top","p":null,"lg":null,"ss":"Fade","sw":null,"sh":"Project X 125","sp":"Butt-stiff","fx":"6.5","hd":"Apex MB","ht":"Blade","cb":"Yes","cm":"Apex Pro","cms":["Callaway Apex Pro"],"cn":1},{"n":"Brooks Koepka","g":"On Top","p":"Center","lg":null,"ss":"Both","sw":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"ZX7 II","ht":"Cavity Back","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Max Homa","g":"Side On","p":"Rear","lg":null,"ss":"Fade","sw":null,"sh":"KBS $-Taper 130","sp":"Tip-stiff","fx":"X-Stiff","hd":"Cobra King MB","ht":"Blade","cb":"Yes","cm":null,"cms":[],"cn":2},{"n":"Justin Rose","g":"Side On","p":"Center","lg":null,"ss":"Draw","sw":null,"sh":"C-Taper 125","sp":"Tip-stiff","fx":"S+","hd":"Miura MC-502","ht":"Blade","cb":"Yes","cm":null,"cms":[],"cn":2},{"n":"Dustin Johnson","g":"Under","p":"Center","lg":null,"ss":"Fade","sw":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"DJ Proto","ht":"Blade","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Gary Woodland","g":"On Top","p":"Rear","lg":null,"ss":"Fade","sw":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Cobra King MB","ht":"Blade","cb":"Yes","cm":"Cobra King Tour","cms":["Cobra King Tour"],"cn":2},{"n":"Daniel Berger","g":"On Top","p":"Center","lg":null,"ss":null,"sw":null,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"Ping Blueprint S","ht":"Cavity Back","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Louis Oosthuizen","g":"On Top","p":"Center","lg":null,"ss":null,"sw":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"iBlade","ht":"Blade","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Corey Conners","g":"Under","p":"Center","lg":null,"ss":null,"sw":null,"sh":"Project X 120","sp":"Butt-stiff","fx":"6","hd":"Blueprint T","ht":"Blade","cb":"Yes","cm":"i230","cms":["i230"],"cn":2},{"n":"Harris English","g":"Under","p":"Rear","lg":null,"ss":null,"sw":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Blueprint T","ht":"Blade","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Cam Young","g":"On Top","p":"Center","lg":null,"ss":"Draw","sw":null,"sh":"Dynamic Gold X7","sp":"Tip-stiff","fx":"X-Stiff","hd":"620.CY","ht":"Blade","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Luke Clanton","g":"On Top","p":null,"lg":null,"ss":"Fade","sw":null,"sh":"Nippon Modus3 Tour 130","sp":"Mid-stiff","fx":"X-Stiff","hd":"TaylorMade P7MB","ht":"Blade","cb":"Yes","cm":"P770","cms":["TaylorMade P770"],"cn":3},{"n":"Karl Vilips","g":"On Top","p":null,"lg":null,"ss":"Fade","sw":null,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"TaylorMade P7CB","ht":"Cavity Back","cb":"Yes","cm":"P770","cms":["TaylorMade P770"],"cn":2},{"n":"Akshay Bhatia","g":"Under","p":null,"lg":"Strong","ss":"Fade","sw":null,"sh":"KBS $-Taper 125","sp":"Tip-stiff","fx":"S+","hd":"Callaway Apex TCB","ht":"Cavity Back","cb":"Yes","cm":"Apex UT","cms":["Apex UT"],"cn":1},{"n":"Chris Gotterup","g":"On Top","p":null,"lg":"Strong","ss":"Fade","sw":null,"sh":"KBS C-Taper 130","sp":"Tip-stiff","fx":"X-Stiff","hd":"Tour B 220 MB","ht":"Blade","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Matt Fitzpatrick","g":"On Top","p":null,"lg":null,"ss":null,"sw":null,"sh":"KBS Tour","sp":"Mid-stiff","fx":null,"hd":"Ping S55","ht":"Cavity Back","cb":"Yes","cm":"Ping i210","cms":["Ping i210"],"cn":2},{"n":"J.J. Spaun","g":"On Top","p":null,"lg":null,"ss":null,"sw":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Srixon ZXi7","ht":"Cavity Back","cb":"Yes","cm":"Srixon ZXi5, ZX Utility","cms":["Srixon ZXi5","Srixon ZX Utility"],"cn":2},{"n":"Viktor Hovland","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"KBS Tour-V 120","sp":"Mid-stiff","fx":"X-Stiff","hd":"Ping i210","ht":"Cavity Back","cb":"Yes","cm":"Ping iDi utility","cms":["Ping iDi utility"],"cn":1},{"n":"Ben Griffin","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Mizuno Pro S-3","ht":null,"cb":"No","cm":null,"cms":[],"cn":null},{"n":"Kristoffer Reitan","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"KBS Tour","sp":"Mid-stiff","fx":"X-Stiff","hd":"Ping Blueprint S","ht":"Cavity Back","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Kurt Kitayama","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"TaylorMade P7MB","ht":"Blade","cb":"Yes","cm":"TaylorMade P7CB, Titleist T250","cms":["TaylorMade P7CB","Titleist T250"],"cn":2},{"n":"Bud Cauley","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Dynamic Gold S300","sp":"Tip-stiff","fx":"Stiff","hd":"Titleist 620 MB","ht":"Blade","cb":"Yes","cm":"Titleist T250, U505","cms":["Titleist T250","Titleist U505"],"cn":2},{"n":"Alex Smalley","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Nippon Modus3 Tour 130","sp":"Mid-stiff","fx":"X-Stiff","hd":"Ping Blueprint S","ht":"Cavity Back","cb":"Yes","cm":"Ping i240","cms":["Ping i240"],"cn":2},{"n":"Rickie Fowler","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Aerotech SteelFiber i125cw","sp":null,"fx":null,"hd":"Cobra 3DP RF Prototype","ht":null,"cb":"No","cm":null,"cms":[],"cn":null},{"n":"Maverick McNealy","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"TaylorMade P7CB","ht":"Cavity Back","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Eugenio Chacarra","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Project X LZ 125","sp":"Butt-stiff","fx":"X-Stiff","hd":"TaylorMade P7MC","ht":"Cavity Back","cb":"Yes","cm":"TaylorMade P770","cms":["TaylorMade P770"],"cn":2},{"n":"Lucas Herbert","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Miura MB 101","ht":"Blade","cb":"Yes","cm":"Miura TC-202, Srixon ZXi7, ZXi5","cms":["Miura TC-202","Srixon ZXi7","Srixon ZXi5"],"cn":4},{"n":"Matt Wallace","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Nippon Modus3 Tour 120","sp":"Butt-stiff","fx":"X-Stiff","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"Yes","cm":"Titleist T250, Ping iDi","cms":["Titleist T250","Ping iDi"],"cn":3},{"n":"Jackson Koivun","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"Titleist 620 MB","ht":"Blade","cb":"Yes","cm":"Titleist T100, T250","cms":["Titleist T100","Titleist T250"],"cn":2},{"n":"Casey Jarvis","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":null,"sp":null,"fx":null,"hd":"TaylorMade P7MB","ht":"Blade","cb":"Yes","cm":"TaylorMade P770","cms":["TaylorMade P770"],"cn":1},{"n":"Keith Mitchell","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Mizuno Pro S-1","ht":null,"cb":"Yes","cm":"Mizuno Pro 225","cms":["Mizuno Pro 225"],"cn":1},{"n":"John Keefer","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"Yes","cm":"Titleist T100, T250","cms":["Titleist T100","Titleist T250"],"cn":3},{"n":"Austin Smotherman","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"KBS Tour 125","sp":"Mid-stiff","fx":"S+","hd":"Titleist T100","ht":"Cavity Back","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Nicolas Echavarria","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Nippon Modus3 Tour 125","sp":null,"fx":"X-Stiff","hd":"Srixon ZXi7","ht":"Cavity Back","cb":"Yes","cm":"Srixon ZXi5","cms":["Srixon ZXi5"],"cn":2},{"n":"Jordan Smith","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"7","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"Yes","cm":"Titleist T100","cms":["Titleist T100"],"cn":1},{"n":"Michael Kim","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Nippon Modus3 Tour 120","sp":"Butt-stiff","fx":"Stiff","hd":"Titleist T100","ht":"Cavity Back","cb":"Yes","cm":"Titleist T250","cms":["Titleist T250"],"cn":1},{"n":"Samuel Stevens","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Project X LZ 125","sp":"Butt-stiff","fx":"6.5","hd":"Ping Blueprint S","ht":"Cavity Back","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Harry Hall","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"7","hd":"Titleist 620 MB","ht":"Blade","cb":"Yes","cm":"Titleist 620 CB, T250","cms":["Titleist 620 CB","Titleist T250"],"cn":3},{"n":"Ryo Hisatsune","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"TaylorMade P7MC","ht":"Cavity Back","cb":"Yes","cm":"TaylorMade P7CB","cms":["TaylorMade P7CB"],"cn":1},{"n":"Rasmus Neergaard-Petersen","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Ping Blueprint S","ht":"Cavity Back","cb":"Yes","cm":"Ping i240, Ping iDi","cms":["Ping i240","Ping iDi"],"cn":2},{"n":"Jason Day","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"KBS TGI Tour 110","sp":null,"fx":null,"hd":"Avoda Prototype V3","ht":null,"cb":"No","cm":null,"cms":[],"cn":null},{"n":"Steven Fisk","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"KBS C-Taper 130","sp":"Tip-stiff","fx":"X-Stiff","hd":"Mizuno MP-20","ht":null,"cb":"Yes","cm":"Mizuno Pro 243, Pro 245","cms":["Mizuno Pro 243","Mizuno Pro 245"],"cn":2},{"n":"David Puig","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Matt McCarty","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Dynamic Gold Tour Issue Mid X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Ping Blueprint","ht":null,"cb":"No","cm":null,"cms":[],"cn":null},{"n":"Eric Cole","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Dynamic Gold Tour Issue Mid X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"PXG 0317 ST","ht":"Cavity Back","cb":"Yes","cm":"PXG 0311 Gen8","cms":["PXG 0311 Gen8"],"cn":1},{"n":"Sami Valimaki","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Dynamic Gold Tour Issue Mid X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Ping Blueprint S","ht":"Cavity Back","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Benjamin James","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Dynamic Gold Tour Issue X100 120","sp":"Tip-stiff","fx":"X-Stiff","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"Yes","cm":"Titleist T100, U500","cms":["Titleist T100","Titleist U500"],"cn":2},{"n":"Ricky Castillo","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":null,"sp":null,"fx":null,"hd":"Titleist 620 CB","ht":"Cavity Back","cb":"Yes","cm":"Titleist T350","cms":["Titleist T350"],"cn":1},{"n":"Andrew Novak","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Srixon Z-Forged II","ht":"Blade","cb":"Yes","cm":"Srixon ZX7 MkII","cms":["Srixon ZX7 MkII"],"cn":3},{"n":"Nick Taylor","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":null,"sp":null,"fx":null,"hd":"Titleist T100","ht":"Cavity Back","cb":"Yes","cm":"Titleist T250","cms":["Titleist T250"],"cn":1},{"n":"Jacob Skov Olesen","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":null,"sp":null,"fx":null,"hd":"Titleist T100","ht":"Cavity Back","cb":"Yes","cm":"Titleist T150","cms":["Titleist T150"],"cn":2},{"n":"Sandy Scott","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"AMT Tour White X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"TaylorMade P760","ht":null,"cb":"Yes","cm":"TaylorMade P790","cms":["TaylorMade P790"],"cn":1},{"n":"Ben Kohles","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Project X","sp":"Butt-stiff","fx":"6","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"Yes","cm":"Titleist T250","cms":["Titleist T250"],"cn":2},{"n":"McClure Meissner","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Nippon Modus3 Tour 125","sp":null,"fx":"X-Stiff","hd":"Titleist T100","ht":"Cavity Back","cb":"Yes","cm":"Titleist blade","cms":["Titleist blade"],"cn":1},{"n":"Matti Schmid","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Project X LS 130","sp":"Butt-stiff","fx":"7","hd":"Cobra 3DP MB","ht":"Blade","cb":"No","cm":null,"cms":[],"cn":null},{"n":"Max Greyserman","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Nippon Modus3 Tour 130","sp":"Mid-stiff","fx":"X-Stiff","hd":"Callaway Apex TCB","ht":"Cavity Back","cb":"Yes","cm":"Callaway Apex Pro","cms":["Callaway Apex Pro"],"cn":1},{"n":"Jackson Suber","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Dynamic Gold Tour Issue X100","sp":"Tip-stiff","fx":"X-Stiff","hd":"Titleist T100","ht":"Cavity Back","cb":"Yes","cm":"Titleist T250","cms":["Titleist T250"],"cn":1},{"n":"Jayden Schaper","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":null,"sp":null,"fx":null,"hd":"TaylorMade P7MB","ht":"Blade","cb":"Yes","cm":"TaylorMade P7MC","cms":["TaylorMade P7MC"],"cn":3},{"n":"Beau Hossler","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Project X","sp":"Butt-stiff","fx":"6","hd":"Titleist 620 CB","ht":"Cavity Back","cb":"Yes","cm":"Titleist T100, T200","cms":["Titleist T100","Titleist T200"],"cn":3},{"n":"Doug Ghim","g":null,"p":null,"lg":null,"ss":null,"sw":null,"sh":"Project X Rifle","sp":"Butt-stiff","fx":"6.5","hd":"Titleist T100","ht":"Cavity Back","cb":"Yes","cm":"Titleist T250","cms":["Titleist T250"],"cn":1}];
 
-var TRAITS = [
-  { key: 'g', name: 'Grip', note: 'Trail hand', values: ['On Top', 'Side On', 'Under'] },
-  { key: 'p', name: 'Post', note: '', values: ['Front', 'Center', 'Rear'] },
-  { key: 'lg', name: 'Lead-hand grip', note: '', values: ['Strong', 'Neutral', 'Weak'] }
+// ─── THRESHOLDS, from the workbook's Notes tab ───────────────────────────────
+var MIN_GROUP  = 3;     // Min players per group
+var BIG        = 0.25;  // Big difference (cross-tabs)
+var LOOK       = 0.15;  // Worth a look (cross-tabs)
+var SOLID_N    = 8;     // "Fairly solid"
+var EARLY_N    = 5;     // "Early sign"
+var SWAY_SPLIT = -5;    // Sway Gap threshold (P7): above = Small Gap, at or below = Large Gap
+var TIE_MARGIN = 0.05;  // Not from the workbook: options within 5 points of the leader are shown as a tie
+
+var bioFields = [
+  {id:'swayGap',    label:'Sway Gap at Impact',        unit:'inches',  col:'sway_gap'},
+  {id:'chestLift',  label:'Chest Lift Into Impact',    unit:'inches',  col:'chest_lift'},
+  {id:'leadElbow',  label:'Lead Elbow Flex at Impact', unit:'degrees', col:'lead_elbow'},
+  {id:'clubHandGap',label:'Club Hand Gap at Top',      unit:'inches',  col:'club_hand_gap'},
+  {id:'pelvisSway', label:'Pelvis Sway at Impact',     unit:'inches',  col:'pelvis_sway'}
 ];
-var PROFILE = {
-  'On Top|Front': 'P1', 'On Top|Center': 'P2', 'On Top|Rear': 'P3',
-  'Side On|Front': 'P4', 'Side On|Center': 'P5', 'Side On|Rear': 'P6',
-  'Under|Front': 'P7', 'Under|Center': 'P8', 'Under|Rear': 'P9'
+
+var PROFILE_NAMES = {
+  'On Top|Front':'Profile 1', 'On Top|Center':'Profile 2', 'On Top|Rear':'Profile 3',
+  'Side On|Front':'Profile 4','Side On|Center':'Profile 5','Side On|Rear':'Profile 6',
+  'Under|Front':'Profile 7',  'Under|Center':'Profile 8',  'Under|Rear':'Profile 9'
 };
-var OUTCOMES = [
-  { key: 'sp', label: 'Shaft profile', values: ['Tip-stiff', 'Mid-stiff', 'Butt-stiff'], names: {} },
-  { key: 'ht', label: 'Head type', values: ['Blade', 'Cavity Back'], names: { 'Cavity Back': 'Cavity back' } },
-  { key: 'cb', label: 'Long irons', values: ['Yes', 'No'], names: { 'Yes': 'Long-iron combo', 'No': 'One model through the set' } }
+var PROFILE_KEYS = ['On Top|Front','On Top|Center','On Top|Rear','Side On|Front','Side On|Center','Side On|Rear','Under|Front','Under|Center','Under|Rear'];
+
+var BALL_NAMES = ['Titleist Pro V1','Titleist Pro V1x','Titleist Pro V1 Left Dot','Titleist Pro V1x Left Dash','Titleist AVX',
+  'TaylorMade TP5','TaylorMade TP5x','Callaway Chrome Tour','Callaway Chrome Tour X','Callaway Chrome Tour Triple Diamond',
+  'Srixon Z-Star','Srixon Z-Star Diamond','Srixon Z-Star XV','Bridgestone Tour B X','Bridgestone Tour B XS','Wilson Staff Model X','Maxfli Tour X'];
+
+// The three specs the engine recommends.
+var SPECS = [
+  {key:'sp', label:'Shaft profile', values:['Tip-stiff','Mid-stiff','Butt-stiff'], names:{}},
+  {key:'ht', label:'Head type',     values:['Blade','Cavity Back'], names:{'Cavity Back':'Cavity back'}},
+  {key:'cb', label:'Long irons',    values:['Yes','No'], names:{'Yes':'Long-iron combo','No':'One model through the set'}}
+];
+// The traits a tour player can share with the player being fitted.
+var TRAITS = [
+  {key:'g',   name:'Grip',            values:['On Top','Side On','Under']},
+  {key:'p',   name:'Post',            values:['Front','Center','Rear']},
+  {key:'lg',  name:'Lead-hand grip',  values:['Strong','Neutral','Weak']},
+  {key:'ss',  name:'Iron shot shape', values:['Draw','Fade','Both']},
+  {key:'swg', name:'Iron sway gap',   values:['Small Gap','Large Gap']}
 ];
 
-// ---- helpers ----
-function el(tag, cls, text) {
-  var n = document.createElement(tag);
-  if (cls) n.className = cls;
-  if (text !== undefined && text !== null) n.textContent = text;
-  return n;
+function swayGroup(v) {
+  if(v===null || v===undefined || isNaN(v)) return null;
+  return v > SWAY_SPLIT ? 'Small Gap' : 'Large Gap';
 }
-function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
-function pct(x) { return Math.round(x * 100) + '%'; }
-function plural(n, word) { return n + ' ' + word + (n === 1 ? '' : 's'); }
+PLAYERS.forEach(function(pl){ pl.swg = swayGroup(pl.sw); });
 
-function activeKeys(f) {
-  return ['g', 'p', 'lg'].filter(function (k) { return f[k]; });
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function el(tag, cls, text) {
+  var e = document.createElement(tag);
+  if(cls) e.className = cls;
+  if(text !== undefined && text !== null) e.textContent = text;
+  return e;
 }
-function matching(f) {
-  var keys = activeKeys(f);
-  return PLAYERS.filter(function (pl) {
-    return keys.every(function (k) { return pl[k] === f[k]; });
-  });
+function icon(name) { var i = el('i','ti '+name); i.setAttribute('aria-hidden','true'); return i; }
+function clear(node) { while(node.firstChild) node.removeChild(node.firstChild); }
+function pct(x) { return Math.round(x*100)+'%'; }
+function plural(n, word) { return n+' '+word+(n===1?'':'s'); }
+function toast(msg, type) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show '+(type||'success');
+  setTimeout(function(){ t.className='toast'; }, 2500);
 }
-// The field for a group: every player with the same traits recorded.
-function field(f) {
-  var keys = activeKeys(f);
-  return PLAYERS.filter(function (pl) {
-    return keys.every(function (k) { return pl[k]; });
-  });
+function setDBStatus(connected) {
+  var s = document.getElementById('db-status');
+  s.textContent = connected ? 'Connected' : 'Offline';
+  s.className = 'db-status '+(connected ? 'connected' : 'error');
 }
-function tally(list, key) {
-  var counts = {}, n = 0;
-  list.forEach(function (pl) {
-    if (pl[key]) { counts[pl[key]] = (counts[pl[key]] || 0) + 1; n++; }
-  });
-  return { n: n, counts: counts };
-}
-function share(t, value) { return t.n ? (t.counts[value] || 0) / t.n : 0; }
-function describe(f) {
-  var parts = [];
-  if (f.g) parts.push(f.g + ' grip');
-  if (f.p) parts.push(f.p + ' post');
-  if (f.lg) parts.push(f.lg + ' lead hand');
-  return parts.length ? parts.join(' + ') : 'All players';
+function sectionHeader(title) {
+  var h = el('div','section-header');
+  h.appendChild(el('div','section-title',title));
+  h.appendChild(el('div','section-line'));
+  return h;
 }
 function sizeLabel(n) {
-  if (n >= SOLID_N) return { text: 'Fairly solid', cls: 'solid' };
-  if (n >= EARLY_N) return { text: 'Early sign', cls: '' };
-  return { text: 'Very early', cls: '' };
+  if(n >= SOLID_N) return 'Fairly solid';
+  if(n >= EARLY_N) return 'Early sign';
+  return 'Very early';
 }
-function gapClass(diff) {
-  if (diff >= BIG) return 'big';
-  if (diff >= LOOK) return 'look';
-  return '';
+function gapClass(diff) { return diff >= BIG ? 'big' : diff >= LOOK ? 'look' : ''; }
+function tally(list, key) {
+  var counts = {}, n = 0;
+  list.forEach(function(pl){ if(pl[key]) { counts[pl[key]] = (counts[pl[key]]||0)+1; n++; } });
+  return {n:n, counts:counts};
 }
-
-// Narrowest group with enough players for this outcome. Drops the least-recorded
-// trait first (lead-hand grip, then post), ending at all players.
-function basisFor(outcomeKey) {
-  var tries = [
-    { g: state.g, p: state.p, lg: state.lg },
-    { g: state.g, p: state.p, lg: null },
-    { g: state.g, p: null, lg: null },
-    { g: null, p: null, lg: null }
-  ];
-  var seen = {};
-  for (var i = 0; i < tries.length; i++) {
-    var f = tries[i], id = describe(f);
-    if (seen[id]) continue;
-    seen[id] = true;
-    var t = tally(matching(f), outcomeKey);
-    if (t.n >= MIN_GROUP || activeKeys(f).length === 0) {
-      return { filter: f, tally: t, narrowed: i > 0 && activeKeys(f).length < activeKeys(state).length };
-    }
-  }
-  return null;
+function share(t, v) { return t.n ? (t.counts[v]||0)/t.n : 0; }
+function where(f) {
+  var keys = Object.keys(f).filter(function(k){ return f[k]; });
+  return PLAYERS.filter(function(pl){ return keys.every(function(k){ return pl[k]===f[k]; }); });
+}
+// The field for a group: every player with the same traits recorded.
+function fieldOf(keys) {
+  return PLAYERS.filter(function(pl){ return keys.every(function(k){ return pl[k]; }); });
 }
 
-// ---- render: controls ----
-function renderControls() {
-  var box = document.getElementById('controls');
-  clear(box);
-  TRAITS.forEach(function (trait) {
-    var row = el('div', 'ctl-row');
-    row.setAttribute('role', 'group');
-    row.setAttribute('aria-label', trait.name);
-    var name = el('div', 'ctl-name', trait.name);
-    var recorded = PLAYERS.filter(function (pl) { return pl[trait.key]; }).length;
-    name.appendChild(el('small', null, recorded + ' players recorded'));
-    row.appendChild(name);
-    [null].concat(trait.values).forEach(function (value) {
-      var on = state[trait.key] === value;
-      var b = el('button', 'chip' + (on ? ' sel' : ''), value || 'Any');
-      b.type = 'button';
-      b.setAttribute('aria-pressed', on ? 'true' : 'false');
-      b.addEventListener('click', function () {
-        state[trait.key] = value;
-        render();
-      });
-      row.appendChild(b);
-    });
-    box.appendChild(row);
+// ─── NAV ─────────────────────────────────────────────────────────────────────
+function buildNav() {
+  var nav = document.getElementById('nav');
+  clear(nav);
+  [{id:'fitting', icon:'ti-adjustments-horizontal', label:'Fitting'},
+   {id:'sessions',icon:'ti-history',                label:'Sessions'},
+   {id:'results', icon:'ti-clipboard-list',         label:'Results'},
+   {id:'ironmap', icon:'ti-chart-grid-dots',        label:'Iron Map'}
+  ].forEach(function(p){
+    var btn = el('button','nav-btn'+(currentPage===p.id?' active':''));
+    btn.id = 'nav-'+p.id;
+    btn.appendChild(icon(p.icon));
+    btn.appendChild(document.createTextNode(p.label));
+    btn.addEventListener('click', function(){ showPage(p.id); });
+    nav.appendChild(btn);
   });
-
-  var prof = document.getElementById('profile');
-  clear(prof);
-  if (state.g && state.p) {
-    prof.appendChild(el('b', null, PROFILE[state.g + '|' + state.p]));
-    prof.appendChild(el('span', null, state.g + ' / ' + state.p + (state.lg ? ' · ' + state.lg + ' lead hand' : '')));
-  }
+}
+function showPage(page) {
+  if(currentPage==='fitting' && document.getElementById('f-name')) saveFittingState();
+  currentPage = page;
+  buildNav();
+  if(page==='fitting')       renderFitting();
+  else if(page==='sessions') renderSessions();
+  else if(page==='results')  renderResults();
+  else if(page==='ironmap')  renderIronMap();
+  window.scrollTo(0,0);
 }
 
-// ---- render: recommendations (ranked shaft profile + head type combinations) ----
-var MAX_RECS = 3;
-function hasBoth(pl) { return pl.sp && pl.ht; }
-// Narrowest group with at least MIN_GROUP players who have shaft profile and head type recorded.
-function recBasis() {
-  var tries = [
-    { g: state.g, p: state.p, lg: state.lg },
-    { g: state.g, p: state.p, lg: null },
-    { g: state.g, p: null, lg: null },
-    { g: null, p: null, lg: null }
-  ];
-  for (var i = 0; i < tries.length; i++) {
-    var list = matching(tries[i]).filter(hasBoth);
-    if (list.length >= MIN_GROUP || activeKeys(tries[i]).length === 0) {
-      return { filter: tries[i], list: list, narrowed: activeKeys(tries[i]).length < activeKeys(state).length };
+// ─── LOAD DATA ───────────────────────────────────────────────────────────────
+async function loadSessions() {
+  if(!db) { setDBStatus(false); return; }
+  try {
+    var res = await db.from('sessions').select('*').eq('club',CLUB).order('created_at',{ascending:false});
+    if(res.error) { setDBStatus(false); console.error('Supabase error:', res.error); return; }
+    sessionsList = res.data || [];
+    setDBStatus(true);
+  } catch(err) { setDBStatus(false); }
+}
+
+// ─── FITTING FORM ────────────────────────────────────────────────────────────
+function makeSidebarLabel(text) { return el('div','sidebar-label',text); }
+function makeField(labelText, inputEl) {
+  var f = el('div','field');
+  var lbl = el('label',null,labelText);
+  if(inputEl.id) lbl.htmlFor = inputEl.id;
+  f.appendChild(lbl);
+  f.appendChild(inputEl);
+  return f;
+}
+function makeInput(id, type, placeholder) {
+  var i = document.createElement('input');
+  i.id = id; i.type = type||'text'; i.placeholder = placeholder||'';
+  return i;
+}
+
+// Dropdown ranges for the fitting inputs. Launch-monitor ranges are sized for a 7-iron.
+var INPUT_RANGES = {
+  'f-hdcp':   {list:(function(){var v=[];for(var i=6;i>=1;i--)v.push(['+'+i,'+'+i]);for(var j=0;j<=36;j++)v.push([String(j),String(j)]);return v;})()},
+  'f-height': {list:(function(){var v=[];for(var i=60;i<=80;i++)v.push([String(i),Math.floor(i/12)+"' "+(i%12)+'" ('+i+' in)']);return v;})()},
+  'f-ss':     {min:60,  max:105,  step:2.5, openLow:true, openHigh:true},
+  'f-bs':     {min:80,  max:145,  step:2.5, openLow:true, openHigh:true},
+  'f-la':     {min:10,  max:26,   step:1,   openLow:true, openHigh:true},
+  'f-sr':     {min:4000,max:9000, step:250, openLow:true, openHigh:true},
+  'f-dl':     {min:14,  max:30,   step:0.5, openLow:true, openHigh:true},
+  'f-aa':     {min:-10, max:2,    step:0.5, signed:true, openLow:true, openHigh:true},
+  'f-cp':     {min:-8,  max:8,    step:0.5, signed:true, openLow:true, openHigh:true},
+  'bio-swayGap':     {min:-12, max:0,  step:0.5, signed:true, openLow:true},
+  'bio-chestLift':   {min:-4,  max:4,  step:0.5, signed:true, openLow:true, openHigh:true},
+  'bio-leadElbow':   {min:130, max:180,step:2,   openLow:true},
+  'bio-clubHandGap': {min:-6,  max:6,  step:0.5, signed:true, openLow:true, openHigh:true},
+  'bio-pelvisSway':  {min:0,   max:10, step:0.5, openHigh:true}
+};
+function rangeOptions(cfg) {
+  if(cfg.list) return cfg.list;
+  var out = [], n = Math.round((cfg.max-cfg.min)/cfg.step);
+  var dec = (String(cfg.step).split('.')[1]||'').length;
+  for(var i=0;i<=n;i++){
+    var v = +(cfg.min + i*cfg.step).toFixed(dec);
+    var txt = v.toFixed(dec);
+    if(cfg.signed && v>0) txt = '+'+txt;
+    if(v<0) txt = '−'+Math.abs(v).toFixed(dec);
+    if(i===0 && cfg.openLow) txt += ' or less';
+    if(i===n && cfg.openHigh) txt += ' or more';
+    out.push([String(v), txt]);
+  }
+  return out;
+}
+function makeRangeSelect(id) {
+  var sel = document.createElement('select');
+  sel.id = id;
+  var blank = el('option',null,'—'); blank.value=''; sel.appendChild(blank);
+  rangeOptions(INPUT_RANGES[id]).forEach(function(o){
+    var opt = el('option',null,o[1]); opt.value=o[0]; sel.appendChild(opt);
+  });
+  return sel;
+}
+function makeListSelect(id, placeholder, names, allowOther) {
+  var sel = document.createElement('select');
+  sel.id = id;
+  var blank = el('option',null,placeholder); blank.value=''; sel.appendChild(blank);
+  names.forEach(function(n){ var o = el('option',null,n); o.value=n; sel.appendChild(o); });
+  if(allowOther) { var other = el('option',null,'Other / not in the research'); other.value='__other__'; sel.appendChild(other); }
+  return sel;
+}
+function updateSmash() {
+  var ss=parseFloat((document.getElementById('f-ss')||{}).value), bs=parseFloat((document.getElementById('f-bs')||{}).value);
+  var out=document.getElementById('f-smash-calc');
+  if(out) out.textContent = (ss>0&&bs>0) ? (bs/ss).toFixed(2) : '—';
+}
+function makeChipGroup(field, options) {
+  var g = el('div','chip-group');
+  options.forEach(function(val){
+    var on = fittingState[field]===val;
+    var btn = el('button','chip'+(on?' selected':''),val);
+    btn.type = 'button';
+    btn.setAttribute('aria-pressed', on?'true':'false');
+    btn.addEventListener('click', function(){ setChip(field,val); });
+    g.appendChild(btn);
+  });
+  return g;
+}
+function setChip(field, value) {
+  saveFittingState();
+  fittingState[field] = fittingState[field]===value ? '' : value;
+  var y = window.scrollY;
+  renderFitting();
+  window.scrollTo(0,y);
+}
+var FORM_IDS = ['f-name','f-hdcp','f-height','f-ball','f-ss','f-bs','f-la','f-sr','f-dl','f-aa','f-cp','f-curhead','f-curhead-other','f-curshaft','f-curshaft-other','f-notes'];
+function saveFittingState() {
+  FORM_IDS.forEach(function(id){ var e=document.getElementById(id); if(e) fittingState[id] = e.value; });
+  bioFields.forEach(function(f){ var e=document.getElementById('bio-'+f.id); if(e) fittingState['bio-'+f.id] = e.value; });
+}
+function restoreFields() {
+  FORM_IDS.forEach(function(id){
+    var e = document.getElementById(id);
+    if(e && fittingState[id] !== undefined) e.value = fittingState[id];
+  });
+  ['f-curhead','f-curshaft'].forEach(function(id){
+    var other = document.getElementById(id+'-other');
+    if(other) other.style.display = fittingState[id]==='__other__' ? '' : 'none';
+  });
+  bioFields.forEach(function(f){
+    var e = document.getElementById('bio-'+f.id);
+    if(e && fittingState['bio-'+f.id] !== undefined) e.value = fittingState['bio-'+f.id];
+  });
+  updateSmash();
+}
+function distinct(key) {
+  var seen = {};
+  PLAYERS.forEach(function(pl){ if(pl[key]) seen[pl[key]] = true; });
+  return Object.keys(seen).sort(function(a,b){ return a.localeCompare(b); });
+}
+
+function renderFitting() {
+  clear(document.getElementById('sidebar'));
+  var wrap = document.getElementById('content');
+  clear(wrap);
+
+  // ── Section 1: Player info ──
+  var sec1 = el('div','sidebar-section');
+  sec1.appendChild(makeSidebarLabel('Player info'));
+  sec1.appendChild(makeField('Player name', makeInput('f-name','text','Full name')));
+  var row1 = el('div','field-row');
+  row1.appendChild(makeField('Handicap', makeRangeSelect('f-hdcp')));
+  row1.appendChild(makeField('Height', makeRangeSelect('f-height')));
+  sec1.appendChild(row1);
+  sec1.appendChild(makeField('Ball played', makeListSelect('f-ball','— Select ball —',BALL_NAMES,false)));
+  wrap.appendChild(sec1);
+
+  // ── Section 2: Swing profile chips ──
+  var sec2 = el('div','sidebar-section');
+  sec2.appendChild(makeSidebarLabel('Grip type'));
+  sec2.appendChild(makeChipGroup('grip',['On Top','Under','Side On']));
+  var leadLbl = makeSidebarLabel('Lead hand grip'); leadLbl.style.marginTop='16px';
+  sec2.appendChild(leadLbl);
+  sec2.appendChild(makeChipGroup('leadGrip',['Strong','Neutral','Weak']));
+  var postLbl = makeSidebarLabel('Post position'); postLbl.style.marginTop='16px';
+  sec2.appendChild(postLbl);
+  sec2.appendChild(makeChipGroup('post',['Front','Center','Rear']));
+  var preview = el('div','profile-preview');
+  if(fittingState.grip && fittingState.post) {
+    preview.appendChild(el('span','profile-num',PROFILE_NAMES[fittingState.grip+'|'+fittingState.post]));
+    preview.appendChild(el('span','profile-desc',' — '+fittingState.grip+' / '+fittingState.post));
+  } else if(fittingState.grip || fittingState.post) {
+    preview.appendChild(el('span','profile-desc','Select both grip and post to see profile'));
+  }
+  sec2.appendChild(preview);
+  var shapeLbl = makeSidebarLabel('Iron shot shape'); shapeLbl.style.marginTop='16px';
+  sec2.appendChild(shapeLbl);
+  sec2.appendChild(makeChipGroup('shotShape',['Draw','Fade','Both']));
+  wrap.appendChild(sec2);
+
+  // ── Section 3: SportsBox AI ──
+  var bioWrap = el('div','sidebar-section');
+  var bioTitle = el('div','bio-section-title');
+  bioTitle.appendChild(el('span',null,'SportsBox AI'));
+  bioTitle.appendChild(document.createTextNode(' — Biomechanics'));
+  bioWrap.appendChild(bioTitle);
+  bioWrap.appendChild(el('div','section-note','Enter the player\'s iron-swing measurements from SportsBox AI. Sway gap feeds the recommendation now; the other four are saved with the session and will feed it once the research has iron data for them.'));
+  var bioGrid = el('div','bio-grid');
+  bioFields.forEach(function(f){
+    var card = el('div','bio-card');
+    var hdr = el('div','bio-card-header');
+    var nm = el('label','bio-card-name',f.label); nm.htmlFor = 'bio-'+f.id;
+    hdr.appendChild(nm);
+    hdr.appendChild(el('span','bio-card-unit',f.unit));
+    card.appendChild(hdr);
+    card.appendChild(makeRangeSelect('bio-'+f.id));
+    bioGrid.appendChild(card);
+  });
+  bioWrap.appendChild(bioGrid);
+  wrap.appendChild(bioWrap);
+
+  // ── Section 4: Launch monitor ──
+  var lmWrap = el('div','sidebar-section');
+  var lmTitle = el('div','bio-section-title');
+  lmTitle.appendChild(el('span',null,'Launch Monitor'));
+  lmTitle.appendChild(document.createTextNode(' — 7-iron'));
+  lmWrap.appendChild(lmTitle);
+  lmWrap.appendChild(el('div','section-note','Saved with the session. The research has no iron launch data yet, so these do not change the recommendation.'));
+  var lmGrid = el('div','lm-grid');
+  [{id:'f-ss',label:'Swing Speed',unit:'mph'},
+   {id:'f-bs',label:'Ball Speed',unit:'mph'},
+   {id:'f-smash',label:'Smash Factor',unit:'ball speed ÷ swing speed · auto',calc:true},
+   {id:'f-la',label:'Launch Angle',unit:'degrees'},
+   {id:'f-sr',label:'Spin Rate',unit:'rpm'},
+   {id:'f-dl',label:'Dynamic Loft',unit:'degrees'},
+   {id:'f-aa',label:'Attack Angle',unit:'degrees'},
+   {id:'f-cp',label:'Club Path',unit:'degrees'}
+  ].forEach(function(f){
+    var card = el('div','lm-card');
+    var lbl = el('label',null,f.label);
+    card.appendChild(lbl);
+    if(f.calc) { var c = el('div','lm-calc','—'); c.id='f-smash-calc'; card.appendChild(c); }
+    else {
+      lbl.htmlFor = f.id;
+      var sel = makeRangeSelect(f.id);
+      if(f.id==='f-ss'||f.id==='f-bs') sel.addEventListener('change',updateSmash);
+      card.appendChild(sel);
     }
-  }
-  return null;
+    card.appendChild(el('div','lm-unit',f.unit));
+    lmGrid.appendChild(card);
+  });
+  lmWrap.appendChild(lmGrid);
+  wrap.appendChild(lmWrap);
+
+  // ── Section 4b: Current irons ──
+  var curWrap = el('div','sidebar-section');
+  var curTitle = el('div','bio-section-title');
+  curTitle.appendChild(el('span',null,'Current Irons'));
+  curWrap.appendChild(curTitle);
+  [['f-curhead','Current head','— Select current head —','hd','Head model (if not listed)'],
+   ['f-curshaft','Current shaft','— Select current shaft —','sh','Shaft model (if not listed)']
+  ].forEach(function(c){
+    var sel = makeListSelect(c[0],c[2],distinct(c[3]),true);
+    curWrap.appendChild(makeField(c[1],sel));
+    var other = makeInput(c[0]+'-other','text',c[4]);
+    other.className = 'other-input';
+    other.setAttribute('aria-label',c[4]);
+    other.style.display = 'none';
+    curWrap.appendChild(other);
+    sel.addEventListener('change', function(){ other.style.display = (sel.value==='__other__') ? '' : 'none'; });
+  });
+  wrap.appendChild(curWrap);
+
+  // ── Section 5: Notes ──
+  var notesSec = el('div','sidebar-section');
+  var divider = el('div','section-divider'); divider.appendChild(el('span',null,'Fitting notes'));
+  notesSec.appendChild(divider);
+  var notes = document.createElement('textarea');
+  notes.id='f-notes'; notes.rows=3; notes.className='notes-input';
+  notes.placeholder='Observations, tendencies, goals discussed with player...';
+  notes.setAttribute('aria-label','Fitting notes');
+  notesSec.appendChild(notes);
+  wrap.appendChild(notesSec);
+
+  // ── Run / Clear ──
+  var runBtn = el('button','run-btn');
+  runBtn.type = 'button';
+  runBtn.appendChild(icon('ti-player-play'));
+  runBtn.appendChild(document.createTextNode(' Run Fitting'));
+  runBtn.addEventListener('click', function(){ runFitting(); });
+  wrap.appendChild(runBtn);
+  var clearBtn = el('button','clear-btn','Clear all fields');
+  clearBtn.type = 'button';
+  clearBtn.addEventListener('click', function(){ clearFitting(); });
+  wrap.appendChild(clearBtn);
+
+  restoreFields();
 }
-function topNames(list, key, max) {
-  var counts = {};
-  list.forEach(function (pl) { if (pl[key]) counts[pl[key]] = (counts[pl[key]] || 0) + 1; });
-  return Object.keys(counts)
-    .sort(function (a, b) { return counts[b] - counts[a] || a.localeCompare(b); })
-    .slice(0, max)
-    .map(function (name) { return counts[name] > 1 ? name + ' (' + counts[name] + ')' : name; });
-}
-function metaLine(label, text) {
-  var d = el('div', 'rec-meta');
-  d.appendChild(el('b', null, label + ': '));
-  d.appendChild(document.createTextNode(text));
+
+function getFittingData() {
+  saveFittingState();
+  var g = function(id){ var v = fittingState[id]; return v===undefined ? '' : v; };
+  var num = function(id){ var v = g(id); return (v===''||isNaN(parseFloat(v))) ? null : parseFloat(v); };
+  var d = {
+    name:g('f-name'), hdcp:g('f-hdcp'), height:g('f-height'), ball:g('f-ball'),
+    grip:fittingState.grip||'', post:fittingState.post||'', leadGrip:fittingState.leadGrip||'', shotShape:fittingState.shotShape||'',
+    ss:num('f-ss'), bs:num('f-bs'), la:num('f-la'), sr:num('f-sr'), dl:num('f-dl'), aa:num('f-aa'), cp:num('f-cp'),
+    curHead: g('f-curhead')==='__other__' ? g('f-curhead-other') : g('f-curhead'),
+    curShaft: g('f-curshaft')==='__other__' ? g('f-curshaft-other') : g('f-curshaft'),
+    notes:g('f-notes')
+  };
+  bioFields.forEach(function(f){ d[f.id] = num('bio-'+f.id); });   // keeps genuine 0 readings
+  d.smash = (d.ss>0 && d.bs>0) ? Math.round(d.bs/d.ss*100)/100 : null;
   return d;
 }
-function renderRecs() {
-  var b = recBasis();
-  var total = b.list.length;
-  var isField = activeKeys(b.filter).length === 0;
+function clearFitting() {
+  fittingState = {grip:'',post:'',leadGrip:'',shotShape:''};
+  currentSession = null;
+  document.getElementById('session-label').textContent = 'No active session';
+  renderFitting();
+  window.scrollTo(0,0);
+}
 
-  var tags = document.getElementById('rec-tags');
-  clear(tags);
-  if (!isField) {
-    var s = sizeLabel(total);
-    tags.appendChild(el('span', 'tag ' + s.cls, s.text + ' · ' + plural(total, 'player')));
+// ─── RUN FITTING ─────────────────────────────────────────────────────────────
+async function runFitting() {
+  var data = getFittingData();
+  var recs = buildRecommendations(data);
+  currentSession = {data:data, recs:recs};
+  document.getElementById('session-label').textContent = data.name || 'Active session';
+  showPage('results');
+  await saveSession(data, recs);
+}
+
+// ─── ENGINE ──────────────────────────────────────────────────────────────────
+// Every trait the fitter enters is a signal: the tour players who share it, and how they split
+// on each spec. No signal overrides another. Each signal with at least MIN_GROUP players votes
+// with its split, and the votes are averaged. Grip and post vote together as the profile when
+// the profile has enough players, and separately when it does not.
+function traitsOf(d) {
+  return {g:d.grip||null, p:d.post||null, lg:d.leadGrip||null, ss:d.shotShape||null, swg:swayGroup(d.swayGap)};
+}
+function buildSignals(d) {
+  var t = traitsOf(d), signals = [];
+  function add(kind, label, f) {
+    var keys = Object.keys(f);
+    signals.push({kind:kind, label:label, keys:keys, list:where(f), field:fieldOf(keys)});
   }
+  if(t.g && t.p) {
+    var profile = where({g:t.g, p:t.p});
+    if(profile.length >= MIN_GROUP) {
+      add('profile', PROFILE_NAMES[t.g+'|'+t.p]+' ('+t.g+' / '+t.p+')', {g:t.g, p:t.p});
+    } else {
+      add('grip', t.g+' grip', {g:t.g});
+      add('post', t.p+' post', {p:t.p});
+    }
+  } else if(t.g) { add('grip', t.g+' grip', {g:t.g}); }
+  else if(t.p)   { add('post', t.p+' post', {p:t.p}); }
+  if(t.lg)  add('lead',  t.lg+' lead-hand grip', {lg:t.lg});
+  if(t.ss)  add('shape', t.ss==='Both' ? 'Works it both ways' : t.ss+' shot shape', {ss:t.ss});
+  if(t.swg) add('bio',   t.swg==='Small Gap' ? 'Small iron sway gap' : 'Large iron sway gap', {swg:t.swg});
+  return signals;
+}
+function buildRecommendations(d) {
+  var t = traitsOf(d);
+  var signals = buildSignals(d);
+  var profileKey = (d.grip && d.post) ? d.grip+'|'+d.post : null;
+  var profileSmall = profileKey && !signals.some(function(s){ return s.kind==='profile'; });
 
-  var basis = document.getElementById('rec-basis');
-  if (isField && activeKeys(state).length === 0) {
-    basis.textContent = 'Showing all ' + total + ' players with a shaft and head recorded. Pick a grip or post to narrow it down.';
-  } else if (isField) {
-    basis.textContent = 'Fewer than ' + MIN_GROUP + ' players match these traits, so this shows all ' + total + ' players.';
-  } else if (b.narrowed) {
-    basis.textContent = 'Fewer than ' + MIN_GROUP + ' players match everything selected, so this uses the ' + total + ' with ' + describe(b.filter) + '.';
-  } else {
-    basis.textContent = 'What the ' + total + ' tour players with ' + describe(b.filter) + ' play, most played first.';
+  // Combine the signals on each spec.
+  var specs = {};
+  var backing = {};
+  SPECS.forEach(function(o){
+    var voters = [];
+    signals.forEach(function(s){
+      var tl = tally(s.list, o.key);
+      if(tl.n >= MIN_GROUP) voters.push({signal:s, tally:tl});
+    });
+    var support = {};
+    if(voters.length) {
+      o.values.forEach(function(v){
+        var sum = 0;
+        voters.forEach(function(vt){ sum += share(vt.tally, v); });
+        support[v] = sum / voters.length;
+      });
+      voters.forEach(function(vt){ vt.signal.list.forEach(function(pl){ if(pl[o.key]) backing[pl.n] = true; }); });
+    } else {
+      var ft = tally(PLAYERS, o.key);
+      o.values.forEach(function(v){ support[v] = share(ft, v); });
+    }
+    var best = 0;
+    o.values.forEach(function(v){ if(support[v] > best) best = support[v]; });
+    var tops = o.values.filter(function(v){ return best - support[v] < TIE_MARGIN; });
+    specs[o.key] = {support:support, tops:tops, voters:voters.length, fieldOnly:!voters.length};
+  });
+  var backers = Object.keys(backing).length;
+
+  // Guideline line.
+  var combo = specs.cb;
+  var comboText = combo.tops.length!==1 ? 'combo optional' : combo.tops[0]==='Yes' ? 'combo recommended' : 'one model through the set';
+  var guideline = specs.sp.tops.join(' or ')+' + '+specs.ht.tops.map(function(v){ return v.toLowerCase(); }).join(' or ')+', '+comboText;
+
+  // Pools: every model of the recommended type, closest tour matches first.
+  function matches(pl) {
+    var n = 0;
+    ['g','p','lg','ss','swg'].forEach(function(k){ if(t[k] && pl[k]===t[k]) n++; });
+    return n;
   }
-
-  var groups = {};
-  b.list.forEach(function (pl) {
-    var id = pl.sp + '|' + pl.ht;
-    (groups[id] = groups[id] || []).push(pl);
+  function pool(nameKey, typeKey, types) {
+    var by = {};
+    PLAYERS.forEach(function(pl){
+      if(!pl[nameKey] || types.indexOf(pl[typeKey]) < 0) return;
+      var m = by[pl[nameKey]] || (by[pl[nameKey]] = {name:pl[nameKey], type:pl[typeKey], players:[], score:0, close:0, best:0, flexes:[]});
+      var mc = matches(pl);
+      m.players.push({n:pl.n, m:mc});
+      m.score += mc;
+      if(mc > 0) m.close++;
+      if(mc > m.best) m.best = mc;
+      if(pl.fx && m.flexes.indexOf(pl.fx) < 0) m.flexes.push(pl.fx);
+    });
+    return Object.keys(by).map(function(k){ return by[k]; }).sort(function(a,b){
+      return b.best-a.best || b.score-a.score || b.players.length-a.players.length || a.name.localeCompare(b.name);
+    });
+  }
+  var heads  = pool('hd','ht',specs.ht.tops);
+  var shafts = pool('sh','sp',specs.sp.tops);
+  var longBy = {};
+  PLAYERS.forEach(function(pl){
+    var mc = matches(pl);
+    (pl.cms||[]).forEach(function(name){
+      var m = longBy[name] || (longBy[name] = {name:name, players:[], score:0, close:0, best:0});
+      m.players.push({n:pl.n, m:mc});
+      m.score += mc;
+      if(mc > 0) m.close++;
+      if(mc > m.best) m.best = mc;
+    });
   });
-  var order = Object.keys(groups).sort(function (x, y) {
-    return groups[y].length - groups[x].length || x.localeCompare(y);
+  var longIrons = Object.keys(longBy).map(function(k){ return longBy[k]; }).sort(function(a,b){
+    return b.best-a.best || b.score-a.score || b.players.length-a.players.length || a.name.localeCompare(b.name);
   });
-  var clearTop = order.length === 1 || (order.length > 1 && groups[order[0]].length > groups[order[1]].length);
 
-  var box = document.getElementById('recs');
-  clear(box);
-  // Show the top MAX_RECS, plus any combination tied with the last one shown.
-  var cut = Math.min(MAX_RECS, order.length);
-  while (cut < order.length && groups[order[cut]].length === groups[order[cut - 1]].length) cut++;
-  order.slice(0, cut).forEach(function (id, i) {
-    var list = groups[id], parts = id.split('|');
-    var li = el('li', 'rec' + (i === 0 && clearTop ? ' top' : ''));
-    li.appendChild(el('div', 'rec-rank', String(i + 1)));
-    var body = el('div', 'rec-body');
-    body.appendChild(el('div', 'rec-title', parts[0] + ' shaft + ' + parts[1].toLowerCase() + ' head'));
-    body.appendChild(metaLine('Shafts', topNames(list, 'sh', 3).join(', ')));
-    body.appendChild(metaLine('Heads', topNames(list, 'hd', 3).join(', ')));
-    var names = list.map(function (pl) { return pl.n; });
-    var shown = names.slice(0, 4).join(', ') + (names.length > 4 ? ' and ' + (names.length - 4) + ' more' : '');
-    body.appendChild(metaLine('Played by', shown));
+  // Closest tour matches.
+  var entered = ['g','p','lg','ss','swg'].filter(function(k){ return t[k]; }).length;
+  var closest = PLAYERS.map(function(pl){ return {pl:pl, m:matches(pl)}; })
+    .filter(function(x){ return x.m > 0; })
+    .sort(function(a,b){ return b.m-a.m || a.pl.n.localeCompare(b.pl.n); });
+
+  // SportsBox read-out, one line per variable.
+  var sportsbox = [];
+  if(d.swayGap !== null && d.swayGap !== undefined) {
+    var sg = where({swg:t.swg}), st = tally(sg,'sp'), top = null;
+    SPECS[0].values.forEach(function(v){ if(top===null || (st.counts[v]||0) > (st.counts[top]||0)) top = v; });
+    sportsbox.push({name:'Sway Gap', value:d.swayGap+'"', signal:(t.swg==='Small Gap'?'Small gap (above ':'Large gap (at or below ')+SWAY_SPLIT+'")',
+      implication: st.n ? (st.counts[top]||0)+' of '+st.n+' tour players in this group play '+top.toLowerCase()+' irons' : 'No tour players in this group yet'});
+  }
+  [['chestLift','Chest Lift','"'],['leadElbow','Lead Elbow','°'],['clubHandGap','Club Hand Gap','"'],['pelvisSway','Pelvis Sway','"']].forEach(function(b){
+    if(d[b[0]] !== null && d[b[0]] !== undefined) sportsbox.push({name:b[1], value:d[b[0]]+b[2], signal:'Recorded', implication:'No iron tour data yet, so no adjustment'});
+  });
+
+  return {profileKey:profileKey, profileSmall:profileSmall, traits:t, entered:entered, signals:signals, specs:specs,
+          guideline:guideline, backers:backers, heads:heads, shafts:shafts, longIrons:longIrons, closest:closest, sportsbox:sportsbox};
+}
+
+// ─── RESULTS ─────────────────────────────────────────────────────────────────
+var POOL_LIMIT = 5;   // rows shown before "Show all"
+function namesOf(item, max) {
+  var sorted = item.players.slice().sort(function(a,b){ return b.m-a.m || a.n.localeCompare(b.n); });
+  var names = sorted.map(function(p){ return p.n; });
+  return names.slice(0,max).join(', ')+(names.length>max ? ' +'+(names.length-max)+' more' : '');
+}
+// One compact pool: a short ranked list, with the rest behind "Show all".
+function poolList(title, items, kind, entered) {
+  var box = el('div','pool');
+  box.appendChild(el('div','pool-title',title));
+  if(!items.length) { box.appendChild(el('div','pool-note','None in the research yet.')); return box; }
+  var list = el('ol','pool-list');
+  items.forEach(function(it, i){
+    var li = el('li','pool-row'+(i===0?' top':'')+(i>=POOL_LIMIT?' extra':''));
+    li.appendChild(el('span','pool-rank',String(i+1)));
+    var body = el('div','pool-body');
+    var name = el('div','pool-name',it.name);
+    if(kind==='head' && it.type) name.appendChild(el('span','pool-type',it.type==='Cavity Back' ? 'Cavity back' : it.type));
+    if(kind==='shaft' && it.flexes.length) name.appendChild(el('span','pool-type','Tour flex '+it.flexes.join(', ')));
+    body.appendChild(name);
+    var meta = namesOf(it,2);
+    if(entered && it.best) meta += ' · shares '+it.best+' of '+entered+(entered===1?' trait':' traits');
+    body.appendChild(el('div','pool-meta',meta));
     li.appendChild(body);
-    var count = el('div', 'rec-count', list.length + ' of ' + total);
-    count.appendChild(el('small', null, pct(list.length / total) + (i === 0 && clearTop ? ' · most played' : '')));
-    li.appendChild(count);
-    box.appendChild(li);
+    li.appendChild(el('span','pool-count',String(it.players.length)));
+    list.appendChild(li);
   });
-
-  var setLine = document.getElementById('rec-set');
-  clear(setLine);
-  var ct = tally(b.list, 'cb');
-  if (ct.n) {
-    var yes = ct.counts.Yes || 0, no = ct.counts.No || 0;
-    setLine.appendChild(el('b', null, 'Long irons: '));
-    var text;
-    if (yes > no) {
-      var nums = b.list.filter(function (pl) { return pl.cb === 'Yes' && pl.cn; }).map(function (pl) { return pl.cn; });
-      var avg = nums.length ? nums.reduce(function (a, c) { return a + c; }, 0) / nums.length : 0;
-      text = yes + ' of ' + ct.n + ' swap in a different long-iron model' + (avg ? ', ' + avg.toFixed(1) + ' clubs on average.' : '.');
-    } else if (no > yes) {
-      text = no + ' of ' + ct.n + ' play one model through the set.';
-    } else {
-      text = 'split evenly, ' + yes + ' with a long-iron combo and ' + no + ' with one model through the set.';
-    }
-    setLine.appendChild(document.createTextNode(text));
+  box.appendChild(list);
+  if(items.length > POOL_LIMIT) {
+    var more = el('button','pool-more','Show all '+items.length);
+    more.type = 'button';
+    more.setAttribute('aria-expanded','false');
+    more.addEventListener('click', function(){
+      var open = box.classList.toggle('open');
+      more.textContent = open ? 'Show top '+POOL_LIMIT : 'Show all '+items.length;
+      more.setAttribute('aria-expanded', open?'true':'false');
+    });
+    box.appendChild(more);
   }
+  return box;
+}
+function statBlock(val, lbl) {
+  var b = el('div','stat-block');
+  b.appendChild(el('div','stat-val',val));
+  b.appendChild(el('div','stat-lbl',lbl));
+  return b;
+}
+function specName(o, v) { return o.names[v] || v; }
+
+function renderResults() {
+  var sidebar = document.getElementById('sidebar');
+  var content = document.getElementById('content');
+  clear(sidebar); clear(content);
+
+  if(!currentSession) {
+    var empty = el('div','empty');
+    empty.appendChild(icon('ti-clipboard-list'));
+    empty.appendChild(el('div','empty-title','No active fitting'));
+    empty.appendChild(el('div','empty-sub','Run a fitting or load a past session to see results here.'));
+    content.appendChild(empty);
+    return;
+  }
+  var d = currentSession.data, recs = currentSession.recs;
+  var profileText = recs.profileKey ? PROFILE_NAMES[recs.profileKey] : ([d.grip,d.post].filter(Boolean).join(' / ') || '—');
+
+  // Sidebar summary
+  var sec = el('div','sidebar-section');
+  sec.appendChild(makeSidebarLabel('Session summary'));
+  var sum = el('div','summary');
+  [['Player',d.name||'—'],['Handicap',d.hdcp||'—'],['Profile',profileText],['Lead grip',d.leadGrip||'—'],
+   ['Shot shape',d.shotShape||'—'],['Sway gap',d.swayGap!==null&&d.swayGap!==undefined ? d.swayGap+'" ('+recs.traits.swg+')' : '—'],
+   ['Current irons',[d.curHead,d.curShaft].filter(Boolean).join(' / ')||'—'],
+   ['7-iron speed',d.ss ? d.ss+' mph' : '—']
+  ].forEach(function(ln){
+    var row = el('div');
+    row.appendChild(el('span','summary-key',ln[0]+' '));
+    row.appendChild(document.createTextNode(ln[1]));
+    sum.appendChild(row);
+  });
+  sec.appendChild(sum);
+  sidebar.appendChild(sec);
+  if(d.notes) {
+    var nSec = el('div','sidebar-section');
+    nSec.appendChild(makeSidebarLabel('Notes'));
+    nSec.appendChild(el('div','summary-notes',d.notes));
+    sidebar.appendChild(nSec);
+  }
+  var newBtn = el('button','run-btn');
+  newBtn.type = 'button';
+  newBtn.appendChild(icon('ti-edit'));
+  newBtn.appendChild(document.createTextNode(' New fitting'));
+  newBtn.style.marginBottom = '24px';
+  newBtn.addEventListener('click', function(){ showPage('fitting'); });
+  sidebar.appendChild(newBtn);
+
+  // Player banner
+  var banner = el('div','player-banner');
+  var left = el('div');
+  left.appendChild(el('div','player-name',d.name||'Player'));
+  left.appendChild(el('div','player-meta',[profileText!=='—'?profileText:'',d.leadGrip?d.leadGrip+' lead hand':'',d.shotShape,d.hdcp?'Hdcp '+d.hdcp:''].filter(Boolean).join(' · ')||'—'));
+  if(recs.traits.swg) left.appendChild(el('div','player-band',(recs.traits.swg==='Small Gap'?'Small':'Large')+' iron sway gap'));
+  banner.appendChild(left);
+  var stats = el('div','player-stats');
+  if(d.ss) stats.appendChild(statBlock(String(d.ss),'mph'));
+  if(d.sr) stats.appendChild(statBlock(String(d.sr),'rpm'));
+  if(d.aa!==null && d.aa!==undefined) stats.appendChild(statBlock((d.aa>0?'+':'')+d.aa+'°','AoA'));
+  banner.appendChild(stats);
+  content.appendChild(banner);
+
+  // ── Zone 1: Recommendations ──
+  var zone1 = el('div','zone-block');
+  var zh = el('div','zone-header');
+  zh.appendChild(icon('ti-target-arrow'));
+  zh.appendChild(el('div','zone-header-title','Recommendations'));
+  zh.appendChild(el('div','zone-header-sub', recs.entered ? sizeLabel(recs.backers)+' · '+plural(recs.backers,'tour player') : 'Tour field · no traits entered'));
+  zone1.appendChild(zh);
+
+  var guide = el('div','guide');
+  guide.appendChild(el('div','guide-label','General guideline'));
+  guide.appendChild(el('div','guide-text',recs.guideline));
+  var parts = SPECS.map(function(o){
+    var s = recs.specs[o.key];
+    return s.tops.map(function(v){ return specName(o,v)+' '+pct(s.support[v]); }).join(' / ');
+  });
+  guide.appendChild(el('div','guide-sub', (recs.entered ? 'Share of the combined tour signals: ' : 'Share of all tour players: ')+parts.join('  ·  ')));
+  zone1.appendChild(guide);
+
+  var headTypes = recs.specs.ht.tops.map(function(v){ return v==='Cavity Back' ? 'cavity backs' : 'blades'; }).join(' and ');
+  var pools = el('div','pools');
+  pools.appendChild(poolList('Iron heads — '+headTypes, recs.heads, 'head', recs.entered));
+  pools.appendChild(poolList('Iron shafts — '+recs.specs.sp.tops.join(' and ').toLowerCase(), recs.shafts, 'shaft', recs.entered));
+  if(recs.specs.cb.tops.indexOf('Yes') >= 0) {
+    pools.appendChild(poolList('Long-iron options', recs.longIrons, 'long', recs.entered));
+  } else {
+    var lbox = el('div','pool');
+    lbox.appendChild(el('div','pool-title','Long irons'));
+    lbox.appendChild(el('div','pool-note','Most matching tour players play one model through the set, so no long-iron swap is suggested. The models other players swap in are on the Iron Map tab.'));
+    pools.appendChild(lbox);
+  }
+  zone1.appendChild(pools);
+  zone1.appendChild(el('div','pool-key', recs.entered ? 'Ordered by the tour player closest to this one. The number is how many tour players use the model.' : 'Ordered by how many tour players use each model.'));
+  content.appendChild(zone1);
+
+  // ── Zone 2: Fitting Analysis (collapsible) ──
+  var zone2 = el('div','zone-block');
+  var bar = el('button','analysis-toggle-bar');
+  bar.type = 'button';
+  bar.id = 'analysis-toggle-bar';
+  bar.setAttribute('aria-expanded','false');
+  var barLeft = el('div','analysis-toggle-left');
+  barLeft.appendChild(icon('ti-chart-bar'));
+  barLeft.appendChild(el('span','analysis-toggle-title','Fitting Analysis'));
+  bar.appendChild(barLeft);
+  var chev = icon('ti-chevron-down'); chev.className += ' analysis-toggle-chevron';
+  bar.appendChild(chev);
+  zone2.appendChild(bar);
+  var body = el('div','analysis-body'), inner = el('div','analysis-body-inner');
+  body.appendChild(inner);
+  zone2.appendChild(body);
+  bar.addEventListener('click', function(){
+    var open = body.classList.toggle('open');
+    chev.classList.toggle('open');
+    bar.setAttribute('aria-expanded', open?'true':'false');
+  });
+
+  // Fitting signals
+  var strip = el('div','rules-strip');
+  strip.appendChild(el('div','rules-strip-title','Fitting signals detected'));
+  if(!recs.signals.length) {
+    var none = el('div','rule-item');
+    none.appendChild(icon('ti-chevron-right'));
+    none.appendChild(el('span',null,'No grip, post, lead grip, shot shape or sway gap entered, so the guideline is the split across all tour players.'));
+    strip.appendChild(none);
+  }
+  if(recs.profileSmall) {
+    var small = el('div','rule-item');
+    small.appendChild(icon('ti-chevron-right'));
+    small.appendChild(el('span',null,PROFILE_NAMES[recs.profileKey]+' has fewer than '+MIN_GROUP+' tour players, so grip and post are counted as two separate signals.'));
+    strip.appendChild(small);
+  }
+  recs.signals.forEach(function(s){
+    var item = el('div','rule-item');
+    item.appendChild(icon(s.kind==='bio' ? 'ti-activity' : 'ti-hand-finger'));
+    var span = el('span');
+    span.appendChild(el('strong','signal-name',s.label+': '));
+    if(s.list.length < MIN_GROUP) {
+      span.appendChild(document.createTextNode(plural(s.list.length,'tour player')+', too few to count toward the guideline.'));
+    } else {
+      var bits = SPECS.map(function(o){
+        var tl = tally(s.list,o.key);
+        if(tl.n < MIN_GROUP) return null;
+        var top = o.values.slice().sort(function(a,b){ return (tl.counts[b]||0)-(tl.counts[a]||0); })[0];
+        var diff = share(tl,top) - share(tally(s.field,o.key),top);
+        var flag = diff >= BIG ? ' (big difference)' : diff >= LOOK ? ' (worth a look)' : '';
+        return (tl.counts[top]||0)+' of '+tl.n+' '+specName(o,top).toLowerCase()+flag;
+      }).filter(Boolean);
+      span.appendChild(document.createTextNode(bits.join(' · ')+'. '+sizeLabel(s.list.length)+', '+plural(s.list.length,'player')+'.'));
+    }
+    item.appendChild(span);
+    strip.appendChild(item);
+  });
+  inner.appendChild(strip);
+
+  // SportsBox analysis
+  if(recs.sportsbox.length) {
+    inner.appendChild(sectionHeader('SportsBox analysis'));
+    var sbGrid = el('div','sb-grid');
+    recs.sportsbox.forEach(function(s){
+      var card = el('div','sb-card');
+      var top = el('div','sb-top');
+      top.appendChild(el('span','sb-name',s.name));
+      top.appendChild(el('span','sb-value',s.value));
+      card.appendChild(top);
+      card.appendChild(el('div','sb-signal',s.signal));
+      card.appendChild(el('div','sb-implication',s.implication));
+      sbGrid.appendChild(card);
+    });
+    inner.appendChild(sbGrid);
+  }
+
+  // How the signals combine
+  inner.appendChild(sectionHeader('How the signals combine'));
+  inner.appendChild(el('div','plain-note','Each signal with at least '+MIN_GROUP+' tour players votes with its own split, and the votes are averaged. No signal overrides another.'));
+  var combine = el('div','support');
+  SPECS.forEach(function(o){
+    var s = recs.specs[o.key];
+    var block = el('div','support-block');
+    block.appendChild(el('div','support-title',o.label+(s.fieldOnly ? ' — all tour players' : ' — '+plural(s.voters,'signal'))));
+    o.values.forEach(function(v){
+      var row = el('div','support-row');
+      row.appendChild(el('div','support-name',specName(o,v)));
+      var track = el('div','support-track'), fill = el('div','support-fill'+(s.tops.indexOf(v)>=0?' top':''));
+      fill.style.width = Math.round(s.support[v]*100)+'%';
+      track.appendChild(fill);
+      row.appendChild(track);
+      row.appendChild(el('div','support-pct',pct(s.support[v])));
+      block.appendChild(row);
+    });
+    combine.appendChild(block);
+  });
+  inner.appendChild(combine);
+
+  // Closest tour matches
+  if(recs.closest.length) {
+    inner.appendChild(sectionHeader('Closest tour matches'));
+    var scroll = el('div','scroll'), table = el('table');
+    var thead = el('thead'), hr = el('tr');
+    ['Player','Traits shared','Shaft','Profile','Flex','Head','Type','Long-iron combo'].forEach(function(h){ var th = el('th',null,h); th.scope='col'; hr.appendChild(th); });
+    thead.appendChild(hr); table.appendChild(thead);
+    var tb = el('tbody');
+    recs.closest.slice(0,15).forEach(function(x){
+      var pl = x.pl, tr = el('tr');
+      var combo = pl.cb==='Yes' ? (pl.cm||'Yes') : pl.cb==='No' ? 'No' : null;
+      [pl.n, x.m+' of '+recs.entered, pl.sh, pl.sp, pl.fx, pl.hd, pl.ht, combo].forEach(function(v){ tr.appendChild(el('td',null,v||'–')); });
+      tb.appendChild(tr);
+    });
+    table.appendChild(tb); scroll.appendChild(table);
+    inner.appendChild(scroll);
+  }
+  content.appendChild(zone2);
 }
 
-// ---- render: starting point tiles ----
-function renderTiles() {
-  var box = document.getElementById('tiles');
-  clear(box);
-  OUTCOMES.forEach(function (o) {
-    var b = basisFor(o.key);
-    var t = b.tally;
-    var tile = el('div', 'tile');
-    tile.appendChild(el('div', 'tile-label', o.label));
+// ─── SESSIONS ────────────────────────────────────────────────────────────────
+async function saveSession(d, recs) {
+  if(!db) { toast('Database unavailable — session not saved','error'); return; }
+  var row = {
+    club:CLUB,
+    player_name:d.name||null, handicap:d.hdcp||null, height:d.height||null,
+    current_gamer:[d.curHead,d.curShaft].filter(Boolean).join(' / ')||null,
+    swing_speed:d.ss, ball_speed:d.bs, launch_angle:d.la, spin_rate:d.sr, attack_angle:d.aa, club_path:d.cp,
+    smash_factor:d.smash, dynamic_loft:d.dl,
+    sway_gap:d.swayGap, chest_lift:d.chestLift, lead_elbow:d.leadElbow, club_hand_gap:d.clubHandGap, pelvis_sway:d.pelvisSway,
+    grip:d.grip||null, post:d.post||null, shot_shape:d.shotShape||null, lead_grip:d.leadGrip||null,
+    notes:d.notes||null,
+    recommendations:JSON.stringify({club:CLUB, guideline:recs.guideline, ball:d.ball||null, curHead:d.curHead||null, curShaft:d.curShaft||null,
+      heads:recs.heads.slice(0,3).map(function(h){ return h.name; }), shafts:recs.shafts.slice(0,3).map(function(s){ return s.name; })})
+  };
+  try {
+    var result = await db.from('sessions').insert(row);
+    if(result.error) { toast('Could not save session','error'); return; }
+    toast('Session saved');
+    await loadSessions();
+  } catch(err) { toast('Could not save session','error'); }
+}
+function parseRecs(s) {
+  if(!s.recommendations) return {};
+  try { return typeof s.recommendations==='string' ? JSON.parse(s.recommendations) : s.recommendations; } catch(e) { return {}; }
+}
+function renderSessions() {
+  var sidebar = document.getElementById('sidebar');
+  var content = document.getElementById('content');
+  clear(sidebar); clear(content);
 
-    var ranked = o.values.slice().sort(function (a, c) { return (t.counts[c] || 0) - (t.counts[a] || 0); });
-    var top = ranked[0];
-    var tied = ranked.length > 1 && (t.counts[ranked[1]] || 0) === (t.counts[top] || 0);
-    var isField = activeKeys(b.filter).length === 0;
+  var sec = el('div','sidebar-section');
+  sec.appendChild(makeSidebarLabel('Past sessions'));
+  sec.appendChild(el('div',null,plural(sessionsList.length,'iron session')+' saved.'));
+  sidebar.appendChild(sec);
 
-    if (tied) {
-      tile.appendChild(el('div', 'tile-pick', 'No clear lean'));
-      tile.appendChild(el('div', 'tile-stat', o.values.map(function (v) {
-        return (t.counts[v] || 0) + ' ' + (o.names[v] || v).toLowerCase();
-      }).join(', ') + ' of ' + plural(t.n, 'player')));
-    } else {
-      tile.appendChild(el('div', 'tile-pick', o.names[top] || top));
-      tile.appendChild(el('div', 'tile-stat', (t.counts[top] || 0) + ' of ' + plural(t.n, 'player') + ' (' + pct(share(t, top)) + ')'));
-      if (!isField) {
-        var ft = tally(field(b.filter), o.key);
-        tile.appendChild(el('div', 'tile-field', 'Field: ' + pct(share(ft, top)) + ' of ' + plural(ft.n, 'player')));
-      }
-    }
-    if (o.key === 'cb' && !tied && top === 'Yes') {
-      var nums = matching(b.filter).filter(function (pl) { return pl.cn; }).map(function (pl) { return pl.cn; });
-      if (nums.length) {
-        var avg = nums.reduce(function (a, c) { return a + c; }, 0) / nums.length;
-        tile.appendChild(el('div', 'tile-field', 'Average ' + avg.toFixed(1) + ' combo clubs in the bag'));
-      }
-    }
+  if(!sessionsList.length) {
+    var empty = el('div','empty');
+    empty.appendChild(icon('ti-history'));
+    empty.appendChild(el('div','empty-title','No sessions yet'));
+    empty.appendChild(el('div','empty-sub', db ? 'Sessions are saved automatically after each fitting.' : 'The database is unavailable, so past sessions cannot be loaded.'));
+    content.appendChild(empty);
+    return;
+  }
+  var hdr = el('div','page-head');
+  hdr.appendChild(el('div','page-title','Iron fitting sessions'));
+  hdr.appendChild(el('div','page-sub',plural(sessionsList.length,'session')+' saved.'));
+  content.appendChild(hdr);
 
-    var tags = el('div', 'tags');
-    if (!isField && !tied) {
-      var diff = share(t, top) - share(tally(field(b.filter), o.key), top);
-      var gc = gapClass(diff);
-      tags.appendChild(el('span', 'tag ' + gc, gc === 'big' ? 'Big difference' : gc === 'look' ? 'Worth a look' : 'In line with the field'));
-    }
-    if (!isField) {
-      var s = sizeLabel(t.n);
-      tags.appendChild(el('span', 'tag ' + s.cls, s.text + ' · ' + plural(t.n, 'player')));
-    }
-    if (tags.firstChild) tile.appendChild(tags);
-
-    var basis = 'Based on: ' + describe(b.filter);
-    if (b.narrowed) basis = 'Fewer than ' + MIN_GROUP + ' players match everything selected. ' + basis;
-    tile.appendChild(el('div', 'tile-basis', basis));
-    box.appendChild(tile);
+  sessionsList.forEach(function(s){
+    var item = el('div','session-list-item');
+    item.tabIndex = 0;
+    item.setAttribute('role','button');
+    var info = el('div');
+    info.appendChild(el('div','session-list-name',s.player_name||'Unnamed player'));
+    var profile = (s.grip&&s.post) ? PROFILE_NAMES[s.grip+'|'+s.post] : '';
+    info.appendChild(el('div','session-list-meta',[profile,'Hdcp '+(s.handicap||'—'),new Date(s.created_at).toLocaleDateString()].filter(Boolean).join(' · ')));
+    var rec = parseRecs(s);
+    if(rec.guideline) info.appendChild(el('div','session-list-rec',rec.guideline));
+    item.appendChild(info);
+    var delBtn = el('button','btn-sm danger');
+    delBtn.type = 'button';
+    delBtn.setAttribute('aria-label','Delete session');
+    delBtn.appendChild(icon('ti-trash'));
+    delBtn.addEventListener('click', function(e){ e.stopPropagation(); deleteSession(s.id); });
+    item.appendChild(delBtn);
+    item.addEventListener('click', function(){ loadSession(s.id); });
+    item.addEventListener('keydown', function(e){ if(e.target===item && (e.key==='Enter'||e.key===' ')) { e.preventDefault(); loadSession(s.id); } });
+    content.appendChild(item);
   });
 }
+function numOrNull(v) { return (v===null||v===undefined||v==='') ? null : parseFloat(v); }
+function loadSession(id) {
+  var s = sessionsList.find(function(x){ return x.id===id; });
+  if(!s) return;
+  var rec = parseRecs(s);
+  var d = {
+    name:s.player_name||'', hdcp:s.handicap||'', height:s.height||'', ball:rec.ball||'',
+    grip:s.grip||'', post:s.post||'', leadGrip:s.lead_grip||'', shotShape:s.shot_shape||'',
+    ss:numOrNull(s.swing_speed), bs:numOrNull(s.ball_speed), la:numOrNull(s.launch_angle), sr:numOrNull(s.spin_rate),
+    dl:numOrNull(s.dynamic_loft), aa:numOrNull(s.attack_angle), cp:numOrNull(s.club_path), smash:numOrNull(s.smash_factor),
+    swayGap:numOrNull(s.sway_gap), chestLift:numOrNull(s.chest_lift), leadElbow:numOrNull(s.lead_elbow),
+    clubHandGap:numOrNull(s.club_hand_gap), pelvisSway:numOrNull(s.pelvis_sway),
+    curHead:rec.curHead||'', curShaft:rec.curShaft||'', notes:s.notes||''
+  };
+  currentSession = {data:d, recs:buildRecommendations(d)};
+  document.getElementById('session-label').textContent = d.name||'Loaded session';
+  showPage('results');
+}
+async function deleteSession(id) {
+  if(!db || !confirm('Delete this session?')) return;
+  var result = await db.from('sessions').delete().eq('id',id).eq('club',CLUB);
+  if(!result.error) { sessionsList = sessionsList.filter(function(s){ return s.id!==id; }); toast('Session deleted'); renderSessions(); }
+  else toast('Could not delete','error');
+}
 
-// ---- render: trait table ----
-function traitRow(label, f, opts) {
-  var list = matching(f);
-  var fieldList = field(f);
-  var tr = el('tr', opts.cls || '');
-  tr.appendChild(el('td', null, label));
-  tr.appendChild(el('td', 'num', String(list.length)));
-  var few = list.length < MIN_GROUP;
-  if (few) tr.className += ' few';
-  OUTCOMES.forEach(function (o) {
-    var t = tally(list, o.key), ft = tally(fieldList, o.key);
-    o.values.forEach(function (v) {
-      var td = el('td', 'num');
-      if (!t.n) {
-        td.textContent = '–';
-      } else {
-        td.textContent = (t.counts[v] || 0) + ' of ' + t.n + ' · ' + pct(share(t, v));
-        if (!opts.total && t.n >= MIN_GROUP) {
-          var gc = gapClass(share(t, v) - share(ft, v));
-          if (gc) td.className += ' ' + gc;
-        }
+// ─── IRON MAP ────────────────────────────────────────────────────────────────
+function traitRow(label, list, fld, cls, total) {
+  var tr = el('tr', cls||'');
+  tr.appendChild(el('td',null,label));
+  tr.appendChild(el('td','num',String(list.length)));
+  if(list.length < MIN_GROUP) tr.className += ' few';
+  SPECS.forEach(function(o){
+    var tl = tally(list,o.key), ft = tally(fld,o.key);
+    o.values.forEach(function(v){
+      var td = el('td','num');
+      if(!tl.n) td.textContent = '–';
+      else {
+        td.textContent = (tl.counts[v]||0)+' of '+tl.n+' · '+pct(share(tl,v));
+        if(!total && tl.n >= MIN_GROUP) { var gc = gapClass(share(tl,v)-share(ft,v)); if(gc) td.className += ' '+gc; }
       }
       tr.appendChild(td);
     });
   });
   return tr;
 }
-function renderTraits() {
-  var table = document.getElementById('traits');
-  clear(table);
-  var thead = el('thead'), hr = el('tr');
-  ['Group', 'Players', 'Tip-stiff', 'Mid-stiff', 'Butt-stiff', 'Blade', 'Cavity back', 'Long-iron combo', 'One model'].forEach(function (h) {
-    var th = el('th', null, h);
-    th.scope = 'col';
-    hr.appendChild(th);
+function typeList(title, nameKey, typeKey, type) {
+  var by = {};
+  PLAYERS.forEach(function(pl){
+    if(!pl[nameKey]) return;
+    if((pl[typeKey]||null) !== type) return;
+    (by[pl[nameKey]] = by[pl[nameKey]] || []).push(pl.n);
   });
-  thead.appendChild(hr);
-  table.appendChild(thead);
-  var tb = el('tbody');
-
-  if (activeKeys(state).length > 1) {
-    var g0 = el('tr', 'group'), c0 = el('td', null, 'This player');
-    c0.colSpan = 9; g0.appendChild(c0); tb.appendChild(g0);
-    tb.appendChild(traitRow(describe(state), state, { cls: 'on' }));
-  }
-  TRAITS.forEach(function (trait) {
-    var g = el('tr', 'group'), c = el('td', null, trait.name);
-    c.colSpan = 9; g.appendChild(c); tb.appendChild(g);
-    trait.values.forEach(function (v) {
-      var f = { g: null, p: null, lg: null };
-      f[trait.key] = v;
-      tb.appendChild(traitRow(v, f, { cls: state[trait.key] === v ? 'on' : '' }));
-    });
-  });
-  tb.appendChild(traitRow('All players', { g: null, p: null, lg: null }, { cls: 'total', total: true }));
-  table.appendChild(tb);
-}
-
-// ---- render: matching players ----
-function rankList(title, list, key) {
-  var counts = {};
-  list.forEach(function (pl) { if (pl[key]) counts[pl[key]] = (counts[pl[key]] || 0) + 1; });
-  var rows = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a] || a.localeCompare(b); }).slice(0, 5);
-  var box = el('div');
-  box.appendChild(el('h3', null, title));
-  if (!rows.length) { box.appendChild(el('div', 'empty', 'None recorded.')); return box; }
-  var ul = el('ul', 'rank');
-  rows.forEach(function (name) {
+  var names = Object.keys(by).sort(function(a,b){ return by[b].length-by[a].length || a.localeCompare(b); });
+  var box = el('div','type-box');
+  box.appendChild(el('div','type-title',title+' ('+names.length+')'));
+  if(!names.length) { box.appendChild(el('div','plain-note','None.')); return box; }
+  var ul = el('ul','rank');
+  names.forEach(function(n){
     var li = el('li');
-    li.appendChild(document.createTextNode(name));
-    li.appendChild(el('span', null, String(counts[name])));
+    li.appendChild(document.createTextNode(n));
+    li.appendChild(el('span',null,String(by[n].length)));
+    li.title = by[n].join(', ');
     ul.appendChild(li);
   });
   box.appendChild(ul);
   return box;
 }
-function renderPlayers() {
-  var list = matching(state);
-  var any = activeKeys(state).length === 0;
-  document.getElementById('players-title').textContent = any ? 'All players' : 'Matching players';
-  document.getElementById('players-sub').textContent = any
-    ? plural(list.length, 'player') + ' in the research.'
-    : plural(list.length, 'player') + ' with ' + describe(state) + '.';
+function renderIronMap() {
+  var sidebar = document.getElementById('sidebar');
+  var content = document.getElementById('content');
+  clear(sidebar); clear(content);
 
-  var ranks = document.getElementById('ranks');
-  clear(ranks);
-  var wrap = document.getElementById('players-wrap');
-  var table = document.getElementById('players');
-  clear(table);
-  if (!list.length) {
-    wrap.style.display = 'none';
-    ranks.appendChild(el('div', 'empty', 'No player in the research has all of these traits recorded yet. The starting point above uses the closest group with enough players.'));
-    return;
-  }
-  wrap.style.display = '';
-  ranks.appendChild(rankList('Most played shafts', list, 'sh'));
-  ranks.appendChild(rankList('Most played heads', list, 'hd'));
+  var sec = el('div','sidebar-section');
+  sec.appendChild(makeSidebarLabel('Iron map'));
+  function count(k){ return PLAYERS.filter(function(pl){ return pl[k]; }).length; }
+  sec.appendChild(el('div','section-note',PLAYERS.length+' tour players in the research. Grip is recorded for '+count('g')+', post for '+count('p')+', lead-hand grip for '+count('lg')+', iron shot shape for '+count('ss')+' and iron sway gap for '+count('swg')+'.'));
+  sidebar.appendChild(sec);
 
+  // Trait table
+  content.appendChild(sectionHeader('How each trait splits'));
+  var scroll = el('div','scroll'), table = el('table');
   var thead = el('thead'), hr = el('tr');
-  ['Player', 'Grip', 'Post', 'Lead hand', 'Shaft', 'Profile', 'Flex', 'Head', 'Type', 'Long-iron combo'].forEach(function (h) {
-    var th = el('th', null, h);
-    th.scope = 'col';
-    hr.appendChild(th);
-  });
-  thead.appendChild(hr);
-  table.appendChild(thead);
+  ['Group','Players','Tip-stiff','Mid-stiff','Butt-stiff','Blade','Cavity back','Long-iron combo','One model'].forEach(function(h){ var th = el('th',null,h); th.scope='col'; hr.appendChild(th); });
+  thead.appendChild(hr); table.appendChild(thead);
   var tb = el('tbody');
-  list.forEach(function (pl) {
-    var tr = el('tr');
-    var combo = pl.cb === 'Yes' ? (pl.cm || 'Yes') + (pl.cn ? ' (' + pl.cn + ')' : '') : pl.cb === 'No' ? 'No' : null;
-    [pl.n, pl.g, pl.p, pl.lg, pl.sh, pl.sp, pl.fx, pl.hd, pl.ht, combo].forEach(function (v) {
-      tr.appendChild(el('td', null, v || '–'));
+  function groupRow(text){ var g = el('tr','group'), c = el('td',null,text); c.colSpan = 9; g.appendChild(c); tb.appendChild(g); }
+  groupRow('Profile (grip / post)');
+  PROFILE_KEYS.forEach(function(k){
+    var parts = k.split('|');
+    tb.appendChild(traitRow(PROFILE_NAMES[k]+' · '+parts[0]+' / '+parts[1], where({g:parts[0],p:parts[1]}), fieldOf(['g','p'])));
+  });
+  TRAITS.forEach(function(trait){
+    groupRow(trait.name);
+    trait.values.forEach(function(v){
+      var f = {}; f[trait.key] = v;
+      tb.appendChild(traitRow(v, where(f), fieldOf([trait.key])));
     });
+  });
+  tb.appendChild(traitRow('All players', PLAYERS, PLAYERS, 'total', true));
+  table.appendChild(tb); scroll.appendChild(table);
+  content.appendChild(scroll);
+  var key = el('div','key');
+  [['k-big','Big difference: 25+ points above the field'],['k-look','Worth a look: 15+ points']].forEach(function(k){
+    var s = el('span'); s.appendChild(el('i',k[0])); s.appendChild(document.createTextNode(k[1])); key.appendChild(s);
+  });
+  key.appendChild(el('span',null,'Grey italic: fewer than '+MIN_GROUP+' players'));
+  content.appendChild(key);
+
+  // Equipment by type
+  content.appendChild(sectionHeader('Iron heads by type'));
+  var hcols = el('div','cols');
+  hcols.appendChild(typeList('Blades','hd','ht','Blade'));
+  hcols.appendChild(typeList('Cavity backs','hd','ht','Cavity Back'));
+  hcols.appendChild(typeList('No type on the sheet yet','hd','ht',null));
+  content.appendChild(hcols);
+  content.appendChild(sectionHeader('Iron shafts by profile'));
+  var scols = el('div','cols');
+  scols.appendChild(typeList('Tip-stiff','sh','sp','Tip-stiff'));
+  scols.appendChild(typeList('Mid-stiff','sh','sp','Mid-stiff'));
+  scols.appendChild(typeList('Butt-stiff','sh','sp','Butt-stiff'));
+  scols.appendChild(typeList('No profile on the sheet yet','sh','sp',null));
+  content.appendChild(scols);
+
+  // Long-iron combo models
+  content.appendChild(sectionHeader('Long-iron combo models'));
+  var lby = {};
+  PLAYERS.forEach(function(pl){ (pl.cms||[]).forEach(function(n){ (lby[n] = lby[n] || []).push(pl.n); }); });
+  var lnames = Object.keys(lby).sort(function(x,y){ return lby[y].length-lby[x].length || x.localeCompare(y); });
+  var lbox = el('div','cols');
+  [lnames.slice(0, Math.ceil(lnames.length/2)), lnames.slice(Math.ceil(lnames.length/2))].forEach(function(half){
+    var ul = el('ul','rank');
+    half.forEach(function(n){
+      var li = el('li');
+      li.appendChild(document.createTextNode(n));
+      li.appendChild(el('span',null,String(lby[n].length)));
+      li.title = lby[n].join(', ');
+      ul.appendChild(li);
+    });
+    lbox.appendChild(ul);
+  });
+  content.appendChild(lbox);
+
+  // Players, filtered by profile
+  content.appendChild(sectionHeader('Tour players'));
+  var pick = el('div','map-pick');
+  var lbl = el('label',null,'Profile'); lbl.htmlFor = 'map-profile';
+  pick.appendChild(lbl);
+  var sel = document.createElement('select'); sel.id = 'map-profile';
+  var all = el('option',null,'All players'); all.value='ALL'; sel.appendChild(all);
+  PROFILE_KEYS.forEach(function(k){ var o = el('option',null,PROFILE_NAMES[k]+' — '+k.replace('|',' / ')); o.value=k; sel.appendChild(o); });
+  sel.value = mapProfile;
+  pick.appendChild(sel);
+  content.appendChild(pick);
+  var pwrap = el('div','scroll'); pwrap.id = 'map-players';
+  content.appendChild(pwrap);
+  sel.addEventListener('change', function(){ mapProfile = sel.value; renderMapPlayers(); });
+  renderMapPlayers();
+}
+function renderMapPlayers() {
+  var wrap = document.getElementById('map-players');
+  clear(wrap);
+  var list = PLAYERS;
+  if(mapProfile !== 'ALL') { var parts = mapProfile.split('|'); list = where({g:parts[0],p:parts[1]}); }
+  if(!list.length) { wrap.appendChild(el('div','plain-note pad','No tour players in this profile yet.')); return; }
+  var table = el('table'), thead = el('thead'), hr = el('tr');
+  ['Player','Grip','Post','Lead hand','Shot shape','Sway gap','Shaft','Profile','Flex','Head','Type','Long-iron combo'].forEach(function(h){ var th = el('th',null,h); th.scope='col'; hr.appendChild(th); });
+  thead.appendChild(hr); table.appendChild(thead);
+  var tb = el('tbody');
+  list.forEach(function(pl){
+    var tr = el('tr');
+    var combo = pl.cb==='Yes' ? (pl.cm||'Yes')+(pl.cn?' ('+pl.cn+')':'') : pl.cb==='No' ? 'No' : null;
+    [pl.n,pl.g,pl.p,pl.lg,pl.ss,pl.sw!==null&&pl.sw!==undefined?String(pl.sw):null,pl.sh,pl.sp,pl.fx,pl.hd,pl.ht,combo].forEach(function(v){ tr.appendChild(el('td',null,v||'–')); });
     tb.appendChild(tr);
   });
   table.appendChild(tb);
+  wrap.appendChild(table);
 }
 
-function renderNotice() {
-  function count(k) { return PLAYERS.filter(function (pl) { return pl[k]; }).length; }
-  document.getElementById('notice').textContent =
-    'Built from EMB tour research on ' + PLAYERS.length + ' players. Grip is recorded for ' + count('g') +
-    ', post for ' + count('p') + ' and lead-hand grip for ' + count('lg') +
-    ', so some groups are small. Every result shows how many players are behind it.';
-}
-
-function render() {
-  renderControls();
-  renderRecs();
-  renderTiles();
-  renderTraits();
-  renderPlayers();
-}
-
-renderNotice();
-render();
+// ─── START ───────────────────────────────────────────────────────────────────
+buildNav();
+renderFitting();
+loadSessions().then(function(){ if(currentPage==='sessions') renderSessions(); });
 </script>
 </body>
 </html>
