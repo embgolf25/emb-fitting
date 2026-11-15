@@ -195,7 +195,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 .toast.error{border-color:var(--red);color:var(--red)}
 
 /* ── Iron fitting additions ── */
-:root{--amber-bg:#fdf3dc;--amber-border:#ecd08f;--amber-text:#6b4a06;--orange-bg:#fde5d0;--orange-border:#f0b78a;--orange-text:#7a3a0a}
+:root{--amber-bg:#fdf3dc;--amber-border:#ecd08f;--amber-text:#6b4a06;--green-bg:#d9f1e2;--green-border:#9fd4b4;--green-text:#17603a}
 button.analysis-toggle-bar{width:100%;font-family:var(--font);text-align:left;color:var(--text)}
 button.analysis-toggle-bar:focus-visible,.chip:focus-visible,.nav-btn:focus-visible,.run-btn:focus-visible,.session-list-item:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 .analysis-body.open{max-height:none}
@@ -238,16 +238,18 @@ th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);whi
 th{background:var(--bg2);font-size:11px;font-weight:600;color:var(--text2);letter-spacing:0.04em;text-transform:uppercase}
 tr:last-child td{border-bottom:none}
 td.num{font-variant-numeric:tabular-nums}
-td.big{background:var(--orange-bg);color:var(--orange-text);font-weight:600}
-td.look{background:var(--amber-bg);color:var(--amber-text);font-weight:600}
+td.hi{background:var(--green-bg);color:var(--green-text);font-weight:600}
+td.mid{background:var(--amber-bg);color:var(--amber-text);font-weight:600}
+th.sep,td.sep{border-right:2px solid var(--border2)}
 tr.few td{color:var(--text3);font-style:italic}
 tr.group td{background:var(--bg3);font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--cyan3);padding:6px 12px}
-tr.total td{font-weight:600;background:var(--bg2)}
+tr.total td{font-weight:600}
+tr.total td:not(.hi):not(.mid){background:var(--bg2)}
 .key{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:28px;font-size:12px;color:var(--text2)}
 .key span{display:inline-flex;align-items:center;gap:6px}
 .key i{width:14px;height:10px;border-radius:3px;display:inline-block;border:1px solid}
-.key .k-big{background:var(--orange-bg);border-color:var(--orange-border)}
-.key .k-look{background:var(--amber-bg);border-color:var(--amber-border)}
+.key .k-hi{background:var(--green-bg);border-color:var(--green-border)}
+.key .k-mid{background:var(--amber-bg);border-color:var(--amber-border)}
 .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;margin-bottom:28px}
 .type-title{font-size:12px;font-weight:700;color:var(--text2);margin-bottom:8px}
 .rank{list-style:none}
@@ -416,7 +418,6 @@ function sizeLabel(n) {
   if(n >= EARLY_N) return 'Early sign';
   return 'Very early';
 }
-function gapClass(diff) { return diff >= BIG ? 'big' : diff >= LOOK ? 'look' : ''; }
 function tally(list, key) {
   var counts = {}, n = 0;
   list.forEach(function(pl){ if(pl[key]) { counts[pl[key]] = (counts[pl[key]]||0)+1; n++; } });
@@ -1247,19 +1248,26 @@ async function deleteSession(id) {
 }
 
 // ─── IRON MAP ────────────────────────────────────────────────────────────────
-function traitRow(label, list, fld, cls, total) {
+// Iron Map cell colours: over 60% green, 40-60% yellow, on the percentage as displayed.
+function shareClass(x) {
+  var p = Math.round(x*100);
+  return p > 60 ? 'hi' : p >= 40 ? 'mid' : '';
+}
+function traitRow(label, list, cls) {
   var tr = el('tr', cls||'');
   tr.appendChild(el('td',null,label));
   tr.appendChild(el('td','num',String(list.length)));
-  if(list.length < MIN_GROUP) tr.className += ' few';
-  SPECS.forEach(function(o){
-    var tl = tally(list,o.key), ft = tally(fld,o.key);
-    o.values.forEach(function(v){
+  var few = list.length < MIN_GROUP;
+  if(few) tr.className += ' few';
+  SPECS.forEach(function(o, oi){
+    var tl = tally(list,o.key);
+    o.values.forEach(function(v, vi){
       var td = el('td','num');
+      if(vi===o.values.length-1 && oi<SPECS.length-1) td.className += ' sep';
       if(!tl.n) td.textContent = '–';
       else {
         td.textContent = (tl.counts[v]||0)+' of '+tl.n+' · '+pct(share(tl,v));
-        if(!total && tl.n >= MIN_GROUP) { var gc = gapClass(share(tl,v)-share(ft,v)); if(gc) td.className += ' '+gc; }
+        if(!few) { var sc = shareClass(share(tl,v)); if(sc) td.className += ' '+sc; }
       }
       tr.appendChild(td);
     });
@@ -1303,27 +1311,27 @@ function renderIronMap() {
   content.appendChild(sectionHeader('How each trait splits'));
   var scroll = el('div','scroll'), table = el('table');
   var thead = el('thead'), hr = el('tr');
-  ['Group','Players','Tip-stiff','Mid-stiff','Butt-stiff','Blade','Cavity back','Long-iron combo','One model'].forEach(function(h){ var th = el('th',null,h); th.scope='col'; hr.appendChild(th); });
+  ['Group','Players','Tip-stiff','Mid-stiff','Butt-stiff','Blade','Cavity back','Long-iron combo','One model'].forEach(function(h){ var th = el('th',(h==='Butt-stiff'||h==='Cavity back')?'sep':null,h); th.scope='col'; hr.appendChild(th); });
   thead.appendChild(hr); table.appendChild(thead);
   var tb = el('tbody');
   function groupRow(text){ var g = el('tr','group'), c = el('td',null,text); c.colSpan = 9; g.appendChild(c); tb.appendChild(g); }
   groupRow('Profile (grip / post)');
   PROFILE_KEYS.forEach(function(k){
     var parts = k.split('|');
-    tb.appendChild(traitRow(PROFILE_NAMES[k]+' · '+parts[0]+' / '+parts[1], where({g:parts[0],p:parts[1]}), fieldOf(['g','p'])));
+    tb.appendChild(traitRow(PROFILE_NAMES[k]+' · '+parts[0]+' / '+parts[1], where({g:parts[0],p:parts[1]})));
   });
   TRAITS.forEach(function(trait){
     groupRow(trait.name);
     trait.values.forEach(function(v){
       var f = {}; f[trait.key] = v;
-      tb.appendChild(traitRow(v, where(f), fieldOf([trait.key])));
+      tb.appendChild(traitRow(v, where(f)));
     });
   });
-  tb.appendChild(traitRow('All players', PLAYERS, PLAYERS, 'total', true));
+  tb.appendChild(traitRow('All players', PLAYERS, 'total'));
   table.appendChild(tb); scroll.appendChild(table);
   content.appendChild(scroll);
   var key = el('div','key');
-  [['k-big','Big difference: 25+ points above the field'],['k-look','Worth a look: 15+ points']].forEach(function(k){
+  [['k-hi','Over 60%'],['k-mid','40% to 60%']].forEach(function(k){
     var s = el('span'); s.appendChild(el('i',k[0])); s.appendChild(document.createTextNode(k[1])); key.appendChild(s);
   });
   key.appendChild(el('span',null,'Grey italic: fewer than '+MIN_GROUP+' players'));
