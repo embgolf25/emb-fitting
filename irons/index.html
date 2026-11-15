@@ -260,7 +260,27 @@ tr.total td{font-weight:600;background:var(--bg2)}
 .page-title{font-size:18px;font-weight:700;margin-bottom:4px}
 .page-sub{font-size:13px;color:var(--text3)}
 .session-list-rec{font-size:11px;color:var(--teal2);margin-top:3px}
-.rec-card .rec-name{margin-bottom:10px}
+.pools{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:10px;align-items:start}
+.pool{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);padding:14px 16px}
+.pool-title{font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--text3);font-weight:700;margin-bottom:8px}
+.pool-list{list-style:none}
+.pool-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.pool-row:last-child{border-bottom:none}
+.pool-row.extra{display:none}
+.pool.open .pool-row.extra{display:flex}
+.pool-rank{width:18px;flex-shrink:0;font-size:12px;font-weight:700;color:var(--text3);line-height:1.5;font-variant-numeric:tabular-nums}
+.pool-row.top .pool-rank{color:var(--cyan2)}
+.pool-body{flex:1;min-width:0}
+.pool-name{font-size:13px;font-weight:600;color:var(--text);line-height:1.5}
+.pool-row.top .pool-name{font-weight:700}
+.pool-type{font-size:11px;font-weight:500;color:var(--text3);margin-left:8px}
+.pool-meta{font-size:11px;color:var(--text3);line-height:1.5}
+.pool-count{font-size:12px;font-weight:600;color:var(--text2);flex-shrink:0;line-height:1.6;font-variant-numeric:tabular-nums}
+.pool-note{font-size:13px;color:var(--text2);line-height:1.6}
+.pool-more{background:transparent;border:none;padding:8px 0 0;font-family:var(--font);font-size:12px;font-weight:600;color:var(--cyan2);cursor:pointer}
+.pool-more:hover{text-decoration:underline}
+.pool-more:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.pool-key{font-size:11px;color:var(--text3);margin-bottom:8px}
 @media(max-width:760px){
   .header{height:auto;flex-wrap:wrap;padding:10px 16px;gap:8px}
   .header-right{display:none}
@@ -868,46 +888,46 @@ function buildRecommendations(d) {
 }
 
 // ─── RESULTS ─────────────────────────────────────────────────────────────────
-function recCard(item, i, total, tags, why, topLabel) {
-  var card = el('div','rec-card'+(i===0?' top-pick':''));
-  var rank = el('div','rec-rank');
-  if(i===0) rank.appendChild(el('div','cyan-dot'));
-  rank.appendChild(document.createTextNode(i===0 ? topLabel : 'Option '+(i+1)));
-  card.appendChild(rank);
-  card.appendChild(el('div','rec-name',item.name));
-  var tg = el('div','rec-tags');
-  tags.forEach(function(tx, j){ tg.appendChild(el('span','tag'+(i===0&&j===0?' highlight':''),tx)); });
-  card.appendChild(tg);
-  card.appendChild(el('div','rec-why',why));
-  var bar = el('div','confidence-bar'), fill = el('div','confidence-fill');
-  fill.style.width = total+'%';
-  bar.appendChild(fill);
-  card.appendChild(bar);
-  return card;
-}
-function namesOf(item) {
+var POOL_LIMIT = 5;   // rows shown before "Show all"
+function namesOf(item, max) {
   var sorted = item.players.slice().sort(function(a,b){ return b.m-a.m || a.n.localeCompare(b.n); });
   var names = sorted.map(function(p){ return p.n; });
-  return names.slice(0,4).join(', ')+(names.length>4 ? ' and '+(names.length-4)+' more' : '');
+  return names.slice(0,max).join(', ')+(names.length>max ? ' +'+(names.length-max)+' more' : '');
 }
-function poolGrid(items, kind, entered) {
-  var grid = el('div','rec-grid');
-  var maxScore = items.length ? items[0].best : 0;
-  var maxCount = 0;
-  items.forEach(function(it){ if(it.players.length > maxCount) maxCount = it.players.length; });
+// One compact pool: a short ranked list, with the rest behind "Show all".
+function poolList(title, items, kind, entered) {
+  var box = el('div','pool');
+  box.appendChild(el('div','pool-title',title));
+  if(!items.length) { box.appendChild(el('div','pool-note','None in the research yet.')); return box; }
+  var list = el('ol','pool-list');
   items.forEach(function(it, i){
-    var tags = [];
-    if(kind==='head')  tags.push(it.type==='Cavity Back' ? 'Cavity back' : it.type);
-    if(kind==='shaft') tags.push(it.type);
-    if(kind==='long')  tags.push('Long iron');
-    tags.push(plural(it.players.length,'tour player'));
-    if(entered && it.best) tags.push('Closest player shares '+it.best+' of '+entered+(entered===1?' trait':' traits'));
-    if(kind==='shaft' && it.flexes.length) tags.push('Tour flex: '+it.flexes.join(', '));
-    var width = entered ? Math.max(8, Math.round(it.best/entered*100)) : Math.max(8, Math.round(it.players.length/maxCount*100));
-    var topLabel = maxScore > 0 ? 'Closest tour match' : 'Most played on tour';
-    grid.appendChild(recCard(it, i, width, tags, 'Played by: '+namesOf(it), topLabel));
+    var li = el('li','pool-row'+(i===0?' top':'')+(i>=POOL_LIMIT?' extra':''));
+    li.appendChild(el('span','pool-rank',String(i+1)));
+    var body = el('div','pool-body');
+    var name = el('div','pool-name',it.name);
+    if(kind==='head' && it.type) name.appendChild(el('span','pool-type',it.type==='Cavity Back' ? 'Cavity back' : it.type));
+    if(kind==='shaft' && it.flexes.length) name.appendChild(el('span','pool-type','Tour flex '+it.flexes.join(', ')));
+    body.appendChild(name);
+    var meta = namesOf(it,2);
+    if(entered && it.best) meta += ' · shares '+it.best+' of '+entered+(entered===1?' trait':' traits');
+    body.appendChild(el('div','pool-meta',meta));
+    li.appendChild(body);
+    li.appendChild(el('span','pool-count',String(it.players.length)));
+    list.appendChild(li);
   });
-  return grid;
+  box.appendChild(list);
+  if(items.length > POOL_LIMIT) {
+    var more = el('button','pool-more','Show all '+items.length);
+    more.type = 'button';
+    more.setAttribute('aria-expanded','false');
+    more.addEventListener('click', function(){
+      var open = box.classList.toggle('open');
+      more.textContent = open ? 'Show top '+POOL_LIMIT : 'Show all '+items.length;
+      more.setAttribute('aria-expanded', open?'true':'false');
+    });
+    box.appendChild(more);
+  }
+  return box;
 }
 function statBlock(val, lbl) {
   var b = el('div','stat-block');
@@ -996,18 +1016,19 @@ function renderResults() {
   zone1.appendChild(guide);
 
   var headTypes = recs.specs.ht.tops.map(function(v){ return v==='Cavity Back' ? 'cavity backs' : 'blades'; }).join(' and ');
-  zone1.appendChild(sectionHeader('Iron heads — '+headTypes+' ('+recs.heads.length+')'));
-  zone1.appendChild(poolGrid(recs.heads,'head',recs.entered));
-  zone1.appendChild(sectionHeader('Iron shafts — '+recs.specs.sp.tops.join(' and ').toLowerCase()+' ('+recs.shafts.length+')'));
-  zone1.appendChild(poolGrid(recs.shafts,'shaft',recs.entered));
-  var comboTops = recs.specs.cb.tops;
-  if(comboTops.indexOf('Yes') >= 0) {
-    zone1.appendChild(sectionHeader('Long-iron options ('+recs.longIrons.length+')'));
-    zone1.appendChild(poolGrid(recs.longIrons,'long',recs.entered));
+  var pools = el('div','pools');
+  pools.appendChild(poolList('Iron heads — '+headTypes, recs.heads, 'head', recs.entered));
+  pools.appendChild(poolList('Iron shafts — '+recs.specs.sp.tops.join(' and ').toLowerCase(), recs.shafts, 'shaft', recs.entered));
+  if(recs.specs.cb.tops.indexOf('Yes') >= 0) {
+    pools.appendChild(poolList('Long-iron options', recs.longIrons, 'long', recs.entered));
   } else {
-    zone1.appendChild(sectionHeader('Long irons'));
-    zone1.appendChild(el('div','plain-note','Most matching tour players play one model through the set, so no long-iron swap is suggested. The models other players swap in are listed on the Iron Map tab.'));
+    var lbox = el('div','pool');
+    lbox.appendChild(el('div','pool-title','Long irons'));
+    lbox.appendChild(el('div','pool-note','Most matching tour players play one model through the set, so no long-iron swap is suggested. The models other players swap in are on the Iron Map tab.'));
+    pools.appendChild(lbox);
   }
+  zone1.appendChild(pools);
+  zone1.appendChild(el('div','pool-key', recs.entered ? 'Ordered by the tour player closest to this one. The number is how many tour players use the model.' : 'Ordered by how many tour players use each model.'));
   content.appendChild(zone1);
 
   // ── Zone 2: Fitting Analysis (collapsible) ──
