@@ -882,8 +882,8 @@ function buildRecommendations(d) {
   // ── Lead grip + spin axis → driver shaft profile shape (handle minus tip), 10.27 tour data ──
   // Shape cut-off matches the workbook: handle − tip ≥ 1 = butt-stiff, ≤ −1 = tip-stiff, else even.
   var shapePrefs = [];
-  if(d.leadGrip==='Strong') shapePrefs.push('butt');                 // 5 of 9 strong lead grips butt-stiff vs 33%
-  if(d.leadGrip==='Weak') { shapePrefs.push('notButt'); if(targetWeight!==null) targetWeight += 3; } // none butt-stiff; 73g vs 67g (4 players)
+  if(d.leadGrip==='Strong') shapePrefs.push('butt');                 // 5 of 14 strong lead grips butt-stiff vs 24%
+  if(d.leadGrip==='Weak') { shapePrefs.push('notButt'); if(targetWeight!==null) targetWeight += 3; } // none butt-stiff; 74g vs 67g (6 players)
   if(d.spinAxis!==null && d.spinAxis < 0) shapePrefs.push('butt');    // draw-biased: 3 of 5 butt-stiff vs 26%
   if(d.spinAxis!==null && d.spinAxis > 3) shapePrefs.push('notButt'); // fade-biased: 0 of 12 butt-stiff
   function shapePenalty(h, t) {
@@ -1032,10 +1032,10 @@ function buildGripSignals(d) {
   if(grip==='On Top'&&post==='Rear')  signals.push({signal:'Profile 3',recommendation:'Maximum tip AND handle stiffness (5.0 avg both).'});
   if(grip==='Under'&&post==='Front')  signals.push({signal:'Profile 7',recommendation:'Softest tip of any combination (2.0). Hatton pattern — one player, treat as a hunch.'});
   if(grip==='Under'&&post==='Center') signals.push({signal:'Profile 8',recommendation:'Most common tour combination (8 players). Handle 3.6, tip 3.9.'});
-  if(grip==='Under'&&d.shotShape==='Fade') signals.push({signal:'Profile 7/8/9 fader',recommendation:'4 of 12 Under-grip tour players are fade-biased. An intended fade needs no head change.'});
-  if(grip==='On Top'&&d.shotShape==='Draw') signals.push({signal:'Profile 1/2/3 drawer',recommendation:'Uncommon on tour (2 of 16 On Top players are draw-biased). Strong in-to-out path likely; shaft stability important.'});
-  if(d.leadGrip==='Strong') signals.push({signal:'Strong lead grip',recommendation:'Leans butt-stiff in the driver: 5 of 9 strong lead grips vs 33% of the field. Shaft ranking nudged toward a firmer handle.'});
-  if(d.leadGrip==='Weak')   signals.push({signal:'Weak lead grip',recommendation:'No butt-stiff drivers among weak lead grips, and heavier shafts (73g vs 67g). Target weight +3g. Very early — 4 players.'});
+  if(grip==='Under'&&d.shotShape==='Fade') signals.push({signal:'Profile 7/8/9 fader',recommendation:'5 of 14 Under-grip tour players are fade-biased. An intended fade needs no head change.'});
+  if(grip==='On Top'&&d.shotShape==='Draw') signals.push({signal:'Profile 1/2/3 drawer',recommendation:'Uncommon on tour (3 of 19 On Top players are draw-biased). Strong in-to-out path likely; shaft stability important.'});
+  if(d.leadGrip==='Strong') signals.push({signal:'Strong lead grip',recommendation:'Leans butt-stiff in the driver: 5 of 14 strong lead grips (36%) vs 24% of the field. Shaft ranking nudged toward a firmer handle.'});
+  if(d.leadGrip==='Weak')   signals.push({signal:'Weak lead grip',recommendation:'No butt-stiff drivers among weak lead grips, and heavier shafts (74g vs 67g). Target weight +3g. Early — 6 players.'});
   if(d.spinAxis!==null && d.spinAxis < 0) signals.push({signal:'Draw-biased spin axis ('+d.spinAxis+'°'+(d.spinAxis<=-15?' or more':'')+')',recommendation:'Butt-stiff drivers average a +0.4° axis, the most draw-side group; 3 of 5 draw-biased players play one. Ranking nudged toward butt-stiff.'});
   if(d.spinAxis!==null && d.spinAxis > 3) signals.push({signal:'Fade-biased spin axis (+'+d.spinAxis+'°'+(d.spinAxis>=15?' or more':'')+')',recommendation:'None of the 12 fade-biased tour players with a rated driver shaft is butt-stiff. Ranking steers away from butt-stiff. 15 of 17 play tip-stiff irons.'});
   if(d.spinAxis!==null && d.spinAxis >= 0 && d.spinAxis <= 3) signals.push({signal:'Neutral spin axis ('+(d.spinAxis>0?'+':'')+d.spinAxis+'°)',recommendation:'Neutral-axis players carry a firmer mid section than draw-biased players (3.9 vs 3.2).'});
