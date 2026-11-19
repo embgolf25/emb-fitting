@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shaft Finder | EMB Golf</title>
+<meta name="description" content="Find every driver and iron shaft that fits a profile, weight and flex, with flex set by 7-iron or driver speed.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;--bg2:#f8fbf9;--bg3:#f0f7f2;--bg4:#e4f1e8;
+  --border:#e1ece5;--border2:#cfe2d6;
+  --text:#17261d;--text2:#4b6556;--text3:#7f978a;
+  --cyan:#4cb87a;--cyan2:#23794a;--cyan3:#2f8f58;--teal:#6cc993;
+  --amber-bg:#fdf3dc;--amber-border:#ecd08f;--amber-text:#6b4a06;
+  --red:#d64550;
+  --radius:10px;--radius2:14px;
+  --font:'Inter',system-ui,sans-serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.55;min-height:100vh}
+a{color:var(--cyan2)}
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+.logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--cyan) 0%,var(--teal) 100%);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;color:#0f2a1a;letter-spacing:-0.5px}
+.logo-text{font-size:16px;font-weight:700;letter-spacing:0.02em;color:var(--text)}
+.logo-sub{font-size:10px;color:var(--text3);letter-spacing:0.15em;text-transform:uppercase;margin-top:1px}
+.top-links{display:flex;gap:4px}
+.top-links a{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--radius);font-size:13px;font-weight:500;color:var(--text2);text-decoration:none}
+.top-links a:hover{background:var(--bg3);color:var(--text)}
+.wrap{max-width:1040px;margin:0 auto;padding:28px 28px 56px}
+.eyebrow{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--cyan3);font-weight:700;margin-bottom:8px}
+h1{font-size:26px;font-weight:700;letter-spacing:-0.01em;margin-bottom:8px}
+h2{font-size:17px;font-weight:700;margin-bottom:4px}
+.lede{color:var(--text2);max-width:720px;margin-bottom:20px}
+.panel{border:1px solid var(--border);border-radius:var(--radius2);padding:20px;margin-bottom:18px;background:var(--bg)}
+.panel p.sub{color:var(--text2);font-size:13px;margin-bottom:14px}
+.q{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:start;padding:12px 0;border-top:1px solid var(--border)}
+.q:first-of-type{border-top:none;padding-top:4px}
+.q-label{font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--cyan3);font-weight:700;padding-top:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-family:var(--font);font-size:13px;font-weight:500;color:var(--text2);background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:8px 14px;min-height:38px;cursor:pointer}
+.chip:hover{background:var(--bg3);color:var(--text)}
+.chip.sel{background:var(--bg4);color:var(--cyan2);border-color:var(--cyan);font-weight:600}
+.q-sub{font-size:12px;color:var(--text3);margin-top:7px;min-height:18px}
+.speed{background:var(--bg2);border:1px solid var(--border2);border-left:3px solid var(--cyan);border-radius:var(--radius2);padding:18px 20px;margin-bottom:22px}
+.speed-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px;flex-wrap:wrap}
+.speed-lbl{font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--cyan3);font-weight:700}
+.speed-right{display:flex;align-items:baseline;gap:8px}
+.speed-val{font-size:22px;font-weight:800;color:var(--cyan2)}
+.speed-flex{font-size:12px;color:var(--text3);padding:3px 9px;background:var(--bg);border:1px solid var(--border2);border-radius:20px}
+.speed input{width:100%;accent-color:var(--cyan3)}
+.ticks{display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:4px;padding:0 2px}
+.speed-sub{font-size:12px;color:var(--text3);margin-top:10px}
+.res-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.status{font-size:11px;font-weight:500;padding:5px 10px;border-radius:20px;border:1px solid var(--border2);color:var(--text3);white-space:nowrap}
+.status.live{color:var(--cyan2);border-color:rgba(76,184,122,.35);background:rgba(76,184,122,.08)}
+.status.snap{color:var(--amber-text);border-color:var(--amber-border);background:var(--amber-bg)}
+.note{display:flex;gap:10px;align-items:flex-start;background:var(--amber-bg);border:1px solid var(--amber-border);color:var(--amber-text);border-radius:var(--radius);padding:11px 14px;margin-bottom:12px;font-size:13px}
+.note i{font-size:17px;margin-top:1px;flex-shrink:0}
+.list{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.row{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;padding:12px 14px;border-top:1px solid var(--border)}
+.row:first-child{border-top:none}
+.row.top{background:var(--bg2)}
+.rank{width:26px;height:26px;border-radius:50%;background:var(--bg4);color:var(--cyan2);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.row.top .rank{background:var(--cyan);color:#fff}
+.name{font-weight:600;font-size:14px;min-width:0}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+.tag{font-size:11px;color:var(--text2);background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:2px 7px}
+.tag.ok{color:var(--cyan2);background:rgba(76,184,122,.10);border-color:rgba(76,184,122,.35)}
+.tag.off{color:var(--amber-text);background:var(--amber-bg);border-color:var(--amber-border)}
+.bend{display:flex;gap:10px;font-size:11px;color:var(--text3)}
+.bend div{text-align:center}
+.bend b{display:block;font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:3px}
+.segs{display:flex;gap:2px}
+.segs i{width:7px;height:16px;border-radius:2px;background:var(--bg4);display:block}
+.segs i.on{background:var(--cyan3)}
+.more{font-family:var(--font);margin-top:12px;font-size:13px;font-weight:600;color:var(--cyan2);background:none;border:1px solid var(--border2);border-radius:8px;padding:8px 14px;cursor:pointer}
+.more:hover{background:var(--bg3)}
+.empty{color:var(--text3);font-size:13px;padding:24px 14px}
+.read{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.read div{font-size:13px;color:var(--text2)}
+.read strong{display:block;color:var(--text);font-size:13px;margin-bottom:3px}
+.sliders{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:10px}
+.speed{margin-bottom:0}
+.flexbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--text3);margin-bottom:24px}
+.flexbar .speed-flex{font-weight:600;color:var(--cyan2);background:var(--bg4);border-color:rgba(76,184,122,.35)}
+.lists{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.col-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
+.col-head h2{display:flex;align-items:center;gap:8px}
+.count{font-size:12px;color:var(--text3);font-weight:500}
+.row{grid-template-columns:1fr auto}
+.row .name{font-size:13.5px}
+.sub-head{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text3);font-weight:700;padding:10px 14px 6px;background:var(--bg2);border-top:1px solid var(--border)}
+.tag.fx-on{color:var(--cyan2);background:rgba(76,184,122,.10);border-color:rgba(76,184,122,.35);font-weight:600}
+.tag.fx-off{opacity:.45;text-decoration:line-through}
+.guide{font-size:11px;color:var(--amber-text);background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:20px;padding:2px 8px}
+@media(max-width:820px){.sliders,.lists{grid-template-columns:1fr}}
+.foot{font-size:12px;color:var(--text3);margin-top:22px}
+@media(max-width:640px){.header{padding:0 16px}.wrap{padding:20px 16px 48px}.top-links a span{display:none}.q{grid-template-columns:1fr;gap:4px}.q-label{padding-top:0}.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="header">
+  <a class="logo" href="../">
+    <div class="logo-mark">EMB</div>
+    <div>
+      <div class="logo-text">EMB Golf</div>
+      <div class="logo-sub">Fitter Resources</div>
+    </div>
+  </a>
+  <nav class="top-links">
+    <a href="../"><i class="ti ti-layout-grid"></i><span>Hub</span></a>
+    <a href="../irons/"><i class="ti ti-golf"></i><span>Iron fitting</span></a>
+    <a href="../driver/"><i class="ti ti-adjustments-horizontal"></i><span>Driver fitting</span></a>
+  </nav>
+</header>
+<main class="wrap">
+  <div class="eyebrow">Resources · Shafts</div>
+  <h1>Shaft finder</h1>
+  <p class="lede">Pick a bend profile and every driver and iron shaft that fits the mold shows up side by side, ready to pull for testing. Narrow by weight, and set flex with either the 7-iron or the driver speed slider.</p>
+
+  <section class="panel">
+    <div class="q"><div class="q-label">Shaft profile</div><div><div class="chips" id="q-profile"></div><div class="q-sub" id="q-profile-sub"></div></div></div>
+    <div class="q"><div class="q-label">Shaft weight</div><div><div class="chips" id="q-weight"></div><div class="q-sub" id="q-weight-sub"></div></div></div>
+  </section>
+
+  <div class="sliders">
+    <div class="speed">
+      <div class="speed-top">
+        <div class="speed-lbl">7-iron speed</div>
+        <div class="speed-right"><div class="speed-val" id="iron-val">80 mph</div></div>
+      </div>
+      <input type="range" id="iron-speed" min="60" max="108" step="1" value="80" aria-label="7-iron clubhead speed in mph">
+      <div class="ticks"><span>60</span><span>72</span><span>84</span><span>96</span><span>108</span></div>
+    </div>
+    <div class="speed">
+      <div class="speed-top">
+        <div class="speed-lbl">Driver speed</div>
+        <div class="speed-right"><div class="speed-val" id="driver-val">100 mph</div></div>
+      </div>
+      <input type="range" id="driver-speed" min="75" max="135" step="1" value="100" aria-label="Driver clubhead speed in mph">
+      <div class="ticks"><span>75</span><span>90</span><span>105</span><span>120</span><span>135</span></div>
+    </div>
+  </div>
+  <div class="flexbar">
+    <span class="speed-flex" id="speed-flex"></span>
+    <span id="speed-sub"></span>
+    <span class="guide" title="Your research data has no 7-iron speed rule yet">7-iron linked at 80% of driver speed · general guide</span>
+  </div>
+
+  <div class="lists">
+    <section>
+      <div class="col-head"><h2><i class="ti ti-golf" aria-hidden="true"></i>Iron shafts</h2><span class="count" id="iron-count"></span></div>
+      <div class="list" id="iron-list"></div>
+    </section>
+    <section>
+      <div class="col-head"><h2><i class="ti ti-adjustments-horizontal" aria-hidden="true"></i>Driver shafts</h2><span class="count" id="driver-count"></span></div>
+      <div class="list" id="driver-list"></div>
+      <div style="margin-top:8px;text-align:right"><span class="status" id="status">Loading shafts</span></div>
+    </section>
+  </div>
+
+  <section class="panel" style="margin-top:26px">
+    <h2>How the lists are built</h2>
+    <div class="read" style="margin-top:12px">
+      <div><strong>Profile</strong>Driver shafts are sorted from EMB's 1 to 5 bend ratings: butt-stiff when the handle rates at least a point firmer than the tip, tip-stiff the reverse, mid-stiff when the mid section is the firmest of the three. Iron shafts use the profile from the EMB tour Irons sheet.</div>
+      <div><strong>Weight</strong>Driver shafts are split into thirds by weight across the rated database. Iron bands are light under 120g, normal 120 to 125g, heavy over 125g. Iron shafts without a weight on the sheet stay listed at the bottom, marked.</div>
+      <div><strong>Flex</strong>Either slider sets the flex window for both lists, using the Shaft Map's driver gates. The 7-iron slider follows driver speed at 80%, a general guide until the sheet carries a 7-iron rule. Project X numbers read as 6.0 S, 6.5 X, 7.0 TX, and S+ counts as S or X.</div>
+    </div>
+  </section>
+
+  <p class="foot" id="foot">EMB Golf Academy · Bend ratings are EMB's own 1 to 5 scale for comparing shafts across brands. Iron list from the EMB tour Irons sheet.</p>
+</main>
+<script>
+// ─── STATE (declared first) ──────────────────────────────────────────────────
+var driverShafts = [], ironShafts = [], dataLive = false;
+var pick = {profile:'', weight:''};
+var driverSpeed = 100;
+var driverBands = null;
+
+var SUPABASE_URL = 'https://dfsuklaobtdpfkorqluq.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmc3VrbGFvYnRkcGZrb3JxbHVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0ODA5MTcsImV4cCI6MjA5NzA1NjkxN30.Z9MtgZr0asFMXdnMx65OCQn1tNCeRfaJnz6U0Qy1gEw';
+
+// 7-iron speed follows driver speed at this ratio. General guide only: replace when the sheet has a 7-iron rule.
+var IRON_RATIO = 0.80;
+// Iron weight bands in grams. Edit here as the iron list grows.
+var IRON_BANDS = {light:[0,119], normal:[120,125], heavy:[126,999]};
+// Sheet flex labels → letter flexes. S+ sits between S and X.
+var IRON_FLEX_MAP = {'Stiff':['S'],'S':['S'],'S+':['S','X'],'X-Stiff':['X'],'X':['X'],'TX':['TX'],'Regular':['R'],'R':['R'],
+                     '5.0':['R'],'5.5':['S'],'6':['S'],'6.0':['S'],'6.5':['X'],'7':['TX'],'7.0':['TX']};
+
+var PROFILES = [{id:'butt',label:'Butt-stiff'},{id:'mid',label:'Mid-stiff'},{id:'tip',label:'Tip-stiff'}];
+var WEIGHTS  = [{id:'light',label:'Light'},{id:'normal',label:'Normal'},{id:'heavy',label:'Heavy'}];
+
+// Driver shaft snapshot of the equipment table, 2026-11-19. Used only if the live database can't be reached.
+// [name, flex, weight g, tip, mid, handle, torque, launch]
+var SNAPSHOT = [
+["Fujikura Ventus Black TR Velocore+ 69 S", "S", 69, 4, 5, 5, 4, "low"],
+["Fujikura Ventus Black TR Velocore+ 69 X", "X", 69, 4, 5, 5, 4, "low"],
+["Fujikura Ventus Black TR Velocore+ 79 S", "S", 79, 4, 5, 5, 4, "low"],
+["Fujikura Ventus Black TR Velocore+ 79 X", "X", 79, 4, 5, 5, 5, "low"],
+["Fujikura Ventus Black TR Velocore+ 87 X", "X", 87, 4, 5, 5, 5, "low"],
+["Fujikura Ventus Black Velocore+ 66 S", "S", 66, 4, 5, 5, 4, "low"],
+["Fujikura Ventus Black Velocore+ 66 TX", "TX", 66, 4, 5, 5, 4, "low"],
+["Fujikura Ventus Black Velocore+ 66 X", "X", 66, 4, 5, 5, 4, "low"],
+["Fujikura Ventus Black Velocore+ 75 S", "S", 75, 4, 5, 5, 4, "low"],
+["Fujikura Ventus Black Velocore+ 75 TX", "TX", 75, 4, 5, 5, 4, "low"],
+["Fujikura Ventus Black Velocore+ 75 X", "X", 75, 4, 5, 5, 4, "low"],
+["Fujikura Ventus Black Velocore+ 84 X", "X", 84, 4, 5, 5, 5, "low"],
+["Fujikura Ventus Blue TR Velocore+ 68 R", "R", 68, 4, 5, 4, 4, "low"],
+["Fujikura Ventus Blue TR Velocore+ 69 S", "S", 69, 4, 5, 4, 4, "low"],
+["Fujikura Ventus Blue TR Velocore+ 69 TX", "TX", 69, 4, 5, 4, 4, "low"],
+["Fujikura Ventus Blue TR Velocore+ 69 X", "X", 69, 4, 5, 4, 4, "low"],
+["Fujikura Ventus Blue TR Velocore+ 79 S", "S", 79, 4, 5, 4, 4, "low"],
+["Fujikura Ventus Blue TR Velocore+ 79 TX", "TX", 79, 4, 5, 5, 5, "low"],
+["Fujikura Ventus Blue TR Velocore+ 79 X", "X", 79, 4, 5, 5, 5, "low"],
+["Fujikura Ventus Blue Velocore+ 65 R", "R", 65, 4, 5, 3, 3, "mid"],
+["Fujikura Ventus Blue Velocore+ 65 S", "S", 65, 4, 5, 3, 4, "mid"],
+["Fujikura Ventus Blue Velocore+ 65 TX", "TX", 65, 4, 5, 3, 4, "mid"],
+["Fujikura Ventus Blue Velocore+ 65 X", "X", 65, 4, 5, 3, 4, "mid"],
+["Fujikura Ventus Blue Velocore+ 75 S", "S", 75, 4, 5, 3, 4, "mid"],
+["Fujikura Ventus Blue Velocore+ 75 TX", "TX", 75, 4, 5, 3, 4, "mid"],
+["Fujikura Ventus Blue Velocore+ 75 X", "X", 75, 4, 5, 3, 4, "mid"],
+["Fujikura Ventus Red TR Velocore+ 69 R", "R", 69, 4, 4, 5, 3, "low-mid"],
+["Fujikura Ventus Red TR Velocore+ 69 S", "S", 69, 4, 4, 5, 4, "low-mid"],
+["Fujikura Ventus Red TR Velocore+ 69 X", "X", 69, 4, 4, 5, 4, "low-mid"],
+["Fujikura Ventus Red TR Velocore+ 79 S", "S", 79, 4, 4, 5, 4, "low-mid"],
+["Fujikura Ventus Red TR Velocore+ 79 X", "X", 79, 5, 4, 5, 5, "low-mid"],
+["Fujikura Ventus Red Velocore+ 67 R", "R", 67, 3, 4, 5, 3, "high"],
+["Fujikura Ventus Red Velocore+ 67 S", "S", 67, 3, 4, 5, 4, "high"],
+["Fujikura Ventus Red Velocore+ 67 TX", "TX", 67, 3, 4, 5, 4, "mid-high"],
+["Fujikura Ventus Red Velocore+ 67 X", "X", 67, 3, 4, 5, 4, "mid-high"],
+["Fujikura Ventus Red Velocore+ 77 S", "S", 77, 3, 4, 5, 4, "high"],
+["Fujikura Ventus Red Velocore+ 77 TX", "TX", 77, 3, 4, 5, 4, "mid-high"],
+["Fujikura Ventus Red Velocore+ 77 X", "X", 77, 3, 4, 5, 4, "mid-high"],
+["Graphite Design Tour AD DI 5 S", "S", 55, 4, 3, 3, 3, "mid"],
+["Graphite Design Tour AD DI 6 S", "S", 62, 4, 3, 3, 3, "mid"],
+["Graphite Design Tour AD DI 6 X", "X", 62, 4, 3, 3, 3, "mid"],
+["Graphite Design Tour AD DI 7 TX", "TX", 70, 4, 3, 3, 3, "mid"],
+["Graphite Design Tour AD DI 7 X", "X", 70, 4, 3, 3, 3, "mid"],
+["Graphite Design Tour AD FI 6 S", "S", 62, 4, 4, 4, 3, "mid"],
+["Graphite Design Tour AD FI 6 X", "X", 62, 4, 4, 4, 3, "mid"],
+["Graphite Design Tour AD UB 5 S", "S", 50, 4, 3, 3, 3, "mid"],
+["Graphite Design Tour AD UB 6 S", "S", 62, 4, 3, 3, 3, "mid"],
+["Graphite Design Tour AD UB 6 X", "X", 62, 4, 3, 3, 3, "mid"],
+["Graphite Design Tour AD UB 7 X", "X", 70, 5, 3, 3, 3, "mid"],
+["Graphite Design Tour AD VF 5 S", "S", 50, 5, 4, 4, 2, "low"],
+["Graphite Design Tour AD VF 6 S", "S", 62, 5, 4, 4, 2, "low"],
+["Graphite Design Tour AD VF 6 X", "X", 62, 5, 4, 4, 2, "low"],
+["Graphite Design Tour AD VF 7 TX", "TX", 70, 5, 5, 4, 2, "low"],
+["Mitsubishi Diamana BB 53 S", "S", 53, 3, 3, 3, 3, "mid-high"],
+["Mitsubishi Diamana BB 53 X", "X", 53, 3, 3, 3, 3, "mid"],
+["Mitsubishi Diamana BB 63 S", "S", 63, 3, 3, 3, 3, "mid"],
+["Mitsubishi Diamana BB 63 TX", "TX", 63, 3, 3, 3, 3, "mid"],
+["Mitsubishi Diamana BB 63 X", "X", 63, 3, 3, 3, 3, "mid"],
+["Mitsubishi Diamana BB 73 S", "S", 73, 3, 3, 3, 3, "mid"],
+["Mitsubishi Diamana BB 73 X", "X", 73, 3, 3, 4, 3, "mid"],
+["Mitsubishi Diamana RB 53 S", "S", 53, 2, 3, 3, 4, "high"],
+["Mitsubishi Diamana RB 53 X", "X", 53, 2, 3, 3, 4, "high"],
+["Mitsubishi Diamana RB 63 S", "S", 63, 2, 3, 3, 4, "high"],
+["Mitsubishi Diamana RB 63 TX", "TX", 63, 2, 3, 3, 4, "mid-high"],
+["Mitsubishi Diamana RB 63 X", "X", 63, 2, 3, 3, 4, "high"],
+["Mitsubishi Diamana WB 63 S", "S", 63, 4, 5, 5, 2, "low"],
+["Mitsubishi Diamana WB 63 TX", "TX", 63, 4, 5, 5, 2, "low"],
+["Mitsubishi Diamana WB 63 X", "X", 63, 4, 5, 5, 2, "low"],
+["Mitsubishi Diamana WB 73 S", "S", 73, 4, 5, 5, 2, "low"],
+["Mitsubishi Diamana WB 73 TX", "TX", 73, 5, 5, 5, 2, "low"],
+["Mitsubishi Diamana WB 73 X", "X", 73, 5, 5, 5, 2, "low"],
+["Mitsubishi TENSEI 1K Pro White 60 S", "S", 60, 4, 4, 3, 2, "low"],
+["Mitsubishi TENSEI 1K Pro White 60 TX", "TX", 60, 5, 4, 3, 2, "low"],
+["Mitsubishi TENSEI 1K Pro White 60 X", "X", 60, 4, 4, 3, 2, "low"],
+["Mitsubishi TENSEI 1K Pro White 70 TX", "TX", 70, 5, 4, 4, 2, "low"],
+["Mitsubishi TENSEI 1K Pro White 70 X", "X", 70, 5, 4, 4, 2, "low"],
+["Project X Denali Black 60 S", "S", 60, 4, 4, 4, 3, "low"],
+["Project X Denali Black 60 X", "X", 60, 4, 4, 4, 3, "low"],
+["Project X Denali Black 65 X", "X", 65, 4, 4, 4, 3, "low"],
+["Project X HZRDUS Black 60 S", "S", 60, 5, 5, 4, 2, "low"],
+["Project X HZRDUS Black 60 X", "X", 60, 5, 5, 4, 2, "low"],
+["Project X HZRDUS Black 65 S", "S", 65, 5, 5, 4, 2, "low"],
+["Project X HZRDUS Black 65 X", "X", 65, 5, 5, 4, 2, "low"],
+["Project X HZRDUS Black 70 TX", "TX", 70, 5, 5, 5, 2, "low"],
+["Project X HZRDUS Black 70 X", "X", 70, 5, 5, 5, 2, "low"],
+["Project X HZRDUS Red CB 50 S", "S", 50, 2, 3, 4, 4, "high"],
+["Project X HZRDUS Red CB 60 S", "S", 60, 2, 3, 4, 4, "mid-high"],
+["Project X HZRDUS Red CB 60 X", "X", 60, 2, 3, 4, 4, "mid-high"],
+["Project X HZRDUS Silver 55 S", "S", 55, 4, 4, 3, 3, "low"],
+["Project X HZRDUS Silver 60 S", "S", 60, 4, 4, 3, 3, "mid"],
+["Project X HZRDUS Silver 60 X", "X", 60, 4, 4, 3, 3, "mid"]
+];
+
+// Iron shafts from the EMB tour Irons sheet (11/18): [name, profile, weight g or null, flexes played, tour players]
+// Weight is read only where the model name prints it. Iron shafts added to Supabase as type 'iron_shaft'
+// (with tip/mid/handle ratings, flex and weight) are added to this list automatically.
+var IRON_SHEET = [
+["Dynamic Gold Tour Issue X100", "tip", null, ["X-Stiff"], 20],
+["Project X Rifle", "butt", null, ["6.5", "7"], 12],
+["Dynamic Gold Tour Issue Mid X100", "tip", null, ["X-Stiff"], 3],
+["KBS Tour", "mid", null, ["X-Stiff"], 3],
+["Nippon Modus3 Tour 120", "butt", 120, ["Stiff", "X-Stiff"], 3],
+["Nippon Modus3 Tour 130", "mid", 130, ["X-Stiff"], 3],
+["Project X LZ 125", "butt", 125, ["6.5", "X-Stiff"], 3],
+["Dynamic Gold 120 X100", "tip", 120, ["X-Stiff"], 2],
+["Dynamic Gold X7", "tip", null, ["X-Stiff"], 2],
+["KBS $-Taper 130", "tip", 130, ["X-Stiff"], 2],
+["KBS C-Taper 130", "tip", 130, ["X-Stiff"], 2],
+["Project X", "butt", null, ["6"], 2],
+["AMT Tour White X100", "tip", null, ["X-Stiff"], 1],
+["C-Taper 125", "tip", 125, ["S+"], 1],
+["Dynamic Gold S300", "tip", null, ["Stiff"], 1],
+["Dynamic Gold Tour Issue S400", "tip", null, ["Stiff"], 1],
+["Dynamic Gold Tour Issue X100 120", "tip", 120, ["X-Stiff"], 1],
+["KBS $-Taper 125", "tip", 125, ["S+"], 1],
+["KBS Tour 125", "mid", 125, ["S+"], 1],
+["KBS Tour-V 120", "mid", 120, ["X-Stiff"], 1],
+["Project X 120", "butt", 120, ["6"], 1],
+["Project X 125", "butt", 125, ["6.5"], 1],
+["Project X LS 130", "butt", 130, ["7"], 1],
+["Project X Rifle 125", "butt", 125, ["6.5"], 1]
+];
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function el(tag, cls, text){ var e=document.createElement(tag); if(cls) e.className=cls; if(text!==undefined) e.textContent=text; return e; }
+function num(v){ var n=parseFloat(v); return isFinite(n) ? n : null; }
+function labelOf(list, id){ var m = list.filter(function(x){return x.id===id;})[0]; return m ? m.label : ''; }
+
+// Profile from EMB 1–5 bend ratings. Butt/tip cut-off matches the workbook (handle − tip ≥ 1 / ≤ −1).
+function profilesFromRatings(t, m, h){
+  var p = [];
+  if(h - t >= 1)  p.push('butt');
+  if(h - t <= -1) p.push('tip');
+  if(m > h && m > t) p.push('mid');
+  return p;
+}
+function profileWord(ids){
+  if(!ids.length) return 'Even';
+  return ids.map(function(id){ return labelOf(PROFILES,id); }).join(' + ');
+}
+
+// Same flex gates as the driver page's Shaft Map (driver mph)
+function speedToFlexes(mph){
+  var f = [];
+  if(mph < 85) f.push('R');
+  if(mph >= 75 && mph < 105) f.push('S');
+  if(mph >= 95 && mph < 120) f.push('X');
+  if(mph >= 110) f.push('TX');
+  if(!f.length) f = ['S'];
+  return f;
+}
+function speedSubLabel(mph){
+  if(mph >= 125) return 'Elite tour speed';
+  if(mph >= 115) return 'High tour speed';
+  if(mph >= 105) return 'Better player speed';
+  if(mph >= 95)  return 'Mid-high speed';
+  if(mph >= 85)  return 'Moderate speed';
+  return 'Slower swing';
+}
+function ironSpeed(){ return Math.round(driverSpeed * IRON_RATIO); }
+
+// Driver weight thirds of the rated database, so the bands follow it as it grows.
+function buildBands(list){
+  var w = list.map(function(s){return s.weight;}).sort(function(a,b){return a-b;});
+  var n = w.length; if(!n) return null;
+  var t1 = w[Math.floor(n/3)], t2 = w[Math.floor(2*n/3)];
+  function range(f){ var m=w.filter(f); return m.length ? [m[0], m[m.length-1]] : null; }
+  return { light:range(function(x){return x<t1;}), normal:range(function(x){return x>=t1 && x<t2;}), heavy:range(function(x){return x>=t2;}) };
+}
+function inBand(w, band){ return band && w !== null && w >= band[0] && w <= band[1]; }
+
+// ─── DATA ────────────────────────────────────────────────────────────────────
+function normDriver(rows){
+  var out = [];
+  rows.forEach(function(r){
+    var o = Array.isArray(r)
+      ? {name:r[0],flex:r[1],weight:r[2],tip:r[3],mid:r[4],handle:r[5],torque:r[6],launch:r[7]}
+      : {name:r.name,flex:r.flex,weight:num(r.weight),tip:num(r.tip_val),mid:num(r.mid_val),handle:num(r.handle_val),torque:num(r.torque_val),launch:r.launch};
+    if(!o.name || o.weight===null || o.tip===null || o.mid===null || o.handle===null) return;
+    o.profiles = profilesFromRatings(o.tip, o.mid, o.handle);
+    out.push(o);
+  });
+  return out;
+}
+function normIronSheet(){
+  return IRON_SHEET.map(function(r){
+    var flexes = [];
+    r[3].forEach(function(lbl){ (IRON_FLEX_MAP[lbl]||[]).forEach(function(f){ if(flexes.indexOf(f)<0) flexes.push(f); }); });
+    return {name:r[0], profiles:[r[1]], weight:r[2], flexLabels:r[3], flexes:flexes, tour:r[4], source:'sheet'};
+  });
+}
+function normIronDb(rows){
+  var out = [];
+  (rows||[]).forEach(function(r){
+    var t=num(r.tip_val), m=num(r.mid_val), h=num(r.handle_val);
+    if(!r.name || t===null || m===null || h===null) return;
+    var lbl = r.flex ? String(r.flex) : null;
+    out.push({name:r.name, profiles:profilesFromRatings(t,m,h), weight:num(r.weight),
+      flexLabels: lbl ? [lbl] : [], flexes: lbl ? (IRON_FLEX_MAP[lbl]||[lbl]) : [], tour:0, source:'db', tip:t, mid:m, handle:h});
+  });
+  return out;
+}
+function getJSON(url){
+  var ctl = ('AbortController' in window) ? new AbortController() : null;
+  var timer = setTimeout(function(){ if(ctl) ctl.abort(); }, 7000);
+  return fetch(url,{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY},signal:ctl?ctl.signal:undefined})
+    .then(function(r){ clearTimeout(timer); if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); });
+}
+function loadAll(){
+  var sel = '&select=name,flex,weight,tip_val,mid_val,handle_val,torque_val,launch&order=name';
+  var d = getJSON(SUPABASE_URL+'/rest/v1/equipment?type=eq.shaft'+sel)
+    .then(function(rows){ var n=normDriver(rows); if(!n.length) throw new Error('none'); return {list:n, live:true}; })
+    .catch(function(){ return {list:normDriver(SNAPSHOT), live:false}; });
+  var i = getJSON(SUPABASE_URL+'/rest/v1/equipment?type=eq.iron_shaft'+sel)
+    .then(normIronDb).catch(function(){ return []; });
+  return Promise.all([d, i]);
+}
+
+// ─── QUESTIONS ───────────────────────────────────────────────────────────────
+function buildChips(id, options, key){
+  var box = document.getElementById(id);
+  box.innerHTML = '';
+  options.forEach(function(o){
+    var b = el('button','chip'+(pick[key]===o.id?' sel':''), o.label);
+    b.type = 'button';
+    b.setAttribute('aria-pressed', pick[key]===o.id ? 'true' : 'false');
+    b.addEventListener('click', function(){ pick[key] = (pick[key]===o.id) ? '' : o.id; refresh(); });
+    box.appendChild(b);
+  });
+}
+function renderQuestions(){
+  buildChips('q-profile', PROFILES, 'profile');
+  buildChips('q-weight', WEIGHTS, 'weight');
+  document.getElementById('q-profile-sub').textContent = pick.profile ? 'Tap again to show every profile.' : 'Showing every profile. Pick one to narrow both lists.';
+  var parts = [];
+  if(driverBands) parts.push('Driver: '+WEIGHTS.map(function(w){ var r=driverBands[w.id]; return r ? w.label.toLowerCase()+' '+r[0]+'–'+r[1]+'g' : null; }).filter(Boolean).join(', '));
+  parts.push('Iron: light under 120g, normal 120–125g, heavy over 125g');
+  document.getElementById('q-weight-sub').textContent = parts.join(' · ');
+}
+
+// ─── SPEED ───────────────────────────────────────────────────────────────────
+function renderSpeed(){
+  var f = speedToFlexes(driverSpeed);
+  document.getElementById('driver-val').textContent = driverSpeed+' mph';
+  document.getElementById('iron-val').textContent = ironSpeed()+' mph';
+  document.getElementById('driver-speed').value = driverSpeed;
+  document.getElementById('iron-speed').value = ironSpeed();
+  document.getElementById('speed-flex').textContent = 'Flex: '+f.join(' / ');
+  document.getElementById('speed-sub').textContent = speedSubLabel(driverSpeed);
+}
+
+// ─── LISTS ───────────────────────────────────────────────────────────────────
+function tag(cls, text){ return el('span','tag'+(cls?' '+cls:''), text); }
+function segs(v){
+  var w = el('div','segs');
+  for(var i=1;i<=5;i++){ var x=el('i'); if(i<=v) x.className='on'; w.appendChild(x); }
+  return w;
+}
+function bendBlock(s){
+  var bend = el('div','bend');
+  [['Handle',s.handle],['Mid',s.mid],['Tip',s.tip]].forEach(function(p){
+    var d = el('div'); d.appendChild(el('b',null,p[0])); d.appendChild(segs(p[1])); d.title = p[0]+' '+p[1]+' of 5';
+    bend.appendChild(d);
+  });
+  return bend;
+}
+function emptyMsg(list, text){ list.appendChild(el('div','empty', text)); }
+
+function renderDriver(valid){
+  var list = document.getElementById('driver-list'); list.innerHTML = '';
+  var band = pick.weight && driverBands ? driverBands[pick.weight] : null;
+  var pool = driverShafts.filter(function(s){
+    if(pick.profile && s.profiles.indexOf(pick.profile) < 0) return false;
+    if(s.flex && valid.indexOf(s.flex) < 0) return false;
+    if(band && !inBand(s.weight, band)) return false;
+    return true;
+  }).sort(function(a,b){ return a.name.localeCompare(b.name); });
+  document.getElementById('driver-count').textContent = pool.length+' to try';
+  if(!pool.length){ emptyMsg(list, 'No rated driver shafts fit this profile, weight and flex. Try another weight or move a slider.'); return; }
+  pool.forEach(function(s){
+    var row = el('div','row');
+    var mid = el('div'); mid.style.minWidth='0';
+    mid.appendChild(el('div','name', s.name));
+    var meta = el('div','meta');
+    meta.appendChild(tag('ok', profileWord(s.profiles)));
+    meta.appendChild(tag('', s.flex+' flex'));
+    meta.appendChild(tag('', s.weight+'g'));
+    if(s.torque!==null && s.torque!==undefined) meta.appendChild(tag('', 'Torque '+s.torque));
+    if(s.launch) meta.appendChild(tag('', s.launch.charAt(0).toUpperCase()+s.launch.slice(1)+' launch'));
+    mid.appendChild(meta); row.appendChild(mid);
+    row.appendChild(bendBlock(s));
+    list.appendChild(row);
+  });
+}
+
+function ironRow(s, valid){
+  var row = el('div','row');
+  var mid = el('div'); mid.style.minWidth='0';
+  mid.appendChild(el('div','name', s.name));
+  var meta = el('div','meta');
+  meta.appendChild(tag('ok', profileWord(s.profiles)));
+  if(s.flexLabels.length){
+    s.flexLabels.forEach(function(lbl){
+      var lf = IRON_FLEX_MAP[lbl] || [lbl];
+      var on = lf.some(function(f){ return valid.indexOf(f) > -1; });
+      var txt = (/^\d/.test(lbl) ? lbl+' ('+lf.join('/')+')' : lbl);
+      meta.appendChild(tag(on ? 'fx-on' : 'fx-off', txt));
+    });
+  } else meta.appendChild(tag('off', 'Flex not on sheet'));
+  meta.appendChild(s.weight!==null ? tag('', s.weight+'g') : tag('off', 'Weight not on sheet'));
+  if(s.tour) meta.appendChild(tag('', s.tour+' tour player'+(s.tour>1?'s':'')));
+  mid.appendChild(meta); row.appendChild(mid);
+  if(s.source==='db') row.appendChild(bendBlock(s));
+  return row;
+}
+function renderIron(valid){
+  var list = document.getElementById('iron-list'); list.innerHTML = '';
+  var band = pick.weight ? IRON_BANDS[pick.weight] : null;
+  var base = ironShafts.filter(function(s){
+    if(pick.profile && s.profiles.indexOf(pick.profile) < 0) return false;
+    if(s.flexes.length && !s.flexes.some(function(f){ return valid.indexOf(f) > -1; })) return false;
+    return true;
+  });
+  var known = base.filter(function(s){ return !band || inBand(s.weight, band); });
+  var unknown = band ? base.filter(function(s){ return s.weight===null; }) : [];
+  var sorter = function(a,b){ return (b.tour - a.tour) || a.name.localeCompare(b.name); };
+  known.sort(sorter); unknown.sort(sorter);
+  document.getElementById('iron-count').textContent = known.length+' to try'+(unknown.length ? ' · '+unknown.length+' weight unknown' : '');
+  if(!known.length && !unknown.length){
+    emptyMsg(list, 'No iron shafts on the sheet fit this profile, weight and flex yet. Most sheet shafts are tour X flex; the list fills in as weights and other flexes are added.');
+    return;
+  }
+  if(!known.length) emptyMsg(list, 'None with a '+labelOf(WEIGHTS,pick.weight).toLowerCase()+' weight on the sheet.');
+  known.forEach(function(s){ list.appendChild(ironRow(s, valid)); });
+  if(unknown.length){
+    list.appendChild(el('div','sub-head','Weight not on the sheet yet'));
+    unknown.forEach(function(s){ list.appendChild(ironRow(s, valid)); });
+  }
+}
+
+function refresh(){
+  var valid = speedToFlexes(driverSpeed);
+  renderQuestions(); renderSpeed(); renderIron(valid); renderDriver(valid);
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+document.getElementById('driver-speed').addEventListener('input', function(){
+  driverSpeed = parseInt(this.value, 10); refresh();
+});
+document.getElementById('iron-speed').addEventListener('input', function(){
+  var v = parseInt(this.value, 10);
+  driverSpeed = Math.max(75, Math.min(135, Math.round(v / IRON_RATIO))); refresh();
+  document.getElementById('iron-speed').value = v;
+  document.getElementById('iron-val').textContent = v+' mph';
+});
+ironShafts = normIronSheet();
+renderSpeed();
+loadAll().then(function(res){
+  driverShafts = res[0].list; dataLive = res[0].live;
+  ironShafts = normIronSheet().concat(res[1]);
+  driverBands = buildBands(driverShafts);
+  var st = document.getElementById('status');
+  if(dataLive){ st.textContent = driverShafts.length+' driver shafts · live data'; st.className='status live'; }
+  else {
+    st.textContent = driverShafts.length+' driver shafts · saved snapshot'; st.className='status snap';
+    document.getElementById('foot').textContent = 'The live equipment database could not be reached, so driver shafts are from a snapshot saved on November 19, 2026. Iron list from the EMB tour Irons sheet.';
+  }
+  refresh();
+});
+</script>
+</body>
+</html>
